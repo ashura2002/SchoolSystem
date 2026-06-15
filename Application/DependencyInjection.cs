@@ -1,4 +1,5 @@
-﻿using Application.UseCases;
+﻿using Application.Services;
+using Application.UseCases;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,7 @@ namespace Application
             services.AddScoped<GetUserByIdUseCase>();
             services.AddScoped<UpdateUserUseCase>();
             services.AddScoped<GetAllUsersUseCase>();
+            services.AddScoped<CreateUserService>();
             return services;
         }
 
