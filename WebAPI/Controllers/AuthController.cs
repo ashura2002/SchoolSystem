@@ -1,5 +1,7 @@
 ﻿using Application.DTOs;
 using Application.UseCases;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.DTOs;
 using WebAPI.Requests;
@@ -15,15 +17,18 @@ namespace WebAPI.Controllers
         private readonly CreateTeacherUseCase _createTeacherUseCase;
         private readonly CreateStudentUseCase _createStudentUseCase;
         private readonly GetUserByIdUseCase _getUserByIdUseCase;
+        private readonly LoginUseCase _loginUseCase;
 
         public AuthController(CreateAdminUserUseCase createAdminUserUseCase, CreateTeacherUseCase createTeacherUseCase,
-          CreateStudentUseCase createStudentUseCase, GetUserByIdUseCase getUserByIdUseCase
+          CreateStudentUseCase createStudentUseCase, GetUserByIdUseCase getUserByIdUseCase, LoginUseCase loginUseCase
           )
         {
             _createAdminUserUseCase = createAdminUserUseCase;
             _createTeacherUseCase = createTeacherUseCase;
             _createStudentUseCase = createStudentUseCase;
             _getUserByIdUseCase = getUserByIdUseCase;
+            _loginUseCase = loginUseCase;
+
         }
 
         [HttpPost("admin")]
@@ -57,5 +62,15 @@ namespace WebAPI.Controllers
             var user = await _getUserByIdUseCase.Execute(id);
             return Ok(user);
         }
+
+
+        [HttpPost("login")]
+        public async Task<ActionResult<LoginResponse>> Login(LoginUserRequest request)
+        {
+            var user = new LoginDTO(request.Username, request.Password);
+            var result = await _loginUseCase.Execute(user);
+            return Ok(result);
+        }
+
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Application.Services
+namespace Application.Interfaces
 {
     public interface IPasswordHasher
     {

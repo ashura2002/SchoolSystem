@@ -1,8 +1,6 @@
 ﻿using Application.DTOs;
 using Application.UseCases;
 using Microsoft.AspNetCore.Mvc;
-using WebAPI.DTOs;
-using WebAPI.Requests;
 
 
 namespace WebAPI.Controllers
@@ -21,6 +19,7 @@ namespace WebAPI.Controllers
             _getUserByIdUseCase = getUserByIdUseCase;
         }
 
+        // admin only
         [HttpGet]
         public async Task<ActionResult<List<UserDTO>>> GetAllUsers()
         {

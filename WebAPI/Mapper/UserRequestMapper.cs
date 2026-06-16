@@ -8,12 +8,7 @@ namespace WebAPI.DTOs
     {
         public static CreateUserDTO ToDTO(CreateUserRequests request)
         {
-            return new CreateUserDTO
-            {
-                Username = request.Username,
-                Email = request.Email,
-                Password = request.Password,
-            };
+            return new CreateUserDTO(request.Username, request.Email, request.Password);
         }
     }
 }
