@@ -5,5 +5,8 @@ using System.Text;
 
 namespace Application.DTOs
 {
-    public record CreateUserDTO(string Username, string Email, string Password);
+    public class LoginResponse
+    {
+        public string Token { get; set; }
+    }
 }

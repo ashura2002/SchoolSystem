@@ -4,5 +4,5 @@ using System.Text;
 
 namespace Application.DTOs
 {
-    public record UpdateUserDTO(string Username, string Password);
+    public record LoginDTO(string Username, string Password);
 }
