@@ -29,7 +29,7 @@ namespace Application.Services
             if (await _userRepository.GetByEmail(dto.Email) != null)
                 throw new UserInvalidValueException("Email Already Exist");
             var hashedPassword = _passwordHasher.Hash(dto.Password);
-
+            // create a domain entity
             var user = new User(
                 UsernameValueObject.Create(dto.Username),
                 EmailValueObject.Create(dto.Email),

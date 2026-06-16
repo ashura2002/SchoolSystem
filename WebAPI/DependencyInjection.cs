@@ -8,6 +8,7 @@ namespace WebAPI
         {
 
             services.AddScoped<UserController>();
+            services.AddScoped<AuthController>();
             return services;
         }
     }
