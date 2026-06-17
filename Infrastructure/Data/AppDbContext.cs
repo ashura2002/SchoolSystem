@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Domain.Entities;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Query.Internal;
 
 namespace Infrastructure.Data
 {
