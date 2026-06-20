@@ -1,5 +1,6 @@
 ﻿using Application.DTOs;
-using Application.UseCases;
+using Application.UseCases.Users;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -21,6 +22,7 @@ namespace WebAPI.Controllers
 
         // admin only
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<List<UserDTO>>> GetAllUsers()
         {
             var users = await _getAllUsersUseCase.Execute();
@@ -28,6 +30,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles ="Admin,Teacher")]
         public async Task<ActionResult<UserDTO?>> GetUserById([FromRoute] Guid id)
         {
             var user = await _getUserByIdUseCase.Execute(id);

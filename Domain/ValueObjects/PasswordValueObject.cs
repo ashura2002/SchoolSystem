@@ -16,9 +16,9 @@ namespace Domain.ValueObjects
 
         public static PasswordValueObject Create(string value)
         {
-            if (string.IsNullOrWhiteSpace(value)) throw new UserInvalidValueException("Password cannot be empty.");
+            if (string.IsNullOrWhiteSpace(value)) throw new BadRequestException("Password cannot be empty.");
             value = value.Trim();
-            if (value.Length < 5) throw new UserInvalidValueException("Invalid. Password must above 5 character.");
+            if (value.Length < 5) throw new BadRequestException("Invalid. Password must above 5 character.");
             return new PasswordValueObject(value);
 
         }

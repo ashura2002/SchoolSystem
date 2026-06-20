@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Application.UseCases
+namespace Application.UseCases.Users
 {
     public class DeleteUserUseCase
     {
@@ -17,9 +17,10 @@ namespace Application.UseCases
 
         public async Task Execute(Guid id)
         {
-            var user = await _userRepository.GetById(id);
-            if (user == null) throw new UserNotFoundException("User not found");
+            var user = await _userRepository.GetById(id)
+                ?? throw new NotFoundException("User not found");
             await _userRepository.Delete(user);
+            await _userRepository.SaveChangesAsync();
         }
 
     }

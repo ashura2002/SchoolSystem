@@ -1,5 +1,6 @@
 ﻿using Application.Services;
-using Application.UseCases;
+using Application.UseCases.Auth;
+using Application.UseCases.Users;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;

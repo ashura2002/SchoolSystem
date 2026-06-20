@@ -1,6 +1,7 @@
 ﻿using Application.Interfaces;
 using Domain.Entities;
-using Microsoft.Extensions.Configuration;
+using Infrastructure.Setting;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -12,40 +13,41 @@ namespace Infrastructure.Services
 {
     public class JwtService : IJwtService
     {
-        private readonly IConfiguration _config;
+        private readonly JwtSetting _jwtSetting;
 
 
-        public JwtService(IConfiguration config)
+        public JwtService(IOptions<JwtSetting> jwtSetting)
         {
-            _config = config;
+            _jwtSetting = jwtSetting.Value;
         }
-
 
         public string GenerateToken(User user)
         {
-            var claim = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.Username.Value),
-                new Claim(ClaimTypes.Email, user.Email.Value),
-                new Claim(ClaimTypes.Role, user.Role.ToString())
 
+            List<Claim> claims = new List<Claim>()
+            {
+                new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new(ClaimTypes.Name, user.Username.Value),
+                new(ClaimTypes.Role, user.Role.ToString())
             };
 
-            // from app setting.development
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            // create security key - get key from the app setting
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSetting.Key)) ??
+                throw new Exception("JWT Key is missing. Check appsettings configuration.");
 
+            // sign credentials
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var token = new JwtSecurityToken(
-                issuer: _config["Jwt:Issuer"],
-                audience: _config["Jwt:Audience"],
-                claims: claim,
-                expires: DateTime.UtcNow.AddHours(1),
-                signingCredentials: creds
-            );
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            // actual Jwt is created
+            var accessToken = new JwtSecurityToken(issuer: _jwtSetting.Issuer,
+                            audience: _jwtSetting.Audience,
+                            claims: claims,
+                            expires: DateTime.UtcNow.AddHours(_jwtSetting.ExpiryInHours),
+                            signingCredentials: creds);
+
+            return new JwtSecurityTokenHandler().WriteToken(accessToken);
+
         }
     }
 }

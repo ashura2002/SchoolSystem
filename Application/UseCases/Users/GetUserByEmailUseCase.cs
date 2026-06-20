@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Application.UseCases
+namespace Application.UseCases.Users
 {
     public class GetUserByEmailUseCase
     {
@@ -19,8 +19,8 @@ namespace Application.UseCases
 
         public async Task<UserDTO> Execute(string email)
         {
-            var user = await _userRepository.GetByEmail(email);
-            if (user == null) throw new UserNotFoundException("User not found");
+            var user = await _userRepository.GetByEmail(email) ?? 
+                throw new NotFoundException("User not found");
             return UserMapper.ToDto(user);
         }
     }

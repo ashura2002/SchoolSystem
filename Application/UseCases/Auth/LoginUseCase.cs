@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Application.UseCases
+namespace Application.UseCases.Auth
 {
     public class LoginUseCase
     {
@@ -24,19 +24,13 @@ namespace Application.UseCases
         }
 
 
-        public async Task<LoginResponse> Execute(LoginDTO dto)
+        public async Task<string> Execute(LoginDTO dto)
         {
-            var user = await _userRepository.GetByUsername(dto.Username);
-            if (user == null) throw new UserUnauthorizedException("Invalid Credentials");
-            var isPasswordMatched = _passwordHasher.Verify(dto.Password, user.Password.Value);
-            if (!isPasswordMatched) throw new UserUnauthorizedException("Invalid Credentials");
-
-            var accessToken = _jwtService.GenerateToken(user);
-
-            return new LoginResponse
-            {
-                Token = accessToken
-            };
+            var user = await _userRepository.GetByUsername(dto.Username) ??
+                throw new UnauthorizedException("Invalid Credentials");
+            var isPasswordMatch = _passwordHasher.Verify(dto.Password, user.Password.Value);
+            if (!isPasswordMatch) throw new UnauthorizedException("Wrong Password");
+            return _jwtService.GenerateToken(user);
         }
 
     }

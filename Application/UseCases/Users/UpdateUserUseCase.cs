@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Application.UseCases
+namespace Application.UseCases.Users
 {
     public class UpdateUserUseCase
     {
@@ -20,11 +20,12 @@ namespace Application.UseCases
 
         public async Task<UserDTO> Execute(Guid id, UpdateUserDTO dto)
         {
-            var user = await _userRepository.GetById(id);
-            if (user == null) throw new UserNotFoundException("User not found");
+            var user = await _userRepository.GetById(id) ??
+                        throw new NotFoundException("User not found");
             user.UpdateUsername(UsernameValueObject.Create(dto.Username));
             user.UpdatePassword(PasswordValueObject.Create(dto.Password));
-            await _userRepository.Update(user);
+
+            await _userRepository.SaveChangesAsync();
             return UserMapper.ToDto(user);
         }
     }

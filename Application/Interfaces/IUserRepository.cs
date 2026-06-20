@@ -7,12 +7,12 @@ namespace Application.Interfaces
 {
     public interface IUserRepository
     {
-        Task<User> Add(User user);
+        Task Add(User user);
         Task<User?> GetById(Guid id);
         Task<List<User>> GetAllUsers();
-        Task<User> Update(User user);
         Task Delete(User user);
         Task<User?> GetByUsername(string username);
         Task<User?> GetByEmail(string email);
+        Task SaveChangesAsync();
     }
 }

@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Application.UseCases
+namespace Application.UseCases.Users
 {
     public class GetAllUsersUseCase
     {
@@ -16,11 +16,10 @@ namespace Application.UseCases
             _userRepository = userRepository;
         }
 
-        public async Task<List<UserDTO>> Execute()
+        public async Task<IEnumerable<UserDTO>> Execute()
         {
             var users = await _userRepository.GetAllUsers();
-            return users.Select(user => UserMapper.ToDto(user)).ToList();
+            return UserMapper.ToResponseList(users);
         }
-
     }
 }
