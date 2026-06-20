@@ -17,7 +17,7 @@ namespace Domain.Entities
         public DateTime UpdatedAt { get; private set; }
 
         public User(UsernameValueObject username, EmailValueObject email, PasswordValueObject password, Role role)
-        {
+        {   
             Id = Guid.NewGuid();
             Username = username;
             Email = email;

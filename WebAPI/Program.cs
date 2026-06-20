@@ -1,5 +1,8 @@
 using Application;
 using Infrastructure;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using WebAPI;
 using WebAPI.Middlewares;
 
@@ -13,14 +16,15 @@ builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// dependency
+// dependencies
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
 builder.Services.AddPresentation();
+builder.Services.AddJwtAuthenticationDI(builder.Configuration);
+
 
 var app = builder.Build();
 
-app.UseMiddleware<ExceptionMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -30,8 +34,11 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
 
+
+app.UseMiddleware<ExceptionMiddleware>();
+app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

@@ -2,6 +2,7 @@
 using Infrastructure.Data;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
+using Infrastructure.Setting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +20,10 @@ namespace Infrastructure
             options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IPasswordHasher, PasswordHasher>();
+
+
+            // jwt setting
+            services.Configure<JwtSetting>(configuration.GetSection("Jwt"));
             services.AddScoped<IJwtService, JwtService>();
             return services;
         }

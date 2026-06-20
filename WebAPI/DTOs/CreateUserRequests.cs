@@ -1,20 +1,20 @@
 ﻿using Domain.Enums;
 using System.ComponentModel.DataAnnotations;
 
-namespace WebAPI.Requests
+namespace WebAPI.DTOs
 {
     public class CreateUserRequests
     {
         [Required]
         [StringLength(50, MinimumLength = 3)]
-        public string Username { get; set; } = null!;
+        public required string Username { get; set; }
 
         [Required]
         [EmailAddress]
-        public string Email { get; set; } = null!;
+        public required string Email { get; set; }
 
         [Required]
         [MinLength(3)]
-        public string Password { get; set; } = null!;
+        public required string Password { get; set; }
     }
 }

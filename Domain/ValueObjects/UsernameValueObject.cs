@@ -20,11 +20,11 @@ namespace Domain.ValueObjects
         public static UsernameValueObject Create(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
-                throw new UserInvalidValueException("Username cannot be empty.");
+                throw new BadRequestException("Username cannot be empty.");
             value = value.Trim();
 
             if (value.Length < 3)
-                throw new UserInvalidValueException("Username must be at least 3 characters long.");
+                throw new BadRequestException("Username must be at least 3 characters long.");
             return new UsernameValueObject(value);
         }
     }

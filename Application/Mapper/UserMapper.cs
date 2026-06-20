@@ -21,5 +21,18 @@ namespace Application.Mapper
             };
         }
 
+        public static IEnumerable<UserDTO> ToResponseList(IEnumerable<User> users)
+        {
+            return users.Select(u => new UserDTO
+            {
+                Id = u.Id,
+                Username = u.Username.Value,
+                Email = u.Email.Value,
+                Role = u.Role,
+                CreatedAt = u.CreatedAt,
+                UpdatedAt = u.UpdatedAt
+            });
+        }
+
     }
 }

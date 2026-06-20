@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Application.UseCases
+namespace Application.UseCases.Auth
 {
     public class CreateStudentUseCase
     {

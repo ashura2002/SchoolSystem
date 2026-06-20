@@ -6,21 +6,21 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Application.UseCases
+namespace Application.UseCases.Users
 {
-    public class GetUserByIdUseCase
+    public class GetByUsernameUseCase
     {
         private readonly IUserRepository _userRepository;
 
-        public GetUserByIdUseCase(IUserRepository userRepository)
+        public GetByUsernameUseCase(IUserRepository userRepository)
         {
             _userRepository = userRepository;
         }
 
-        public async Task<UserDTO> Execute(Guid id)
+        public async Task<UserDTO> Execute(string username)
         {
-            var user = await _userRepository.GetById(id);
-            if (user == null) throw new UserNotFoundException("User Not Found");
+            var user = await _userRepository.GetByUsername(username);
+            if (user == null) throw new NotFoundException("User not found");
             return UserMapper.ToDto(user);
         }
 

@@ -1,10 +1,9 @@
 ﻿using Application.DTOs;
-using Application.UseCases;
+using Application.UseCases.Auth;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.DTOs;
-using WebAPI.Requests;
 
 namespace WebAPI.Controllers
 {
@@ -16,60 +15,69 @@ namespace WebAPI.Controllers
         private readonly CreateAdminUserUseCase _createAdminUserUseCase;
         private readonly CreateTeacherUseCase _createTeacherUseCase;
         private readonly CreateStudentUseCase _createStudentUseCase;
-        private readonly GetUserByIdUseCase _getUserByIdUseCase;
         private readonly LoginUseCase _loginUseCase;
 
         public AuthController(CreateAdminUserUseCase createAdminUserUseCase, CreateTeacherUseCase createTeacherUseCase,
-          CreateStudentUseCase createStudentUseCase, GetUserByIdUseCase getUserByIdUseCase, LoginUseCase loginUseCase
+          CreateStudentUseCase createStudentUseCase, LoginUseCase loginUseCase
           )
         {
             _createAdminUserUseCase = createAdminUserUseCase;
             _createTeacherUseCase = createTeacherUseCase;
             _createStudentUseCase = createStudentUseCase;
-            _getUserByIdUseCase = getUserByIdUseCase;
             _loginUseCase = loginUseCase;
 
         }
 
         [HttpPost("admin")]
-        public async Task<ActionResult<UserDTO>> CreateAdmin([FromBody] CreateUserRequests requests)
+        public async Task<ActionResult<ApiResponse<UserDTO>>> CreateAdmin([FromBody] CreateUserRequests requests)
         {
             var admin = UserRequestMapper.ToDTO(requests);
             var result = await _createAdminUserUseCase.Execute(admin);
-            return Ok(result);
+            return Ok(new ApiResponse<UserDTO>
+            {
+                Message = "Created Successfully",
+                Data = result
+            });
         }
 
-        [HttpPost("teacher")]
-        public async Task<ActionResult<UserDTO>> CreateTeacher([FromBody] CreateUserRequests requests)
+
+        public async Task<ActionResult<ApiResponse<UserDTO>>> CreateTeacher([FromBody] CreateUserRequests requests)
         {
             var teacher = UserRequestMapper.ToDTO(requests);
             var result = await _createTeacherUseCase.Execute(teacher);
-            return Ok(result);
+            return Ok(new ApiResponse<UserDTO>
+            {
+                Message = "Created Successfully",
+                Data = result
+            });
         }
 
 
-        [HttpPost("student")]
-        public async Task<ActionResult<UserDTO>> CreateStudent([FromBody] CreateUserRequests requests)
+
+        public async Task<ActionResult<ApiResponse<UserDTO>>> CreateStudent([FromBody] CreateUserRequests requests)
         {
             var student = UserRequestMapper.ToDTO(requests);
             var result = await _createStudentUseCase.Execute(student);
-            return result;
+            return Ok(new ApiResponse<UserDTO>
+            {
+                Message = "Created Successfully",
+                Data = result
+            });
         }
 
-        [HttpGet("me")]
-        public async Task<ActionResult<UserDTO>> GetMe(Guid id)
-        {
-            var user = await _getUserByIdUseCase.Execute(id);
-            return Ok(user);
-        }
+        // get current user  and need to add pagination get all users
 
 
         [HttpPost("login")]
-        public async Task<ActionResult<LoginResponse>> Login(LoginUserRequest request)
+        public async Task<ActionResult<ApiResponse<string>>> Login(LoginUserRequest request)
         {
             var user = new LoginDTO(request.Username, request.Password);
             var result = await _loginUseCase.Execute(user);
-            return Ok(result);
+            return Ok(new ApiResponse<string>
+            {
+                Message = "Login Successfully",
+                Data = result
+            });
         }
 
     }
