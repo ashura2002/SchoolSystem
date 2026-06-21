@@ -40,7 +40,7 @@ namespace WebAPI.Controllers
             });
         }
 
-
+        [HttpPost("teacher")]
         public async Task<ActionResult<ApiResponse<UserDTO>>> CreateTeacher([FromBody] CreateUserRequests requests)
         {
             var teacher = UserRequestMapper.ToDTO(requests);
@@ -53,7 +53,7 @@ namespace WebAPI.Controllers
         }
 
 
-
+        [HttpPost("student")]
         public async Task<ActionResult<ApiResponse<UserDTO>>> CreateStudent([FromBody] CreateUserRequests requests)
         {
             var student = UserRequestMapper.ToDTO(requests);
@@ -64,8 +64,6 @@ namespace WebAPI.Controllers
                 Data = result
             });
         }
-
-        // get current user  and need to add pagination get all users
 
 
         [HttpPost("login")]

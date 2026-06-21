@@ -24,6 +24,7 @@ namespace Application
             services.AddScoped<GetAllUsersUseCase>();
             services.AddScoped<CreateUserService>();
             services.AddScoped<LoginUseCase>();
+            services.AddScoped<GetLoginUserUseCase>();
             return services;
         }
 

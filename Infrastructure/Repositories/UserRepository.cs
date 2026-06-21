@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+﻿using Application.DTOs;
+using Application.Interfaces;
 using Domain.Entities;
 using Domain.ValueObjects;
 using Infrastructure.Data;
@@ -30,11 +31,13 @@ namespace Infrastructure.Repositories
             _context.Users.Remove(user);
         }
 
-        public async Task<List<User>> GetAllUsers()
+        public async Task<List<User>> GetAllUsers(PaginationDTO pagination)
         {
             return await _context.Users
-                .AsNoTracking()
-                .ToListAsync();
+                .OrderByDescending(u => u.CreatedAt)
+                .Skip((pagination.Page - 1) * pagination.PageSize)
+                .Take(pagination.PageSize)
+                .AsNoTracking().ToListAsync();
         }
 
         public async Task<User?> GetByEmail(string email)
