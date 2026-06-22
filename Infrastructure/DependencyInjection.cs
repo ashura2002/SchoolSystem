@@ -19,14 +19,16 @@ namespace Infrastructure
         {
             services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+            // repository and interface
             services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IPasswordHasher, PasswordHasher>();
+            services.AddScoped<ISchoolClassRepository, SchoolClassRepository>();
 
 
-            // jwt setting
+            // services
             services.AddHttpContextAccessor();
             services.AddScoped<ICurrentUserService, CurrentUserService>();
             services.Configure<JwtSetting>(configuration.GetSection("Jwt"));
+            services.AddScoped<IPasswordHasher, PasswordHasher>();
             services.AddScoped<IJwtService, JwtService>();
             return services;
         }

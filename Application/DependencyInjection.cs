@@ -1,5 +1,6 @@
 ﻿using Application.Services;
 using Application.UseCases.Auth;
+using Application.UseCases.Class;
 using Application.UseCases.Users;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -12,7 +13,7 @@ namespace Application
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
-
+            // users and auth
             services.AddScoped<CreateAdminUserUseCase>();
             services.AddScoped<CreateStudentUseCase>();
             services.AddScoped<CreateTeacherUseCase>();
@@ -21,10 +22,18 @@ namespace Application
             services.AddScoped<GetUserByEmailUseCase>();
             services.AddScoped<GetUserByIdUseCase>();
             services.AddScoped<UpdateUserUseCase>();
-            services.AddScoped<GetAllUsersUseCase>();
+            services.AddScoped<GetAllActiveUsersUseCase>();
             services.AddScoped<CreateUserService>();
             services.AddScoped<LoginUseCase>();
             services.AddScoped<GetLoginUserUseCase>();
+            services.AddScoped<GetAllDeactiveUsers>();
+
+            // school class
+            services.AddScoped<CreateSchoolClassUseCase>();
+            services.AddScoped<AssignTeacherUseCase>();
+            services.AddScoped<GetAllClassUseCase>();
+            services.AddScoped<GetClassesWithoutTeacher>();
+            services.AddScoped<GetAllClassesWithTeacher>();
             return services;
         }
 

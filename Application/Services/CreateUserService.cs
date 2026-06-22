@@ -24,15 +24,21 @@ namespace Application.Services
 
         public async Task<UserDTO> CreateUser(CreateUserDTO dto, Role role)
         {
-            if (await _userRepository.GetByUsername(dto.Username) != null)
+
+            var username = UsernameValueObject.Create(dto.Username);
+            var email = EmailValueObject.Create(dto.Email);
+            var password = PasswordValueObject.Create(dto.Password);
+
+            if (await _userRepository.GetByUsername(username.Value) != null)
                 throw new BadRequestException("Username Already Exist");
-            if (await _userRepository.GetByEmail(dto.Email) != null)
+            if (await _userRepository.GetByEmail(email.Value) != null)
                 throw new BadRequestException("Email Already Exist");
-            var hashedPassword = _passwordHasher.Hash(dto.Password);
+            var hashedPassword = _passwordHasher.Hash(password.Value);
+
             // create a domain entity
             var user = new User(
-                UsernameValueObject.Create(dto.Username),
-                EmailValueObject.Create(dto.Email),
+                username,
+                email,
                 PasswordValueObject.Create(hashedPassword),
                 role
                 );

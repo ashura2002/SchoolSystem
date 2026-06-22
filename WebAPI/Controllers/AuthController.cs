@@ -1,5 +1,6 @@
 ﻿using Application.DTOs;
 using Application.UseCases.Auth;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
@@ -29,6 +30,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("admin")]
+        [Authorize(Roles ="Admin")]
         public async Task<ActionResult<ApiResponse<UserDTO>>> CreateAdmin([FromBody] CreateUserRequests requests)
         {
             var admin = UserRequestMapper.ToDTO(requests);
@@ -41,6 +43,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("teacher")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<ApiResponse<UserDTO>>> CreateTeacher([FromBody] CreateUserRequests requests)
         {
             var teacher = UserRequestMapper.ToDTO(requests);
@@ -54,6 +57,7 @@ namespace WebAPI.Controllers
 
 
         [HttpPost("student")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<ApiResponse<UserDTO>>> CreateStudent([FromBody] CreateUserRequests requests)
         {
             var student = UserRequestMapper.ToDTO(requests);

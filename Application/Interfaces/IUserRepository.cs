@@ -10,8 +10,8 @@ namespace Application.Interfaces
     {
         Task Add(User user);
         Task<User?> GetById(Guid id);
-        Task<List<User>> GetAllUsers(PaginationDTO dto);
-        Task Delete(User user);
+        Task<List<User>> GetAllActiveUsers(PaginationDTO dto);
+        Task<List<User>> GetAllDeletedUsers(PaginationDTO dto);
         Task<User?> GetByUsername(string username);
         Task<User?> GetByEmail(string email);
         Task SaveChangesAsync();

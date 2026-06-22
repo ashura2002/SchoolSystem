@@ -13,17 +13,25 @@ namespace Infrastructure.Data.Configuration
         public void Configure(EntityTypeBuilder<User> builder)
         {
             builder.HasKey(user => user.Id);
-            builder.Property(user => user.Username)
-             .HasConversion(v => v.Value, v => UsernameValueObject.Create(v)).IsRequired();
-            builder.Property(user => user.Email)
-                .HasConversion(v => v.Value, v => EmailValueObject.Create(v)).IsRequired();
-            builder.Property(user => user.Password)
-                .HasConversion(v => v.Value, v => PasswordValueObject.Create(v)).IsRequired();
 
+            builder.Property(u => u.Username)
+                .HasConversion(v => v.Value, v => UsernameValueObject.Create(v))
+                .HasMaxLength(255)
+                .IsRequired();
 
-            // constraint - unique value
-            builder.HasIndex(user => user.Username).IsUnique();
-            builder.HasIndex(user => user.Email).IsUnique();
+            builder.Property(u => u.Email)
+                .HasConversion(v => v.Value, v => EmailValueObject.Create(v))
+                .HasMaxLength(255)
+                .IsRequired();
+
+            builder.Property(u => u.Password)
+                .HasConversion(v => v.Value, v => PasswordValueObject.Create(v))
+                .HasMaxLength(255)
+                .IsRequired();
+
+            // for constraint unique values
+            builder.HasIndex(u => u.Username).IsUnique();
+            builder.HasIndex(u => u.Email).IsUnique();
         }
     }
 }
