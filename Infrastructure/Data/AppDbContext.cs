@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Domain.Entities;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Query.Internal;
 
 namespace Infrastructure.Data
 {
@@ -11,6 +10,7 @@ namespace Infrastructure.Data
     {
 
         public DbSet<User> Users => Set<User>();
+        public DbSet<SchoolClass> SchoolClasses => Set<SchoolClass>();
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);

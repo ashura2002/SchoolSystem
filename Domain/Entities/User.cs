@@ -15,16 +15,21 @@ namespace Domain.Entities
         public Role Role { get; private set; }
         public DateTime CreatedAt { get; private set; }
         public DateTime UpdatedAt { get; private set; }
+        public DateTime? DeletedAt { get; private set; } = null;
 
-        public User(UsernameValueObject username, EmailValueObject email, PasswordValueObject password, Role role)
-        {   
+        public User(UsernameValueObject username, EmailValueObject email, PasswordValueObject password,
+            Role role)
+        {
             Id = Guid.NewGuid();
             Username = username;
             Email = email;
             Password = password;
             Role = role;
+
             CreatedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;
+
+            DeletedAt = null;
         }
 
         public void UpdateUsername(UsernameValueObject newUsername)
@@ -36,6 +41,18 @@ namespace Domain.Entities
         public void UpdatePassword(PasswordValueObject newPassword)
         {
             Password = newPassword;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        public void DeactivateAccount()
+        {
+            DeletedAt = DateTime.UtcNow;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        public void ActivateAccount()
+        {
+            DeletedAt = null;
             UpdatedAt = DateTime.UtcNow;
         }
     }

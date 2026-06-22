@@ -17,7 +17,8 @@ namespace Application.Mapper
                 Email = user.Email.Value,
                 Role = user.Role,
                 CreatedAt = user.CreatedAt,
-                UpdatedAt = user.UpdatedAt
+                UpdatedAt = user.UpdatedAt,
+                DeletedAt = user.DeletedAt
             };
         }
 
@@ -30,7 +31,8 @@ namespace Application.Mapper
                 Email = u.Email.Value,
                 Role = u.Role,
                 CreatedAt = u.CreatedAt,
-                UpdatedAt = u.UpdatedAt
+                UpdatedAt = u.UpdatedAt,
+                DeletedAt = u.DeletedAt
             });
         }
 
