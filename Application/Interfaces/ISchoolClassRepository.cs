@@ -13,6 +13,7 @@ namespace Application.Interfaces
         Task<List<SchoolClass>> GetAllClass(PaginationDTO pagination);
         Task<List<SchoolClass>> GetAllClassesWithoutTeacher(PaginationDTO pagination);
         Task<List<SchoolClass>> GetAllClassesWithTeacher(PaginationDTO pagination);
+        Task<List<SchoolClass>> GetOwnClasses(PaginationDTO pagination, Guid teacherId);
         Task<SchoolClass?> GetClassById(Guid id);
         Task DeleteClass(Guid id);
         Task SaveChangesClassAsync();

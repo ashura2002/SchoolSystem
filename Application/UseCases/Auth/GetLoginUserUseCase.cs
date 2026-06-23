@@ -22,7 +22,7 @@ namespace Application.UseCases.Auth
         public async Task<UserDTO> Execute()
         {
             var user = await _userRepository.GetById(_currentUserService.UserId) ?? 
-                       throw new NotFoundException("User not found");
+                       throw new DomainNotFoundException("User not found");
             return UserMapper.ToDto(user);
         }
 

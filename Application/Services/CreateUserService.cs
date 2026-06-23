@@ -30,9 +30,9 @@ namespace Application.Services
             var password = PasswordValueObject.Create(dto.Password);
 
             if (await _userRepository.GetByUsername(username.Value) != null)
-                throw new BadRequestException("Username Already Exist");
+                throw new DomainBadRequestException("Username Already Exist");
             if (await _userRepository.GetByEmail(email.Value) != null)
-                throw new BadRequestException("Email Already Exist");
+                throw new DomainBadRequestException("Email Already Exist");
             var hashedPassword = _passwordHasher.Hash(password.Value);
 
             // create a domain entity

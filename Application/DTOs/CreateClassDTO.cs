@@ -6,4 +6,5 @@ namespace Application.DTOs
 {
     public record CreateClassDTO(string Name);
     public record AssignTeacherDTO(Guid Id);
+    public record UpdateClassNameDTO(string Name);
 }

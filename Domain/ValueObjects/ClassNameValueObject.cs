@@ -17,10 +17,10 @@ namespace Domain.ValueObjects
         public static ClassNameValueObject Create(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
-                throw new BadRequestException("Class name cannot be empty");
+                throw new DomainBadRequestException("Class name cannot be empty");
             value = value.Trim().ToUpperInvariant();
 
-            if (value.Length < 3) throw new BadRequestException("Class name must above 3 characters length.");
+            if (value.Length < 3) throw new DomainBadRequestException("Class name must above 3 characters length.");
 
             return new ClassNameValueObject(value);
         }

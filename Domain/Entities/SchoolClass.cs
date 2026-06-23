@@ -34,10 +34,10 @@ namespace Domain.Entities
         public void AssignTeacher(Guid teacherId)
         {
             if (TeacherId != null)
-                throw new BadRequestException("This class already has an assigned teacher.");
+                throw new DomainBadRequestException("This class already has an assigned teacher.");
 
             if (teacherId == Guid.Empty)
-                throw new BadRequestException("Teacher Id cannot be empty.");
+                throw new DomainBadRequestException("Teacher Id cannot be empty.");
 
             TeacherId = teacherId;
             UpdatedAt = DateTime.UtcNow;
