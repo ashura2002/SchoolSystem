@@ -10,6 +10,7 @@ namespace WebAPI
             services.AddScoped<UserController>();
             services.AddScoped<AuthController>();
             services.AddScoped<SchoolClassController>();
+            services.AddScoped<EnrollmentController>();
             return services;
         }
     }

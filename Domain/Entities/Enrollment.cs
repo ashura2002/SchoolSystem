@@ -1,4 +1,5 @@
 ﻿using Domain.Enums;
+using Domain.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,8 +14,9 @@ namespace Domain.Entities
         public Guid ClassId { get; private set; }
         public EnrollmentStatus Status { get; private set; }
 
-        public DateTime EnrolledAt { get; private set; }
+        public DateTime CreatedAt { get; private set; }
         public DateTime UpdatedAt { get; private set; }
+        public DateTime? DeletedAt { get; private set; }
 
         public Enrollment(Guid studentId, Guid classId)
         {
@@ -23,22 +25,33 @@ namespace Domain.Entities
             StudentId = studentId;
             ClassId = classId;
 
-            Status = EnrollmentStatus.Pending;  
-            EnrolledAt = DateTime.UtcNow;
+            Status = EnrollmentStatus.Pending;
+            CreatedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;
         }
 
         public void Approve()
         {
+            if (Status != EnrollmentStatus.Pending)
+                throw new DomainBadRequestException("Only pending enrollments can be approved");
+
             Status = EnrollmentStatus.Approved;
             UpdatedAt = DateTime.UtcNow;
         }
 
         public void Reject()
         {
+            if (Status != EnrollmentStatus.Pending)
+                throw new DomainBadRequestException("Only pending enrollments can be rejected");
+
             Status = EnrollmentStatus.Rejected;
             UpdatedAt = DateTime.UtcNow;
         }
 
+        public void Cancel()
+        {
+            DeletedAt = DateTime.UtcNow;
+            UpdatedAt = DateTime.UtcNow;
+        }
     }
 }

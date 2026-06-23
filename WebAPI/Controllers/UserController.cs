@@ -36,7 +36,7 @@ namespace WebAPI.Controllers
         // admin only
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<List<UserDTO>>> GetAllActiveUsers([FromRoute] PaginationDTO pagination)
+        public async Task<ActionResult<List<UserDTO>>> GetAllActiveUsers([FromQuery] PaginationDTO pagination)
         {
             var users = await _getAllUsersUseCase.Execute(pagination);
             return Ok(users);
@@ -44,7 +44,7 @@ namespace WebAPI.Controllers
 
         [HttpGet("deleted")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<List<UserDTO>>> GetAllUnActiveUsers([FromRoute] PaginationDTO pagination)
+        public async Task<ActionResult<List<UserDTO>>> GetAllUnActiveUsers([FromQuery] PaginationDTO pagination)
         {
             var users = await _getAllDeactiveUsers.Execute(pagination);
             return Ok(users);

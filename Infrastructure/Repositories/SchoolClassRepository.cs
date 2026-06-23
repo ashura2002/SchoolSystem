@@ -18,9 +18,9 @@ namespace Infrastructure.Repositories
             _context.SchoolClasses.Add(schoolClass);
         }
 
-        public async Task DeleteClass(Guid id)
+        public void DeleteClass(SchoolClass schoolClass)
         {
-            throw new NotImplementedException();
+            _context.SchoolClasses.Remove(schoolClass);
         }
 
         public async Task<List<SchoolClass>> GetAllClass(PaginationDTO pagination)

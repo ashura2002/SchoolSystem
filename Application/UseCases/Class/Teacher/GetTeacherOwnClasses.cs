@@ -7,12 +7,12 @@ using System.Text;
 
 namespace Application.UseCases.Class.Teacher
 {
-    public class GetOwnClasses
+    public class GetTeacherOwnClasses
     {
         private readonly ISchoolClassRepository _schoolClassRepository;
         private readonly ICurrentUserService _currentUserService;
 
-        public GetOwnClasses(ISchoolClassRepository schoolClassRepository, ICurrentUserService currentUserService)
+        public GetTeacherOwnClasses(ISchoolClassRepository schoolClassRepository, ICurrentUserService currentUserService)
         {
             _schoolClassRepository = schoolClassRepository;
             _currentUserService = currentUserService;
