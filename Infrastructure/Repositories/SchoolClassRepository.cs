@@ -61,6 +61,17 @@ namespace Infrastructure.Repositories
                 .FirstOrDefaultAsync(sc => sc.Id == id);
         }
 
+        public async Task<List<SchoolClass>> GetOwnClasses(PaginationDTO pagination, Guid teacherId)
+        {
+            return await _context.SchoolClasses
+                .AsNoTracking()
+                .OrderByDescending(sc => sc.CreatedAt)
+                .Where(sc => sc.TeacherId == teacherId)
+                .Skip((pagination.Page - 1) * pagination.PageSize)
+                .Take(pagination.PageSize)
+                .ToListAsync();
+        }
+
         public async Task SaveChangesClassAsync()
         {
             await _context.SaveChangesAsync();

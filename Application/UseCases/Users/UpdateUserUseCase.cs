@@ -25,7 +25,7 @@ namespace Application.UseCases.Users
 
             var hashPassword = _passwordHasher.Hash(dto.Password);
             var user = await _userRepository.GetById(id) ??
-                        throw new NotFoundException("User not found");
+                        throw new DomainNotFoundException("User not found");
             user.UpdateUsername(UsernameValueObject.Create(dto.Username));
             user.UpdatePassword(PasswordValueObject.Create(hashPassword));
 

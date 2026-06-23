@@ -20,9 +20,9 @@ namespace Application.UseCases.Users
         public async Task Execute(Guid id)
         {
             var user = await _userRepository.GetById(id)
-                ?? throw new NotFoundException("User not found");
+                ?? throw new DomainNotFoundException("User not found");
             if (user.Id == _currentUserService.UserId)
-                throw new BadRequestException("You cannot delete your account");
+                throw new DomainBadRequestException("You cannot delete your account");
             user.DeactivateAccount();
             await _userRepository.SaveChangesAsync();
         }

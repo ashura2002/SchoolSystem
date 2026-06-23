@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using Application.Mapper;
 
-namespace Application.UseCases.Class
+namespace Application.UseCases.Class.Admin
 {
     public class CreateSchoolClassUseCase
     {

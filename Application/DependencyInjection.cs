@@ -1,6 +1,7 @@
 ﻿using Application.Services;
 using Application.UseCases.Auth;
-using Application.UseCases.Class;
+using Application.UseCases.Class.Admin;
+using Application.UseCases.Class.Teacher;
 using Application.UseCases.Users;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -34,6 +35,9 @@ namespace Application
             services.AddScoped<GetAllClassUseCase>();
             services.AddScoped<GetClassesWithoutTeacher>();
             services.AddScoped<GetAllClassesWithTeacher>();
+            services.AddScoped<GetClassByIdUseCase>();
+            services.AddScoped<GetOwnClasses>();
+            services.AddScoped<UpdateClassUseCase>();
             return services;
         }
 

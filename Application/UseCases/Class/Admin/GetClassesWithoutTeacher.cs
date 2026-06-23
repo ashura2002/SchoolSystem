@@ -5,20 +5,20 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Application.UseCases.Class
+namespace Application.UseCases.Class.Admin
 {
-    public class GetAllClassesWithTeacher
+    public class GetClassesWithoutTeacher
     {
         private readonly ISchoolClassRepository _schoolClassRepository;
 
-        public GetAllClassesWithTeacher(ISchoolClassRepository schoolClassRepository)
+        public GetClassesWithoutTeacher(ISchoolClassRepository schoolClassRepository)
         {
             _schoolClassRepository = schoolClassRepository;
         }
 
         public async Task<IEnumerable<SchoolClassDTO>> Execute(PaginationDTO pagination)
         {
-            var schoolClasses = await _schoolClassRepository.GetAllClassesWithTeacher(pagination);
+            var schoolClasses = await _schoolClassRepository.GetAllClassesWithoutTeacher(pagination);
             return SchoolClassMapper.ToResponseList(schoolClasses);
         }
     }

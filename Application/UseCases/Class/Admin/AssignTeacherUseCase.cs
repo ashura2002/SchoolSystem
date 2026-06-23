@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Application.UseCases.Class
+namespace Application.UseCases.Class.Admin
 {
     public class AssignTeacherUseCase
     {
@@ -25,13 +25,13 @@ namespace Application.UseCases.Class
         {
 
             var schoolClass = await _schoolClassRepository.GetClassById(classId) ??
-                throw new NotFoundException("Class not found");
+                throw new DomainNotFoundException("Class not found");
 
             var teacher = await _userRepository.GetById(dto.Id) ??
-                throw new NotFoundException("Teacher not found");
+                throw new DomainNotFoundException("Teacher not found");
 
             if (teacher.Role != Role.Teacher)
-                throw new BadRequestException("This user is not a teacher.");
+                throw new DomainBadRequestException("This user is not a teacher.");
 
 
             schoolClass.AssignTeacher(dto.Id);

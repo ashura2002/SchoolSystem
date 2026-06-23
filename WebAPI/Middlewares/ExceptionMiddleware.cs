@@ -34,9 +34,9 @@ namespace WebAPI.Middlewares
             // get status code
             var statusCode = ex switch
             {
-                NotFoundException => (int)HttpStatusCode.NotFound,
-                BadRequestException => (int)HttpStatusCode.BadRequest,
-                UnauthorizedException => (int)HttpStatusCode.Unauthorized,
+                DomainNotFoundException => (int)HttpStatusCode.NotFound,
+                DomainBadRequestException => (int)HttpStatusCode.BadRequest,
+                DomainUnauthorizedException => (int)HttpStatusCode.Unauthorized,
                 _ => (int)HttpStatusCode.InternalServerError
             };
 

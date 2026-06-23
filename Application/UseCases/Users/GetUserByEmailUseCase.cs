@@ -20,7 +20,7 @@ namespace Application.UseCases.Users
         public async Task<UserDTO> Execute(string email)
         {
             var user = await _userRepository.GetByEmail(email) ?? 
-                throw new NotFoundException("User not found");
+                throw new DomainNotFoundException("User not found");
             return UserMapper.ToDto(user);
         }
     }

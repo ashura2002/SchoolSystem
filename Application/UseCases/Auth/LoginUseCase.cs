@@ -27,9 +27,9 @@ namespace Application.UseCases.Auth
         public async Task<string> Execute(LoginDTO dto)
         {
             var user = await _userRepository.GetByUsername(dto.Username) ??
-                throw new UnauthorizedException("Invalid Credentials");
+                throw new DomainUnauthorizedException("Invalid Credentials");
             var isPasswordMatch = _passwordHasher.Verify(dto.Password, user.Password.Value);
-            if (!isPasswordMatch) throw new UnauthorizedException("Wrong Password");
+            if (!isPasswordMatch) throw new DomainUnauthorizedException("Wrong Password");
             return _jwtService.GenerateToken(user);
         }
 

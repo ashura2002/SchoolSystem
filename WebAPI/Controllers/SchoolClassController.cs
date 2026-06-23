@@ -1,5 +1,6 @@
 ﻿using Application.DTOs;
-using Application.UseCases.Class;
+using Application.UseCases.Class.Admin;
+using Application.UseCases.Class.Teacher;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.DTOs;
@@ -16,10 +17,14 @@ namespace WebAPI.Controllers
         private readonly GetAllClassUseCase _getAllClassUseCase;
         private readonly GetClassesWithoutTeacher _getClassesWithoutTeacher;
         private readonly GetAllClassesWithTeacher _getAllClassesWithTeacher;
+        private readonly GetClassByIdUseCase _getClassByIdUseCase;
+        private readonly GetOwnClasses _getOwnClasses;
+        private readonly UpdateClassUseCase _updateClassUseCase;
 
         public SchoolClassController(CreateSchoolClassUseCase createSchoolClassUseCase, AssignTeacherUseCase assignTeacherUseCase,
             GetAllClassUseCase getAllClassUseCase, GetClassesWithoutTeacher getClassesWithoutTeacher,
-            GetAllClassesWithTeacher getAllClassesWithTeacher
+            GetAllClassesWithTeacher getAllClassesWithTeacher, GetClassByIdUseCase getClassByIdUseCase,
+            GetOwnClasses getOwnClasses, UpdateClassUseCase updateClassUseCase
             )
         {
             _createSchoolClassUseCase = createSchoolClassUseCase;
@@ -27,9 +32,12 @@ namespace WebAPI.Controllers
             _getAllClassUseCase = getAllClassUseCase;
             _getClassesWithoutTeacher = getClassesWithoutTeacher;
             _getAllClassesWithTeacher = getAllClassesWithTeacher;
+            _getClassByIdUseCase = getClassByIdUseCase;
+            _getOwnClasses = getOwnClasses;
+            _updateClassUseCase = updateClassUseCase;
         }
 
-
+        // admin
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<ApiResponse<SchoolClassDTO>>> CreateClass([FromBody] CreateSchoolClassRequest request)
@@ -81,8 +89,37 @@ namespace WebAPI.Controllers
         {
             return Ok(await _getAllClassesWithTeacher.Execute(pagination));
         }
+
+        [HttpGet("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<List<SchoolClassDTO>>> GetAllClassesWithATeacher([FromRoute] Guid id)
+        {
+            return Ok(await _getClassByIdUseCase.Execute(id));
+        }
+
+        [HttpPut("{classId}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<ApiResponse<SchoolClassDTO>>> UpdateClassName([FromBody] UpdateClassNameRequest request,
+          [FromRoute] Guid classId)
+        {
+            var schoolClass = new UpdateClassNameDTO(request.Name);
+            var result = await _updateClassUseCase.Execute(schoolClass, classId);
+            return Ok(new ApiResponse<SchoolClassDTO>
+            {
+                Message = "School Class Updated Successfully",
+                Data = result
+            });
+        }
+
+
+        // teachers
+        [HttpGet("own-classes")]
+        [Authorize(Roles = "Teacher")]
+        public async Task<ActionResult<List<SchoolClassDTO>>> GetAllOwnClasses([FromRoute] PaginationDTO pagination)
+        {
+            return Ok(await _getOwnClasses.Execute(pagination));
+        }
     }
 }
-
-// get class by id
-// get  unassigned teacher
+// delete class
+// get own class by id student must be populated by enrollement entity that the enrollment status is approved
