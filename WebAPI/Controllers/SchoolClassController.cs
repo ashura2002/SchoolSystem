@@ -18,13 +18,14 @@ namespace WebAPI.Controllers
         private readonly GetClassesWithoutTeacher _getClassesWithoutTeacher;
         private readonly GetAllClassesWithTeacher _getAllClassesWithTeacher;
         private readonly GetClassByIdUseCase _getClassByIdUseCase;
-        private readonly GetOwnClasses _getOwnClasses;
+        private readonly GetTeacherOwnClasses _getOwnClasses;
         private readonly UpdateClassUseCase _updateClassUseCase;
+        private readonly DeleteClassUseCase _deleteClassUseCase;
 
         public SchoolClassController(CreateSchoolClassUseCase createSchoolClassUseCase, AssignTeacherUseCase assignTeacherUseCase,
             GetAllClassUseCase getAllClassUseCase, GetClassesWithoutTeacher getClassesWithoutTeacher,
             GetAllClassesWithTeacher getAllClassesWithTeacher, GetClassByIdUseCase getClassByIdUseCase,
-            GetOwnClasses getOwnClasses, UpdateClassUseCase updateClassUseCase
+            GetTeacherOwnClasses getOwnClasses, UpdateClassUseCase updateClassUseCase, DeleteClassUseCase deleteClassUseCase
             )
         {
             _createSchoolClassUseCase = createSchoolClassUseCase;
@@ -35,6 +36,7 @@ namespace WebAPI.Controllers
             _getClassByIdUseCase = getClassByIdUseCase;
             _getOwnClasses = getOwnClasses;
             _updateClassUseCase = updateClassUseCase;
+            _deleteClassUseCase = deleteClassUseCase;
         }
 
         // admin
@@ -70,29 +72,29 @@ namespace WebAPI.Controllers
 
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<List<SchoolClassDTO>>> GetAllClasses([FromRoute] PaginationDTO pagination)
+        [Authorize(Roles = "Admin,Student,Teacher")]
+        public async Task<ActionResult<List<SchoolClassDTO>>> GetAllClasses([FromQuery] PaginationDTO pagination)
         {
             return Ok(await _getAllClassUseCase.Execute(pagination));
         }
 
         [HttpGet("without-teacher")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<List<SchoolClassDTO>>> GetAllClassesWithoutATeacher([FromRoute] PaginationDTO pagination)
+        public async Task<ActionResult<List<SchoolClassDTO>>> GetAllClassesWithoutATeacher([FromQuery] PaginationDTO pagination)
         {
             return Ok(await _getClassesWithoutTeacher.Execute(pagination));
         }
 
         [HttpGet("with-teacher")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<List<SchoolClassDTO>>> GetAllClassesWithATeacher([FromRoute] PaginationDTO pagination)
+        public async Task<ActionResult<List<SchoolClassDTO>>> GetAllClassesWithATeacher([FromQuery] PaginationDTO pagination)
         {
             return Ok(await _getAllClassesWithTeacher.Execute(pagination));
         }
 
         [HttpGet("{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<List<SchoolClassDTO>>> GetAllClassesWithATeacher([FromRoute] Guid id)
+        public async Task<ActionResult<List<SchoolClassDTO>>> GetClassById([FromRoute] Guid id)
         {
             return Ok(await _getClassByIdUseCase.Execute(id));
         }
@@ -111,6 +113,14 @@ namespace WebAPI.Controllers
             });
         }
 
+        [HttpDelete("{classId}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> DeleteClass([FromRoute] Guid classId)
+        {
+            await _deleteClassUseCase.Execute(classId);
+            return NoContent();
+        }
+
 
         // teachers
         [HttpGet("own-classes")]
@@ -121,5 +131,5 @@ namespace WebAPI.Controllers
         }
     }
 }
-// delete class
+
 // get own class by id student must be populated by enrollement entity that the enrollment status is approved

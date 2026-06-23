@@ -11,6 +11,7 @@ namespace Infrastructure.Data
 
         public DbSet<User> Users => Set<User>();
         public DbSet<SchoolClass> SchoolClasses => Set<SchoolClass>();
+        public DbSet<Enrollment> Enrollments => Set<Enrollment>();
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);

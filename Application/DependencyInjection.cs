@@ -2,6 +2,8 @@
 using Application.UseCases.Auth;
 using Application.UseCases.Class.Admin;
 using Application.UseCases.Class.Teacher;
+using Application.UseCases.Enrollments.Admin;
+using Application.UseCases.Enrollments.Student;
 using Application.UseCases.Users;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -36,8 +38,17 @@ namespace Application
             services.AddScoped<GetClassesWithoutTeacher>();
             services.AddScoped<GetAllClassesWithTeacher>();
             services.AddScoped<GetClassByIdUseCase>();
-            services.AddScoped<GetOwnClasses>();
+            services.AddScoped<GetTeacherOwnClasses>();
             services.AddScoped<UpdateClassUseCase>();
+            services.AddScoped<DeleteClassUseCase>();
+            services.AddScoped<GetTeacherClassByIdUseCase>();
+
+            // enrollment
+            services.AddScoped<RequestEnrollmentUseCase>();
+            services.AddScoped<GetAllPendingEnrollments>();
+            services.AddScoped<ApproveEnrollmentUseCase>();
+            services.AddScoped<RejectEnrollmentUseCase>();
+            services.AddScoped<GetAllMyClassesUseCase>();
             return services;
         }
 
