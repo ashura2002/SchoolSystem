@@ -34,6 +34,7 @@ namespace Application
             // school class
             services.AddScoped<CreateSchoolClassUseCase>();
             services.AddScoped<AssignTeacherUseCase>();
+            services.AddScoped<RemoveTeacherUseCase>();
             services.AddScoped<GetAllClassUseCase>();
             services.AddScoped<GetClassesWithoutTeacher>();
             services.AddScoped<GetAllClassesWithTeacher>();

@@ -15,5 +15,6 @@ namespace Application.Interfaces
         Task<Enrollment?> GetByStudentAndClass(Guid studentId, Guid classId);
         Task<List<Enrollment>> GetAllPendingEnrollments(PaginationDTO pagination);
         Task<List<Enrollment>> GetApprovedByStudentId(PaginationDTO pagination, Guid studentId);
+        Task<List<Enrollment>> GetApprovedStudentByClassId(Guid classId);
     }
 }

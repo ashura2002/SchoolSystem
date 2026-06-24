@@ -45,7 +45,7 @@ namespace Infrastructure.Repositories
         {
             return await _context.Users
                 .Where(u => u.DeletedAt == null)
-                .AsNoTracking()  
+                .AsNoTracking()
                 .FirstOrDefaultAsync(u => u.Email == EmailValueObject.Create(email));
         }
 
@@ -62,6 +62,14 @@ namespace Infrastructure.Repositories
                 .Where(u => u.DeletedAt == null)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(u => u.Username == UsernameValueObject.Create(username));
+        }
+
+        public async Task<List<User>> GetUsersByIds(List<Guid> ids)
+        {
+            return await _context.Users
+                  .Where(u => ids.Contains(u.Id))
+                  .AsNoTracking()
+                  .ToListAsync();
         }
 
         public async Task SaveChangesAsync()
