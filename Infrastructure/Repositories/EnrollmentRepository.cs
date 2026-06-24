@@ -50,6 +50,14 @@ namespace Infrastructure.Repositories
              .ToListAsync();
         }
 
+        public async Task<List<Enrollment>> GetApprovedStudentByClassId(Guid classId)
+        {
+            return await _context.Enrollments
+                .AsNoTracking()
+                .Where(e => e.ClassId == classId && e.Status == EnrollmentStatus.Approved)
+                .ToListAsync();
+        }
+
         public async Task<Enrollment?> GetById(Guid enrollmentId)
         {
             return await _context.Enrollments

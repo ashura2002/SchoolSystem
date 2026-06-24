@@ -21,11 +21,14 @@ namespace WebAPI.Controllers
         private readonly GetTeacherOwnClasses _getOwnClasses;
         private readonly UpdateClassUseCase _updateClassUseCase;
         private readonly DeleteClassUseCase _deleteClassUseCase;
+        private readonly GetTeacherClassByIdUseCase _getTeacherClassByIdUseCase;
+        private readonly RemoveTeacherUseCase _removeTeacherUseCase;
 
         public SchoolClassController(CreateSchoolClassUseCase createSchoolClassUseCase, AssignTeacherUseCase assignTeacherUseCase,
             GetAllClassUseCase getAllClassUseCase, GetClassesWithoutTeacher getClassesWithoutTeacher,
             GetAllClassesWithTeacher getAllClassesWithTeacher, GetClassByIdUseCase getClassByIdUseCase,
-            GetTeacherOwnClasses getOwnClasses, UpdateClassUseCase updateClassUseCase, DeleteClassUseCase deleteClassUseCase
+            GetTeacherOwnClasses getOwnClasses, UpdateClassUseCase updateClassUseCase, DeleteClassUseCase deleteClassUseCase,
+            GetTeacherClassByIdUseCase getTeacherClassByIdUseCase, RemoveTeacherUseCase removeTeacherUseCase
             )
         {
             _createSchoolClassUseCase = createSchoolClassUseCase;
@@ -37,6 +40,8 @@ namespace WebAPI.Controllers
             _getOwnClasses = getOwnClasses;
             _updateClassUseCase = updateClassUseCase;
             _deleteClassUseCase = deleteClassUseCase;
+            _getTeacherClassByIdUseCase = getTeacherClassByIdUseCase;
+            _removeTeacherUseCase = removeTeacherUseCase;
         }
 
         // admin
@@ -55,19 +60,27 @@ namespace WebAPI.Controllers
         }
 
 
-        [HttpPut("teacher-assignment/{id}")]
+        [HttpPut("{classId}/teacher")]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<ApiResponse<SchoolClassDTO>>> AssignTeacher([FromBody] AssignTeacherRequest request,
-            [FromRoute] Guid id)
+            [FromRoute] Guid classId)
         {
             var teacher = new AssignTeacherDTO(request.TeacherId);
-            var result = await _assignTeacherUseCase.Execute(teacher, id);
+            var result = await _assignTeacherUseCase.Execute(teacher, classId);
 
             return Ok(new ApiResponse<SchoolClassDTO>
             {
-                Message = "Teacher Assign Successfully",
+                Message = "Teacher assigned to class successfully",
                 Data = result
             });
+        }
+
+        [HttpDelete("{classId}/teacher")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> RemoveAssignedTeacher([FromRoute] Guid classId)
+        {
+            await _removeTeacherUseCase.Execute(classId);
+            return NoContent();
         }
 
 
@@ -125,9 +138,16 @@ namespace WebAPI.Controllers
         // teachers
         [HttpGet("own-classes")]
         [Authorize(Roles = "Teacher")]
-        public async Task<ActionResult<List<SchoolClassDTO>>> GetAllOwnClasses([FromRoute] PaginationDTO pagination)
+        public async Task<ActionResult<List<SchoolClassDTO>>> GetAllOwnClasses([FromQuery] PaginationDTO pagination)
         {
             return Ok(await _getOwnClasses.Execute(pagination));
+        }
+
+        [HttpGet("own-classes/{classId}")]
+        [Authorize(Roles = "Teacher")]
+        public async Task<ActionResult<SchoolClassDTO>> GetTeacherClassbyId([FromRoute] Guid classId)
+        {
+            return Ok(await _getTeacherClassByIdUseCase.Execute(classId));
         }
     }
 }

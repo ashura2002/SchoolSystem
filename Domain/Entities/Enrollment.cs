@@ -48,7 +48,7 @@ namespace Domain.Entities
             UpdatedAt = DateTime.UtcNow;
         }
 
-        public void Cancel()
+        public void Drop()
         {
             DeletedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;
