@@ -20,16 +20,16 @@ namespace Application.UseCases.Users
             _passwordHasher = passwordHasher;
         }
 
-        public async Task<UserDTO> Execute(Guid id, UpdateUserDTO dto)
+        public async Task<UserDTO> Execute(Guid id, UpdateUserDTO dto, CancellationToken cancellationToken)
         {
 
             var hashPassword = _passwordHasher.Hash(dto.Password);
-            var user = await _userRepository.GetById(id) ??
+            var user = await _userRepository.GetById(id, cancellationToken) ??
                         throw new DomainNotFoundException("User not found");
             user.UpdateUsername(UsernameValueObject.Create(dto.Username));
             user.UpdatePassword(PasswordValueObject.Create(hashPassword));
 
-            await _userRepository.SaveChangesAsync();
+            await _userRepository.SaveChangesAsync(cancellationToken);
             return UserMapper.ToDto(user);
         }
     }

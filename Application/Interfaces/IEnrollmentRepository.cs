@@ -9,12 +9,12 @@ namespace Application.Interfaces
     public interface IEnrollmentRepository
     {
         void Add(Enrollment enrollment);
-        Task SaveChangesAsync();
+        Task SaveChangesAsync(CancellationToken cancellationToken);
         void Delete(Enrollment enrollment);
-        Task<Enrollment?> GetById(Guid enrollmentId);
-        Task<Enrollment?> GetByStudentAndClass(Guid studentId, Guid classId);
-        Task<List<Enrollment>> GetAllPendingEnrollments(PaginationDTO pagination);
-        Task<List<Enrollment>> GetApprovedByStudentId(PaginationDTO pagination, Guid studentId);
-        Task<List<Enrollment>> GetApprovedStudentByClassId(Guid classId);
+        Task<Enrollment?> GetById(Guid enrollmentId, CancellationToken cancellationToken);
+        Task<Enrollment?> GetByStudentAndClass(Guid studentId, Guid classId, CancellationToken cancellationToken);
+        Task<List<Enrollment>> GetAllPendingEnrollments(PaginationDTO pagination, CancellationToken cancellationToken);
+        Task<List<Enrollment>> GetApprovedByStudentId(PaginationDTO pagination, Guid studentId, CancellationToken cancellationToken);
+        Task<List<Enrollment>> GetApprovedStudentByClassId(Guid classId, CancellationToken cancellationToken);
     }
 }

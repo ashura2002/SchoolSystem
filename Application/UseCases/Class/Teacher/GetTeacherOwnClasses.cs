@@ -18,10 +18,10 @@ namespace Application.UseCases.Class.Teacher
             _currentUserService = currentUserService;
         }
 
-        public async Task<IEnumerable<SchoolClassDTO>> Execute(PaginationDTO pagination)
+        public async Task<IEnumerable<SchoolClassDTO>> Execute(PaginationDTO pagination, CancellationToken cancellationToken)
         {
             var teacherId = _currentUserService.UserId;
-            var schoolClasses = await _schoolClassRepository.GetOwnClasses(pagination, teacherId);
+            var schoolClasses = await _schoolClassRepository.GetOwnClasses(pagination, teacherId, cancellationToken);
             return SchoolClassMapper.ToResponseList(schoolClasses);
         }
     }

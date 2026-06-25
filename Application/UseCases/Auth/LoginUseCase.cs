@@ -20,13 +20,12 @@ namespace Application.UseCases.Auth
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
             _jwtService = jwtService;
-
         }
 
 
-        public async Task<string> Execute(LoginDTO dto)
+        public async Task<string> Execute(LoginDTO dto,CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetByUsername(dto.Username) ??
+            var user = await _userRepository.GetByUsername(dto.Username, cancellationToken) ??
                 throw new DomainUnauthorizedException("Invalid Credentials");
             var isPasswordMatch = _passwordHasher.Verify(dto.Password, user.Password.Value);
             if (!isPasswordMatch) throw new DomainUnauthorizedException("Wrong Password");

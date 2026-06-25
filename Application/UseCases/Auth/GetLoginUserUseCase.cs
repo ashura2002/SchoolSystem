@@ -19,9 +19,9 @@ namespace Application.UseCases.Auth
             _currentUserService = currentUserService;
         }
 
-        public async Task<UserDTO> Execute()
+        public async Task<UserDTO> Execute(CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetById(_currentUserService.UserId) ?? 
+            var user = await _userRepository.GetById(_currentUserService.UserId, cancellationToken) ?? 
                        throw new DomainNotFoundException("User not found");
             return UserMapper.ToDto(user);
         }

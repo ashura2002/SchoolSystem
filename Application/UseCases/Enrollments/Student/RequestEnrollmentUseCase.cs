@@ -20,11 +20,11 @@ namespace Application.UseCases.Enrollments.Student
             _currentUserService = currentUserService;
         }
 
-        public async Task<EnrollmentDTO> Execute(CreateEnrollmentDTO dto)
+        public async Task<EnrollmentDTO> Execute(CreateEnrollmentDTO dto, CancellationToken cancellationToken)
         {
             var studentId = _currentUserService.UserId;
 
-            var existing = await _enrollmentRepository.GetByStudentAndClass(studentId, dto.ClassId);
+            var existing = await _enrollmentRepository.GetByStudentAndClass(studentId, dto.ClassId, cancellationToken);
             if (existing != null) throw new DomainBadRequestException("You are already enrolled in this class");
 
 
@@ -32,7 +32,7 @@ namespace Application.UseCases.Enrollments.Student
             var enrollment = new Enrollment(studentId, dto.ClassId);
 
             _enrollmentRepository.Add(enrollment);
-            await _enrollmentRepository.SaveChangesAsync();
+            await _enrollmentRepository.SaveChangesAsync(cancellationToken);
 
             return EnrollmentMapper.ToDto(enrollment);
         }

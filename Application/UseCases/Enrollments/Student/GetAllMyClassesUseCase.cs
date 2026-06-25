@@ -19,10 +19,10 @@ namespace Application.UseCases.Enrollments.Student
         }
 
 
-        public async Task<IEnumerable<EnrollmentDTO>> Execute(PaginationDTO pagination)
+        public async Task<IEnumerable<EnrollmentDTO>> Execute(PaginationDTO pagination,CancellationToken cancellationToken)
         {
             var studentId = _currentUserService.UserId;
-            var classes = await _enrollmentRepository.GetApprovedByStudentId(pagination, studentId);
+            var classes = await _enrollmentRepository.GetApprovedByStudentId(pagination, studentId, cancellationToken);
             return EnrollmentMapper.ToResponseList(classes);
 
         }

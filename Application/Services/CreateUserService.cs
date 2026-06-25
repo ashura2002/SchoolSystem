@@ -22,16 +22,16 @@ namespace Application.Services
             _passwordHasher = passwordHasher;
         }
 
-        public async Task<UserDTO> CreateUser(CreateUserDTO dto, Role role)
+        public async Task<UserDTO> CreateUser(CreateUserDTO dto, Role role, CancellationToken cancellationToken)
         {
 
             var username = UsernameValueObject.Create(dto.Username);
             var email = EmailValueObject.Create(dto.Email);
             var password = PasswordValueObject.Create(dto.Password);
 
-            if (await _userRepository.GetByUsername(username.Value) != null)
+            if (await _userRepository.GetByUsername(username.Value, cancellationToken) != null)
                 throw new DomainBadRequestException("Username Already Exist");
-            if (await _userRepository.GetByEmail(email.Value) != null)
+            if (await _userRepository.GetByEmail(email.Value, cancellationToken) != null)
                 throw new DomainBadRequestException("Email Already Exist");
             var hashedPassword = _passwordHasher.Hash(password.Value);
 
@@ -44,7 +44,7 @@ namespace Application.Services
                 );
 
             await _userRepository.Add(user);
-            await _userRepository.SaveChangesAsync();
+            await _userRepository.SaveChangesAsync(cancellationToken);
             return UserMapper.ToDto(user);
         }
 

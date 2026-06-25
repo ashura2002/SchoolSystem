@@ -19,15 +19,15 @@ namespace Application.UseCases.Class.Admin
         }
 
 
-        public async Task<SchoolClassDTO> Execute(UpdateClassNameDTO Dto, Guid ClassId)
+        public async Task<SchoolClassDTO> Execute(UpdateClassNameDTO Dto, Guid ClassId, CancellationToken cancellationToken)
         {
             var updatedClassName = ClassNameValueObject.Create(Dto.Name);
 
-            var schoolClass = await _schoolClassRepository.GetClassById(ClassId) ??
+            var schoolClass = await _schoolClassRepository.GetClassById(ClassId, cancellationToken) ??
                 throw new DomainNotFoundException("Class not found");
 
             schoolClass.UpdateClassName(updatedClassName);
-            await _schoolClassRepository.SaveChangesClassAsync();
+            await _schoolClassRepository.SaveChangesClassAsync(cancellationToken);
             return SchoolClassMapper.ToDto(schoolClass);
         }
 

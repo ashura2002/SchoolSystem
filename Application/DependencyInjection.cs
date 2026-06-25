@@ -50,6 +50,8 @@ namespace Application
             services.AddScoped<ApproveEnrollmentUseCase>();
             services.AddScoped<RejectEnrollmentUseCase>();
             services.AddScoped<GetAllMyClassesUseCase>();
+            services.AddScoped<CancelEnrollmentUseCase>();
+            services.AddScoped<DropEnrollmentUseCase>();
             return services;
         }
 

@@ -9,12 +9,12 @@ namespace Application.Interfaces
     public interface IUserRepository
     {
         Task Add(User user);
-        Task<User?> GetById(Guid id);
-        Task<List<User>> GetAllActiveUsers(PaginationDTO dto);
-        Task<List<User>> GetAllDeletedUsers(PaginationDTO dto);
-        Task<User?> GetByUsername(string username);
-        Task<User?> GetByEmail(string email);
-        Task SaveChangesAsync();
-        Task<List<User>> GetUsersByIds(List<Guid> ids);
+        Task<User?> GetById(Guid id, CancellationToken cancellationToken);
+        Task<List<User>> GetAllActiveUsers(PaginationDTO dto, CancellationToken cancellationToken);
+        Task<List<User>> GetAllDeletedUsers(PaginationDTO dto, CancellationToken cancellationToken);
+        Task<User?> GetByUsername(string username, CancellationToken cancellationToken);
+        Task<User?> GetByEmail(string email, CancellationToken cancellationToken);
+        Task SaveChangesAsync(CancellationToken cancellationToken);
+        Task<List<User>> GetUsersByIds(List<Guid> ids, CancellationToken cancellationToken);
     }
 }

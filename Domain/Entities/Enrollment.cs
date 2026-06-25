@@ -48,8 +48,20 @@ namespace Domain.Entities
             UpdatedAt = DateTime.UtcNow;
         }
 
+        public void Cancel()
+        {
+            if (Status != EnrollmentStatus.Pending)
+                throw new DomainBadRequestException("Only pending enrollments can be cancelled");
+
+            DeletedAt = DateTime.UtcNow;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
         public void Drop()
         {
+            if (Status != EnrollmentStatus.Approved)
+                throw new DomainBadRequestException("Only approved enrollments can be dropped");
+
             DeletedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;
         }

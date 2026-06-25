@@ -21,60 +21,60 @@ namespace Infrastructure.Repositories
         }
 
 
-        public async Task<List<User>> GetAllActiveUsers(PaginationDTO pagination)
+        public async Task<List<User>> GetAllActiveUsers(PaginationDTO pagination, CancellationToken cancellationToken)
         {
             return await _context.Users
                 .Where(u => u.DeletedAt == null)
                 .OrderByDescending(u => u.CreatedAt)
                 .Skip((pagination.Page - 1) * pagination.PageSize)
                 .Take(pagination.PageSize)
-                .AsNoTracking().ToListAsync();
+                .AsNoTracking().ToListAsync(cancellationToken);
         }
 
-        public async Task<List<User>> GetAllDeletedUsers(PaginationDTO pagination)
+        public async Task<List<User>> GetAllDeletedUsers(PaginationDTO pagination, CancellationToken cancellationToken)
         {
             return await _context.Users
               .Where(u => u.DeletedAt != null)
               .OrderByDescending(u => u.CreatedAt)
               .Skip((pagination.Page - 1) * pagination.PageSize)
               .Take(pagination.PageSize)
-              .AsNoTracking().ToListAsync();
+              .AsNoTracking().ToListAsync(cancellationToken);
         }
 
-        public async Task<User?> GetByEmail(string email)
+        public async Task<User?> GetByEmail(string email, CancellationToken cancellationToken)
         {
             return await _context.Users
                 .Where(u => u.DeletedAt == null)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(u => u.Email == EmailValueObject.Create(email));
+                .FirstOrDefaultAsync(u => u.Email == EmailValueObject.Create(email),cancellationToken);
         }
 
-        public async Task<User?> GetById(Guid id)
+        public async Task<User?> GetById(Guid id, CancellationToken cancellationToken)
         {
             return await _context.Users
                 .Where(u => u.DeletedAt == null)
-                .FirstOrDefaultAsync(u => u.Id == id);
+                .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
         }
 
-        public async Task<User?> GetByUsername(string username)
+        public async Task<User?> GetByUsername(string username, CancellationToken cancellationToken)
         {
             return await _context.Users
                 .Where(u => u.DeletedAt == null)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(u => u.Username == UsernameValueObject.Create(username));
+                .FirstOrDefaultAsync(u => u.Username == UsernameValueObject.Create(username),cancellationToken);
         }
 
-        public async Task<List<User>> GetUsersByIds(List<Guid> ids)
+        public async Task<List<User>> GetUsersByIds(List<Guid> ids, CancellationToken cancellationToken)
         {
             return await _context.Users
                   .Where(u => ids.Contains(u.Id))
                   .AsNoTracking()
-                  .ToListAsync();
+                  .ToListAsync(cancellationToken);
         }
 
-        public async Task SaveChangesAsync()
+        public async Task SaveChangesAsync(CancellationToken cancellationToken)
         {
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
     }

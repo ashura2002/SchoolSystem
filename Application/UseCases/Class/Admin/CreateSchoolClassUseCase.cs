@@ -18,13 +18,13 @@ namespace Application.UseCases.Class.Admin
             _schoolClassRepository = schoolClassRepository;
         }
 
-        public async Task<SchoolClassDTO> Execute(CreateClassDTO dto)
+        public async Task<SchoolClassDTO> Execute(CreateClassDTO dto, CancellationToken cancellationToken)
         {
             var schoolClasName = ClassNameValueObject.Create(dto.Name);
             var schoolClass = new SchoolClass(schoolClasName);
 
             await _schoolClassRepository.AddClass(schoolClass);
-            await _schoolClassRepository.SaveChangesClassAsync();
+            await _schoolClassRepository.SaveChangesClassAsync(cancellationToken);
             return SchoolClassMapper.ToDto(schoolClass);
 
         }

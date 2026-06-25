@@ -25,10 +25,10 @@ namespace Application.UseCases.Class.Teacher
             _userRepository = userRepository;
         }
 
-        public async Task<TeacherClassDetailDTO> Execute(Guid classId)
+        public async Task<TeacherClassDetailDTO> Execute(Guid classId, CancellationToken cancellationToken)
         {
             // find class
-            var schoolClass = await _schoolClassRepository.GetClassById(classId) ??
+            var schoolClass = await _schoolClassRepository.GetClassById(classId, cancellationToken) ??
                 throw new DomainNotFoundException("Class not found");
 
             // check ownership
@@ -36,12 +36,12 @@ namespace Application.UseCases.Class.Teacher
                 throw new DomainUnauthorizedException("You are not assigned to this class");
 
             // get all enrollment by class id and status is == to approved
-            var approvedStudentsEnrollment = await _enrollmentRepository.GetApprovedStudentByClassId(classId);
+            var approvedStudentsEnrollment = await _enrollmentRepository.GetApprovedStudentByClassId(classId, cancellationToken);
 
             //extract ids using select
             var studentIds = approvedStudentsEnrollment.Select(e => e.StudentId).ToList();
 
-            var students = await _userRepository.GetUsersByIds(studentIds);
+            var students = await _userRepository.GetUsersByIds(studentIds, cancellationToken);
 
             return TeacherClassMapper.ToDto(schoolClass, students);
         }

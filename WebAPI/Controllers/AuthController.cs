@@ -30,11 +30,12 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("admin")]
-        [Authorize(Roles ="Admin")]
-        public async Task<ActionResult<ApiResponse<UserDTO>>> CreateAdmin([FromBody] CreateUserRequests requests)
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<ApiResponse<UserDTO>>> CreateAdmin([FromBody] CreateUserRequests requests,
+            CancellationToken cancellationToken)
         {
             var admin = UserRequestMapper.ToDTO(requests);
-            var result = await _createAdminUserUseCase.Execute(admin);
+            var result = await _createAdminUserUseCase.Execute(admin, cancellationToken);
             return Ok(new ApiResponse<UserDTO>
             {
                 Message = "Created Successfully",
@@ -44,10 +45,11 @@ namespace WebAPI.Controllers
 
         [HttpPost("teacher")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<ApiResponse<UserDTO>>> CreateTeacher([FromBody] CreateUserRequests requests)
+        public async Task<ActionResult<ApiResponse<UserDTO>>> CreateTeacher([FromBody] CreateUserRequests requests,
+            CancellationToken cancellationToken)
         {
             var teacher = UserRequestMapper.ToDTO(requests);
-            var result = await _createTeacherUseCase.Execute(teacher);
+            var result = await _createTeacherUseCase.Execute(teacher, cancellationToken);
             return Ok(new ApiResponse<UserDTO>
             {
                 Message = "Created Successfully",
@@ -58,10 +60,11 @@ namespace WebAPI.Controllers
 
         [HttpPost("student")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<ApiResponse<UserDTO>>> CreateStudent([FromBody] CreateUserRequests requests)
+        public async Task<ActionResult<ApiResponse<UserDTO>>> CreateStudent([FromBody] CreateUserRequests requests,
+            CancellationToken cancellationToken)
         {
             var student = UserRequestMapper.ToDTO(requests);
-            var result = await _createStudentUseCase.Execute(student);
+            var result = await _createStudentUseCase.Execute(student, cancellationToken);
             return Ok(new ApiResponse<UserDTO>
             {
                 Message = "Created Successfully",
@@ -71,10 +74,10 @@ namespace WebAPI.Controllers
 
 
         [HttpPost("login")]
-        public async Task<ActionResult<ApiResponse<string>>> Login(LoginUserRequest request)
+        public async Task<ActionResult<ApiResponse<string>>> Login(LoginUserRequest request, CancellationToken cancellationToken)
         {
             var user = new LoginDTO(request.Username, request.Password);
-            var result = await _loginUseCase.Execute(user);
+            var result = await _loginUseCase.Execute(user, cancellationToken);
             return Ok(new ApiResponse<string>
             {
                 Message = "Login Successfully",
