@@ -19,9 +19,9 @@ namespace Application.UseCases.Auth
             _createUserService = createUserService;
         }
 
-        public async Task<UserDTO> Execute(CreateUserDTO dto)
+        public async Task<UserDTO> Execute(CreateUserDTO dto, CancellationToken cancellationToken)
         {
-            return await _createUserService.CreateUser(dto, Role.Admin);
+            return await _createUserService.CreateUser(dto, Role.Admin, cancellationToken);
         }
 
     }

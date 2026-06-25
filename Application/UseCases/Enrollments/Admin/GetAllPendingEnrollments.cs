@@ -17,9 +17,9 @@ namespace Application.UseCases.Enrollments.Admin
         }
 
 
-        public async Task<IEnumerable<EnrollmentDTO>> Execute(PaginationDTO pagination)
+        public async Task<IEnumerable<EnrollmentDTO>> Execute(PaginationDTO pagination,CancellationToken cancellationToken)
         {
-            var pendingEnrollments = await _enrollmentRepository.GetAllPendingEnrollments(pagination);
+            var pendingEnrollments = await _enrollmentRepository.GetAllPendingEnrollments(pagination, cancellationToken);
             return EnrollmentMapper.ToResponseList(pendingEnrollments);
         }
 

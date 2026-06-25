@@ -47,10 +47,11 @@ namespace WebAPI.Controllers
         // admin
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<ApiResponse<SchoolClassDTO>>> CreateClass([FromBody] CreateSchoolClassRequest request)
+        public async Task<ActionResult<ApiResponse<SchoolClassDTO>>> CreateClass([FromBody] CreateSchoolClassRequest request,
+            CancellationToken cancellationToken)
         {
             var newClass = new CreateClassDTO(request.Name);
-            var result = await _createSchoolClassUseCase.Execute(newClass);
+            var result = await _createSchoolClassUseCase.Execute(newClass, cancellationToken);
 
             return Ok(new ApiResponse<SchoolClassDTO>
             {
@@ -63,10 +64,10 @@ namespace WebAPI.Controllers
         [HttpPut("{classId}/teacher")]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<ApiResponse<SchoolClassDTO>>> AssignTeacher([FromBody] AssignTeacherRequest request,
-            [FromRoute] Guid classId)
+            [FromRoute] Guid classId, CancellationToken cancellationToken)
         {
             var teacher = new AssignTeacherDTO(request.TeacherId);
-            var result = await _assignTeacherUseCase.Execute(teacher, classId);
+            var result = await _assignTeacherUseCase.Execute(teacher, classId, cancellationToken);
 
             return Ok(new ApiResponse<SchoolClassDTO>
             {
@@ -77,48 +78,51 @@ namespace WebAPI.Controllers
 
         [HttpDelete("{classId}/teacher")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult> RemoveAssignedTeacher([FromRoute] Guid classId)
+        public async Task<ActionResult> RemoveAssignedTeacher([FromRoute] Guid classId, CancellationToken cancellationToken)
         {
-            await _removeTeacherUseCase.Execute(classId);
+            await _removeTeacherUseCase.Execute(classId, cancellationToken);
             return NoContent();
         }
 
 
         [HttpGet]
         [Authorize(Roles = "Admin,Student,Teacher")]
-        public async Task<ActionResult<List<SchoolClassDTO>>> GetAllClasses([FromQuery] PaginationDTO pagination)
+        public async Task<ActionResult<List<SchoolClassDTO>>> GetAllClasses([FromQuery] PaginationDTO pagination,
+            CancellationToken cancellationToken)
         {
-            return Ok(await _getAllClassUseCase.Execute(pagination));
+            return Ok(await _getAllClassUseCase.Execute(pagination, cancellationToken));
         }
 
         [HttpGet("without-teacher")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<List<SchoolClassDTO>>> GetAllClassesWithoutATeacher([FromQuery] PaginationDTO pagination)
+        public async Task<ActionResult<List<SchoolClassDTO>>> GetAllClassesWithoutATeacher([FromQuery] PaginationDTO pagination,
+            CancellationToken cancellationToken)
         {
-            return Ok(await _getClassesWithoutTeacher.Execute(pagination));
+            return Ok(await _getClassesWithoutTeacher.Execute(pagination, cancellationToken));
         }
 
         [HttpGet("with-teacher")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<List<SchoolClassDTO>>> GetAllClassesWithATeacher([FromQuery] PaginationDTO pagination)
+        public async Task<ActionResult<List<SchoolClassDTO>>> GetAllClassesWithATeacher([FromQuery] PaginationDTO pagination,
+            CancellationToken cancellationToken)
         {
-            return Ok(await _getAllClassesWithTeacher.Execute(pagination));
+            return Ok(await _getAllClassesWithTeacher.Execute(pagination, cancellationToken));
         }
 
         [HttpGet("{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<List<SchoolClassDTO>>> GetClassById([FromRoute] Guid id)
+        public async Task<ActionResult<List<SchoolClassDTO>>> GetClassById([FromRoute] Guid id, CancellationToken cancellationToken)
         {
-            return Ok(await _getClassByIdUseCase.Execute(id));
+            return Ok(await _getClassByIdUseCase.Execute(id, cancellationToken));
         }
 
         [HttpPut("{classId}")]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<ApiResponse<SchoolClassDTO>>> UpdateClassName([FromBody] UpdateClassNameRequest request,
-          [FromRoute] Guid classId)
+          [FromRoute] Guid classId, CancellationToken cancellationToken)
         {
             var schoolClass = new UpdateClassNameDTO(request.Name);
-            var result = await _updateClassUseCase.Execute(schoolClass, classId);
+            var result = await _updateClassUseCase.Execute(schoolClass, classId, cancellationToken);
             return Ok(new ApiResponse<SchoolClassDTO>
             {
                 Message = "School Class Updated Successfully",
@@ -128,9 +132,9 @@ namespace WebAPI.Controllers
 
         [HttpDelete("{classId}")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult> DeleteClass([FromRoute] Guid classId)
+        public async Task<ActionResult> DeleteClass([FromRoute] Guid classId, CancellationToken cancellationToken)
         {
-            await _deleteClassUseCase.Execute(classId);
+            await _deleteClassUseCase.Execute(classId, cancellationToken);
             return NoContent();
         }
 
@@ -138,18 +142,18 @@ namespace WebAPI.Controllers
         // teachers
         [HttpGet("own-classes")]
         [Authorize(Roles = "Teacher")]
-        public async Task<ActionResult<List<SchoolClassDTO>>> GetAllOwnClasses([FromQuery] PaginationDTO pagination)
+        public async Task<ActionResult<List<SchoolClassDTO>>> GetAllOwnClasses([FromQuery] PaginationDTO pagination,
+            CancellationToken cancellationToken)
         {
-            return Ok(await _getOwnClasses.Execute(pagination));
+            return Ok(await _getOwnClasses.Execute(pagination, cancellationToken));
         }
 
         [HttpGet("own-classes/{classId}")]
         [Authorize(Roles = "Teacher")]
-        public async Task<ActionResult<SchoolClassDTO>> GetTeacherClassbyId([FromRoute] Guid classId)
+        public async Task<ActionResult<TeacherClassDetailDTO>> GetTeacherClassbyId([FromRoute] Guid classId,
+            CancellationToken cancellationToken)
         {
-            return Ok(await _getTeacherClassByIdUseCase.Execute(classId));
+            return Ok(await _getTeacherClassByIdUseCase.Execute(classId, cancellationToken));
         }
     }
 }
-
-// get own class by id student must be populated by enrollement entity that the enrollment status is approved

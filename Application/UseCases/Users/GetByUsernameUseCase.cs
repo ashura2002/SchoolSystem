@@ -17,10 +17,10 @@ namespace Application.UseCases.Users
             _userRepository = userRepository;
         }
 
-        public async Task<UserDTO> Execute(string username)
+        public async Task<UserDTO> Execute(string username, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetByUsername(username);
-            if (user == null) throw new DomainNotFoundException("User not found");
+            var user = await _userRepository.GetByUsername(username, cancellationToken) ??
+                throw new DomainNotFoundException("User not found");
             return UserMapper.ToDto(user);
         }
 

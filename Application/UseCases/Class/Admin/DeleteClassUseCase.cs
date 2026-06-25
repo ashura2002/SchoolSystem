@@ -16,16 +16,16 @@ namespace Application.UseCases.Class.Admin
         }
 
 
-        public async Task Execute(Guid classId)
+        public async Task Execute(Guid classId,CancellationToken cancellationToken)
         {
             // load data from db
-            var schoolClass = await _schoolClassRepository.GetClassById(classId) ??
+            var schoolClass = await _schoolClassRepository.GetClassById(classId,cancellationToken) ??
                 throw new DomainNotFoundException("Class not found");
 
             // tell ef core mark as deleted
             _schoolClassRepository.DeleteClass(schoolClass);
             // persist changes
-            await _schoolClassRepository.SaveChangesClassAsync();
+            await _schoolClassRepository.SaveChangesClassAsync(cancellationToken);
         }
 
     }

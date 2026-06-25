@@ -17,9 +17,9 @@ namespace Application.UseCases.Class.Admin
             _schoolClassRepository = schoolClassRepository;
         }
 
-        public async Task<SchoolClassDTO> Execute(Guid classId)
+        public async Task<SchoolClassDTO> Execute(Guid classId, CancellationToken cancellationToken)
         {
-            var schoolClass = await _schoolClassRepository.GetClassById(classId) ??
+            var schoolClass = await _schoolClassRepository.GetClassById(classId, cancellationToken) ??
                 throw new DomainNotFoundException("Class not found");
             return SchoolClassMapper.ToDto(schoolClass);
         }

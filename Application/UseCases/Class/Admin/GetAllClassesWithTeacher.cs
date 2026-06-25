@@ -16,9 +16,9 @@ namespace Application.UseCases.Class.Admin
             _schoolClassRepository = schoolClassRepository;
         }
 
-        public async Task<IEnumerable<SchoolClassDTO>> Execute(PaginationDTO pagination)
+        public async Task<IEnumerable<SchoolClassDTO>> Execute(PaginationDTO pagination, CancellationToken cancellationToken)
         {
-            var schoolClasses = await _schoolClassRepository.GetAllClassesWithTeacher(pagination);
+            var schoolClasses = await _schoolClassRepository.GetAllClassesWithTeacher(pagination,cancellationToken);
             return SchoolClassMapper.ToResponseList(schoolClasses);
         }
     }

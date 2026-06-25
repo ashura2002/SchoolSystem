@@ -16,9 +16,9 @@ namespace Application.UseCases.Users
             _userRepository = userRepository;
         }
 
-        public async Task<IEnumerable<UserDTO>> Execute(PaginationDTO pagination)
+        public async Task<IEnumerable<UserDTO>> Execute(PaginationDTO pagination,CancellationToken cancellationToken)
         {
-            var users = await _userRepository.GetAllActiveUsers(pagination);
+            var users = await _userRepository.GetAllActiveUsers(pagination, cancellationToken);
             return UserMapper.ToResponseList(users);
         }
     }

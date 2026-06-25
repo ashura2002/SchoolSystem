@@ -17,9 +17,9 @@ namespace Application.UseCases.Users
             _userRepository = userRepository;
         }
 
-        public async Task<UserDTO> Execute(string email)
+        public async Task<UserDTO> Execute(string email, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetByEmail(email) ?? 
+            var user = await _userRepository.GetByEmail(email, cancellationToken) ??
                 throw new DomainNotFoundException("User not found");
             return UserMapper.ToDto(user);
         }

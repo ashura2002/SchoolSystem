@@ -17,14 +17,14 @@ namespace Application.UseCases.Users
             _currentUserService = currentUserService;
         }
 
-        public async Task Execute(Guid id)
+        public async Task Execute(Guid id,CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetById(id)
+            var user = await _userRepository.GetById(id,cancellationToken)
                 ?? throw new DomainNotFoundException("User not found");
             if (user.Id == _currentUserService.UserId)
                 throw new DomainBadRequestException("You cannot delete your account");
             user.DeactivateAccount();
-            await _userRepository.SaveChangesAsync();
+            await _userRepository.SaveChangesAsync(cancellationToken);
         }
 
     }
