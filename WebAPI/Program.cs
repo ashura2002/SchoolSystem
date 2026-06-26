@@ -6,6 +6,7 @@ using System.Text;
 using Serilog;
 using WebAPI;
 using WebAPI.Middlewares;
+using Microsoft.AspNetCore.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,12 +25,15 @@ builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
 // dependencies
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
 builder.Services.AddPresentation();
 builder.Services.AddJwtAuthenticationDI(builder.Configuration);
 
+// for rate limiting 
+builder.Services.AddRateLimiting();
 
 var app = builder.Build();
 
@@ -48,7 +52,7 @@ app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseRateLimiter();
 app.MapControllers();
 
 app.Run();
