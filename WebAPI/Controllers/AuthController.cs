@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
+using WebAPI.Constants;
 using WebAPI.DTOs;
 
 namespace WebAPI.Controllers
@@ -73,6 +75,7 @@ namespace WebAPI.Controllers
         }
 
 
+        [EnableRateLimiting(RateLimitPolicies.Login)]
         [HttpPost("login")]
         public async Task<ActionResult<ApiResponse<string>>> Login(LoginUserRequest request, CancellationToken cancellationToken)
         {
