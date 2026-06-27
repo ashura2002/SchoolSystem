@@ -36,7 +36,11 @@ namespace WebAPI
                     opt.QueueLimit = 0;
                 });
 
-                // need to add more rate limit policy
+                options.AddFixedWindowLimiter("GetResourcesPolicy", opt => {
+                    opt.PermitLimit = 5;
+                    opt.Window = TimeSpan.FromMinutes(1);
+                    opt.QueueLimit = 0;
+                });
             });
 
 

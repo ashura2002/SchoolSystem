@@ -27,6 +27,8 @@ namespace Domain.Entities
 
         public void UpdateClassName(ClassNameValueObject newClassName)
         {
+            if (Name == newClassName) return;
+
             Name = newClassName;
             UpdatedAt = DateTime.UtcNow;
         }
@@ -45,8 +47,15 @@ namespace Domain.Entities
 
         public void RemoveTeacher()
         {
+            if (!HasTeacher) throw new DomainBadRequestException("No teacher is assigned to this class.");
             TeacherId = null;
             UpdatedAt = DateTime.UtcNow;
+        }
+
+        public void EnsureCanBeDeleted()
+        {
+            if (HasTeacher)
+                throw new DomainBadRequestException("Remove the assigned teacher before deleting the class.");
         }
 
         public bool HasTeacher => TeacherId != null;

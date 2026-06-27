@@ -9,9 +9,9 @@ namespace Application.Interfaces
     public interface IUserRepository
     {
         Task Add(User user);
-        Task<User?> GetById(Guid id, CancellationToken cancellationToken);
-        Task<List<User>> GetAllActiveUsers(PaginationDTO dto, CancellationToken cancellationToken);
-        Task<List<User>> GetAllDeletedUsers(PaginationDTO dto, CancellationToken cancellationToken);
+        Task<User?> GetById(Guid userId, CancellationToken cancellationToken);
+        Task<List<User>> GetAllActiveUsers(int Page, int PageSize, CancellationToken cancellationToken);
+        Task<List<User>> GetAllDeletedUsers(int Page, int PageSize, CancellationToken cancellationToken);
         Task<User?> GetByUsername(string username, CancellationToken cancellationToken);
         Task<User?> GetByEmail(string email, CancellationToken cancellationToken);
         Task SaveChangesAsync(CancellationToken cancellationToken);

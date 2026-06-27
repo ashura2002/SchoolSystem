@@ -21,23 +21,23 @@ namespace Infrastructure.Repositories
         }
 
 
-        public async Task<List<User>> GetAllActiveUsers(PaginationDTO pagination, CancellationToken cancellationToken)
+        public async Task<List<User>> GetAllActiveUsers(int Page, int PageSize, CancellationToken cancellationToken)
         {
             return await _context.Users
                 .Where(u => u.DeletedAt == null)
                 .OrderByDescending(u => u.CreatedAt)
-                .Skip((pagination.Page - 1) * pagination.PageSize)
-                .Take(pagination.PageSize)
+                .Skip((Page - 1) * PageSize)
+                .Take(PageSize)
                 .AsNoTracking().ToListAsync(cancellationToken);
         }
 
-        public async Task<List<User>> GetAllDeletedUsers(PaginationDTO pagination, CancellationToken cancellationToken)
+        public async Task<List<User>> GetAllDeletedUsers(int Page, int PageSize, CancellationToken cancellationToken)
         {
             return await _context.Users
               .Where(u => u.DeletedAt != null)
               .OrderByDescending(u => u.CreatedAt)
-              .Skip((pagination.Page - 1) * pagination.PageSize)
-              .Take(pagination.PageSize)
+              .Skip((Page - 1) * PageSize)
+              .Take(PageSize)
               .AsNoTracking().ToListAsync(cancellationToken);
         }
 

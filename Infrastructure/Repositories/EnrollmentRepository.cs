@@ -32,23 +32,26 @@ namespace Infrastructure.Repositories
             _context.Enrollments.Remove(enrollment);
         }
 
-        public async Task<List<Enrollment>> GetAllPendingEnrollments(PaginationDTO pagination, CancellationToken cancellationToken)
+        public async Task<List<Enrollment>> GetAllPendingEnrollments(int Page, int PageSize, CancellationToken cancellationToken)
         {
             return await _context.Enrollments
                 .AsNoTracking()
                 .Where(e => e.Status == EnrollmentStatus.Pending)
+                .OrderByDescending(e => e.CreatedAt)
+                .Skip((Page - 1) * PageSize)
+                .Take(PageSize)
                 .ToListAsync(cancellationToken);
         }
 
-        public async Task<List<Enrollment>> GetApprovedByStudentId(PaginationDTO pagination, Guid studentId,
+        public async Task<List<Enrollment>> GetApprovedByStudentId(int Page, int PageSize, Guid studentId,
             CancellationToken cancellationToken)
         {
             return await _context.Enrollments
              .AsNoTracking()
              .Where(e => e.StudentId == studentId && e.Status == EnrollmentStatus.Approved)
              .OrderByDescending(e => e.CreatedAt)
-             .Skip((pagination.Page - 1) * pagination.PageSize)
-             .Take(pagination.PageSize)
+             .Skip((Page - 1) * PageSize)
+             .Take(PageSize)
              .ToListAsync(cancellationToken);
         }
 

@@ -1,8 +1,12 @@
 ﻿using Application.DTOs;
-using Application.UseCases.Enrollments.Admin;
-using Application.UseCases.Enrollments.Student;
+using Application.Features.Enrollments.Admin.Commands;
+using Application.Features.Enrollments.Admin.Queries;
+using Application.Features.Enrollments.Student.Commands;
+using Application.Features.Enrollments.Student.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
+using WebAPI.Constants;
 using WebAPI.DTOs;
 
 namespace WebAPI.Controllers
@@ -12,27 +16,28 @@ namespace WebAPI.Controllers
     [Route("api/enrollment")]
     public class EnrollmentController : ControllerBase
     {
-        private readonly RequestEnrollmentUseCase _requestEnrollmentUseCase;
-        private readonly GetAllPendingEnrollments _getAllPendingEnrollments;
-        private readonly ApproveEnrollmentUseCase _approveEnrollmentRequest;
-        private readonly RejectEnrollmentUseCase _rejectEnrollmentUseCase;
-        private readonly GetAllMyClassesUseCase _getAllMyClassesUseCase;
-        private readonly CancelEnrollmentUseCase _cancelEnrollmentUseCas;
-        private readonly DropEnrollmentUseCase _dropEnrollmentUseCase;
+        private readonly RequestEnrollmentHandler _requestEnrollmentHandler;
+        private readonly GetAllPendingEnrollmentsHandler _getAllPendingEnrollmentsHandler;
+        private readonly ApproveEnrollmentHandler _approveEnrollmentRequestHandler;
+        private readonly RejectEnrollmentHandler _rejectEnrollmentHandler;
+        private readonly GetAllMyClassesHandler _getAllMyClassesHandler;
+        private readonly CancelEnrollmentHandler _cancelEnrollmentHandler;
+        private readonly DropEnrollmentHandler _dropEnrollmentHandler;
 
-        public EnrollmentController(RequestEnrollmentUseCase requestEnrollmentUseCase, GetAllPendingEnrollments getAllPendingEnrollments,
-            ApproveEnrollmentUseCase approveEnrollmentRequest, RejectEnrollmentUseCase rejectEnrollmentUseCase,
-            GetAllMyClassesUseCase getAllMyClassesUseCase, CancelEnrollmentUseCase cancelEnrollmentUseCase,
-            DropEnrollmentUseCase dropEnrollmentUseCase
+        public EnrollmentController(RequestEnrollmentHandler requestEnrollmentHandler,
+            GetAllPendingEnrollmentsHandler getAllPendingEnrollmentsHandler,
+            ApproveEnrollmentHandler approveEnrollmentRequestHandler, RejectEnrollmentHandler rejectEnrollmentHandler,
+            GetAllMyClassesHandler getAllMyClassesHandler, CancelEnrollmentHandler cancelEnrollmentHandler,
+            DropEnrollmentHandler dropEnrollmentHandler
             )
         {
-            _requestEnrollmentUseCase = requestEnrollmentUseCase;
-            _getAllPendingEnrollments = getAllPendingEnrollments;
-            _approveEnrollmentRequest = approveEnrollmentRequest;
-            _rejectEnrollmentUseCase = rejectEnrollmentUseCase;
-            _getAllMyClassesUseCase = getAllMyClassesUseCase;
-            _cancelEnrollmentUseCas = cancelEnrollmentUseCase;
-            _dropEnrollmentUseCase = dropEnrollmentUseCase;
+            _requestEnrollmentHandler = requestEnrollmentHandler;
+            _getAllPendingEnrollmentsHandler = getAllPendingEnrollmentsHandler;
+            _approveEnrollmentRequestHandler = approveEnrollmentRequestHandler;
+            _rejectEnrollmentHandler = rejectEnrollmentHandler;
+            _getAllMyClassesHandler = getAllMyClassesHandler;
+            _cancelEnrollmentHandler = cancelEnrollmentHandler;
+            _dropEnrollmentHandler = dropEnrollmentHandler;
         }
 
 
@@ -41,8 +46,8 @@ namespace WebAPI.Controllers
         public async Task<ActionResult<ApiResponse<EnrollmentDTO>>> RequestEnrollment([FromBody] CreateEnrollmentRequest request,
             CancellationToken cancellationToken)
         {
-            var enrollment = new CreateEnrollmentDTO(request.ClassId);
-            var result = await _requestEnrollmentUseCase.Execute(enrollment, cancellationToken);
+            var enrollment = new RequestEnrollmentCommand(request.ClassId);
+            var result = await _requestEnrollmentHandler.Execute(enrollment, cancellationToken);
             return Ok(new ApiResponse<EnrollmentDTO>
             {
                 Message = "Enroll Successfully",
@@ -50,13 +55,20 @@ namespace WebAPI.Controllers
             });
         }
 
+        [EnableRateLimiting(RateLimitPolicies.GetResources)]
         [HttpGet("my-classes")]
         [Authorize(Roles = "Student")]
-        public async Task<ActionResult<List<EnrollmentDTO>>> MyClasses([FromQuery] PaginationDTO pagination,
+        public async Task<ActionResult<ApiResponse<IEnumerable<EnrollmentDTO>>>> MyClasses(
+            [FromQuery] PaginationRequest request,
             CancellationToken cancellationToken)
         {
-            var approvedEnrollment = await _getAllMyClassesUseCase.Execute(pagination, cancellationToken);
-            return Ok(approvedEnrollment);
+            var query = new GetAllMyClassesQuery(request.Page, request.PageSize);
+            var result = await _getAllMyClassesHandler.Handle(query, cancellationToken);
+            return Ok(new ApiResponse<IEnumerable<EnrollmentDTO>>
+            {
+                Message = "Enrollments retrieved successfully",
+                Data = result
+            });
         }
 
         [HttpPut("requests/{enrollmentId}")]
@@ -64,11 +76,12 @@ namespace WebAPI.Controllers
         public async Task<ActionResult<ApiResponse<EnrollmentDTO>>> CancelEnrollment([FromRoute] Guid enrollmentId,
             CancellationToken cancellationToken)
         {
-            var enrollment = await _cancelEnrollmentUseCas.Execute(enrollmentId, cancellationToken);
+            var command = new CancelEnrollmentCommand(enrollmentId);
+            var result = await _cancelEnrollmentHandler.Handle(command, cancellationToken);
             return Ok(new ApiResponse<EnrollmentDTO>
             {
                 Message = "Cancel successfully",
-                Data = enrollment
+                Data = result
             });
         }
 
@@ -77,7 +90,8 @@ namespace WebAPI.Controllers
         public async Task<ActionResult<ApiResponse<EnrollmentDTO>>> DropEnrollment([FromRoute] Guid enrollmentId,
             CancellationToken cancellationToken)
         {
-            var enrollment = await _dropEnrollmentUseCase.Execute(enrollmentId, cancellationToken);
+            var command = new DropEnrollmentCommand(enrollmentId);
+            var enrollment = await _dropEnrollmentHandler.Handle(command, cancellationToken);
             return Ok(new ApiResponse<EnrollmentDTO>
             {
                 Message = "Drop successfully",
@@ -85,12 +99,20 @@ namespace WebAPI.Controllers
             });
         }
 
+        [EnableRateLimiting(RateLimitPolicies.GetResources)]
         [HttpGet("pending")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<List<EnrollmentDTO>>> PendingEnrollments([FromQuery] PaginationDTO pagination,
+        public async Task<ActionResult<ApiResponse<IEnumerable<EnrollmentDTO>>>> PendingEnrollments(
+            [FromQuery] PaginationRequest request,
             CancellationToken cancellationToken)
         {
-            return Ok(await _getAllPendingEnrollments.Execute(pagination, cancellationToken));
+            var query = new GetAllPendingEnrollmentQuery(request.Page, request.PageSize);
+            var result = await _getAllPendingEnrollmentsHandler.Execute(query, cancellationToken);
+            return Ok(new ApiResponse<IEnumerable<EnrollmentDTO>>
+            {
+                Message = "Enrollment retrieved successfully",
+                Data = result
+            });
         }
 
         [HttpPost("{enrollmentId}/approve")]
@@ -98,11 +120,12 @@ namespace WebAPI.Controllers
         public async Task<ActionResult<ApiResponse<EnrollmentDTO>>> ApproveEnrollment([FromRoute] Guid enrollmentId,
             CancellationToken cancellationToken)
         {
-            var approveEnrollment = await _approveEnrollmentRequest.Execute(enrollmentId, cancellationToken);
+            var command = new ApprovedEnrollmentCommand(enrollmentId);
+            var result = await _approveEnrollmentRequestHandler.Handle(command, cancellationToken);
             return Ok(new ApiResponse<EnrollmentDTO>
             {
                 Message = "Approved Successfully",
-                Data = approveEnrollment
+                Data = result
             });
         }
 
@@ -111,11 +134,12 @@ namespace WebAPI.Controllers
         public async Task<ActionResult<ApiResponse<EnrollmentDTO>>> RejectEnrollment([FromRoute] Guid enrollmentId,
             CancellationToken cancellationToken)
         {
-            var rejectEnrollment = await _rejectEnrollmentUseCase.Execute(enrollmentId, cancellationToken);
+            var command = new RejectEnrollmentCommand(enrollmentId);
+            var result = await _rejectEnrollmentHandler.Handle(command, cancellationToken);
             return Ok(new ApiResponse<EnrollmentDTO>
             {
                 Message = "Rejected Successfully",
-                Data = rejectEnrollment
+                Data = result
             });
         }
     }
