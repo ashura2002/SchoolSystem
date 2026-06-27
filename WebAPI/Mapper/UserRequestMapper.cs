@@ -1,13 +1,13 @@
-﻿using Application.DTOs;
+﻿using Application.Features.Auth.Commands;
 
 
 namespace WebAPI.DTOs
 {
     public static class UserRequestMapper
     {
-        public static CreateUserDTO ToDTO(CreateUserRequests request)
+        public static CreateUserCommand ToDTO(CreateUserRequests request)
         {
-            return new CreateUserDTO(request.Username, request.Email, request.Password);
+            return new CreateUserCommand(request.Username, request.Email, request.Password);
         }
     }
 }

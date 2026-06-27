@@ -1,5 +1,5 @@
 ﻿using Application.DTOs;
-using Application.UseCases.Auth;
+using Application.Features.Auth.Commands;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity.Data;
@@ -15,13 +15,13 @@ namespace WebAPI.Controllers
     [Route("api/auth")]
     public class AuthController : ControllerBase
     {
-        private readonly CreateAdminUserUseCase _createAdminUserUseCase;
-        private readonly CreateTeacherUseCase _createTeacherUseCase;
-        private readonly CreateStudentUseCase _createStudentUseCase;
-        private readonly LoginUseCase _loginUseCase;
+        private readonly CreateAdminUserHandler _createAdminUserUseCase;
+        private readonly CreateTeacherHandler _createTeacherUseCase;
+        private readonly CreateStudentHandler _createStudentUseCase;
+        private readonly LoginHandler _loginUseCase;
 
-        public AuthController(CreateAdminUserUseCase createAdminUserUseCase, CreateTeacherUseCase createTeacherUseCase,
-          CreateStudentUseCase createStudentUseCase, LoginUseCase loginUseCase
+        public AuthController(CreateAdminUserHandler createAdminUserUseCase, CreateTeacherHandler createTeacherUseCase,
+          CreateStudentHandler createStudentUseCase, LoginHandler loginUseCase
           )
         {
             _createAdminUserUseCase = createAdminUserUseCase;
@@ -37,7 +37,7 @@ namespace WebAPI.Controllers
             CancellationToken cancellationToken)
         {
             var admin = UserRequestMapper.ToDTO(requests);
-            var result = await _createAdminUserUseCase.Execute(admin, cancellationToken);
+            var result = await _createAdminUserUseCase.Handle(admin, cancellationToken);
             return Ok(new ApiResponse<UserDTO>
             {
                 Message = "Created Successfully",
@@ -79,8 +79,8 @@ namespace WebAPI.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<ApiResponse<string>>> Login(LoginUserRequest request, CancellationToken cancellationToken)
         {
-            var user = new LoginDTO(request.Username, request.Password);
-            var result = await _loginUseCase.Execute(user, cancellationToken);
+            var user = new LoginCommand(request.Username, request.Password);
+            var result = await _loginUseCase.Handle(user, cancellationToken);
             return Ok(new ApiResponse<string>
             {
                 Message = "Login Successfully",

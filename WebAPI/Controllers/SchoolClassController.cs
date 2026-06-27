@@ -1,8 +1,11 @@
 ﻿using Application.DTOs;
-using Application.UseCases.Class.Admin;
-using Application.UseCases.Class.Teacher;
+using Application.Features.Class.Admin.Commands;
+using Application.Features.Class.Admin.Queries;
+using Application.Features.Class.Teacher.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
+using WebAPI.Constants;
 using WebAPI.DTOs;
 
 namespace WebAPI.Controllers
@@ -12,36 +15,37 @@ namespace WebAPI.Controllers
     [Route("api/class")]
     public class SchoolClassController : ControllerBase
     {
-        private readonly CreateSchoolClassUseCase _createSchoolClassUseCase;
-        private readonly AssignTeacherUseCase _assignTeacherUseCase;
-        private readonly GetAllClassUseCase _getAllClassUseCase;
-        private readonly GetClassesWithoutTeacher _getClassesWithoutTeacher;
-        private readonly GetAllClassesWithTeacher _getAllClassesWithTeacher;
-        private readonly GetClassByIdUseCase _getClassByIdUseCase;
-        private readonly GetTeacherOwnClasses _getOwnClasses;
-        private readonly UpdateClassUseCase _updateClassUseCase;
-        private readonly DeleteClassUseCase _deleteClassUseCase;
-        private readonly GetTeacherClassByIdUseCase _getTeacherClassByIdUseCase;
-        private readonly RemoveTeacherUseCase _removeTeacherUseCase;
+        private readonly CreateSchoolClassHandler _createSchoolClassHandler;
+        private readonly AssignTeacherHandler _assignTeacherHandler;
+        private readonly GetAllClassHandler _getAllClassHandler;
+        private readonly GetClassesWithoutTeacherHandler _getClassesWithoutTeacherHandler;
+        private readonly GetAllClassesWithTeacherHandler _getAllClassesWithTeacherHandler;
+        private readonly GetClassByIdHandler _getClassByIdHandler;
+        private readonly GetTeacherOwnClassesHandler _getOwnClassesHandler;
+        private readonly UpdateClassHandler _updateClassHandler;
+        private readonly DeleteClassHandler _deleteClassHandler;
+        private readonly GetTeacherClassByIdHandler _getTeacherClassByIdHandler;
+        private readonly RemoveTeacherHandler _removeTeacherHandler;
 
-        public SchoolClassController(CreateSchoolClassUseCase createSchoolClassUseCase, AssignTeacherUseCase assignTeacherUseCase,
-            GetAllClassUseCase getAllClassUseCase, GetClassesWithoutTeacher getClassesWithoutTeacher,
-            GetAllClassesWithTeacher getAllClassesWithTeacher, GetClassByIdUseCase getClassByIdUseCase,
-            GetTeacherOwnClasses getOwnClasses, UpdateClassUseCase updateClassUseCase, DeleteClassUseCase deleteClassUseCase,
-            GetTeacherClassByIdUseCase getTeacherClassByIdUseCase, RemoveTeacherUseCase removeTeacherUseCase
+        public SchoolClassController(CreateSchoolClassHandler createSchoolClassHandler, AssignTeacherHandler assignTeacherHandler,
+            GetAllClassHandler getAllClassHandler, GetClassesWithoutTeacherHandler getClassesWithoutTeacherHandler,
+            GetAllClassesWithTeacherHandler getAllClassesWithTeacherHandler, GetClassByIdHandler getClassByIdHandler,
+            GetTeacherOwnClassesHandler getOwnClassesHandler, UpdateClassHandler updateClassHandler,
+            DeleteClassHandler deleteClassHandler, GetTeacherClassByIdHandler getTeacherClassByIdHandler,
+            RemoveTeacherHandler removeTeacherHandler
             )
         {
-            _createSchoolClassUseCase = createSchoolClassUseCase;
-            _assignTeacherUseCase = assignTeacherUseCase;
-            _getAllClassUseCase = getAllClassUseCase;
-            _getClassesWithoutTeacher = getClassesWithoutTeacher;
-            _getAllClassesWithTeacher = getAllClassesWithTeacher;
-            _getClassByIdUseCase = getClassByIdUseCase;
-            _getOwnClasses = getOwnClasses;
-            _updateClassUseCase = updateClassUseCase;
-            _deleteClassUseCase = deleteClassUseCase;
-            _getTeacherClassByIdUseCase = getTeacherClassByIdUseCase;
-            _removeTeacherUseCase = removeTeacherUseCase;
+            _createSchoolClassHandler = createSchoolClassHandler;
+            _assignTeacherHandler = assignTeacherHandler;
+            _getAllClassHandler = getAllClassHandler;
+            _getClassesWithoutTeacherHandler = getClassesWithoutTeacherHandler;
+            _getAllClassesWithTeacherHandler = getAllClassesWithTeacherHandler;
+            _getClassByIdHandler = getClassByIdHandler;
+            _getOwnClassesHandler = getOwnClassesHandler;
+            _updateClassHandler = updateClassHandler;
+            _deleteClassHandler = deleteClassHandler;
+            _getTeacherClassByIdHandler = getTeacherClassByIdHandler;
+            _removeTeacherHandler = removeTeacherHandler;
         }
 
         // admin
@@ -50,8 +54,8 @@ namespace WebAPI.Controllers
         public async Task<ActionResult<ApiResponse<SchoolClassDTO>>> CreateClass([FromBody] CreateSchoolClassRequest request,
             CancellationToken cancellationToken)
         {
-            var newClass = new CreateClassDTO(request.Name);
-            var result = await _createSchoolClassUseCase.Execute(newClass, cancellationToken);
+            var command = new CreateSchoolClassCommand(request.Name);
+            var result = await _createSchoolClassHandler.Handle(command, cancellationToken);
 
             return Ok(new ApiResponse<SchoolClassDTO>
             {
@@ -66,8 +70,8 @@ namespace WebAPI.Controllers
         public async Task<ActionResult<ApiResponse<SchoolClassDTO>>> AssignTeacher([FromBody] AssignTeacherRequest request,
             [FromRoute] Guid classId, CancellationToken cancellationToken)
         {
-            var teacher = new AssignTeacherDTO(request.TeacherId);
-            var result = await _assignTeacherUseCase.Execute(teacher, classId, cancellationToken);
+            var command = new AssignTeacherCommand(classId, request.TeacherId);
+            var result = await _assignTeacherHandler.Handle(command, cancellationToken);
 
             return Ok(new ApiResponse<SchoolClassDTO>
             {
@@ -76,44 +80,78 @@ namespace WebAPI.Controllers
             });
         }
 
+
         [HttpDelete("{classId}/teacher")]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult> RemoveAssignedTeacher([FromRoute] Guid classId, CancellationToken cancellationToken)
         {
-            await _removeTeacherUseCase.Execute(classId, cancellationToken);
+            var command = new RemoveTeacherCommand(classId);
+            await _removeTeacherHandler.Handle(command, cancellationToken);
             return NoContent();
         }
 
-
+        [EnableRateLimiting(RateLimitPolicies.GetResources)]
         [HttpGet]
         [Authorize(Roles = "Admin,Student,Teacher")]
-        public async Task<ActionResult<List<SchoolClassDTO>>> GetAllClasses([FromQuery] PaginationDTO pagination,
+        public async Task<ActionResult<ApiResponse<IEnumerable<SchoolClassDTO>>>> GetAllClasses(
+            [FromQuery] PaginationRequest request,
             CancellationToken cancellationToken)
         {
-            return Ok(await _getAllClassUseCase.Execute(pagination, cancellationToken));
+            var query = new GetAllClassesQuery(request.Page, request.PageSize);
+            var result = await _getAllClassHandler.Handle(query, cancellationToken);
+            return Ok(new ApiResponse<IEnumerable<SchoolClassDTO>>
+            {
+                Message = "Classes retrieved successfully.",
+                Data = result
+            });
         }
 
+        [EnableRateLimiting(RateLimitPolicies.GetResources)]
         [HttpGet("without-teacher")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<List<SchoolClassDTO>>> GetAllClassesWithoutATeacher([FromQuery] PaginationDTO pagination,
+        public async Task<ActionResult<ApiResponse<IEnumerable<SchoolClassDTO>>>> GetAllClassesWithoutTeacher(
+            [FromQuery] PaginationRequest request,
             CancellationToken cancellationToken)
         {
-            return Ok(await _getClassesWithoutTeacher.Execute(pagination, cancellationToken));
+
+            var query = new GetClassesWithoutTeacherQuery(request.Page, request.PageSize);
+            var result = await _getClassesWithoutTeacherHandler.Handle(query, cancellationToken);
+            return Ok(new ApiResponse<IEnumerable<SchoolClassDTO>>
+            {
+                Message = "Classes retrieved successfully.",
+                Data = result
+            });
         }
 
+        [EnableRateLimiting(RateLimitPolicies.GetResources)]
         [HttpGet("with-teacher")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<List<SchoolClassDTO>>> GetAllClassesWithATeacher([FromQuery] PaginationDTO pagination,
+        public async Task<ActionResult<ApiResponse<IEnumerable<SchoolClassDTO>>>> GetAllClassesWithTeacher([FromQuery]
+        PaginationRequest request,
             CancellationToken cancellationToken)
         {
-            return Ok(await _getAllClassesWithTeacher.Execute(pagination, cancellationToken));
+            var query = new GetAllClassesWithTeacherQuery(request.Page, request.PageSize);
+            var result = await _getAllClassesWithTeacherHandler.Handle(query, cancellationToken);
+            return Ok(new ApiResponse<IEnumerable<SchoolClassDTO>>
+            {
+                Message = "Classes retrieved successfully.",
+                Data = result
+            });
         }
 
+        [EnableRateLimiting(RateLimitPolicies.GetResources)]
         [HttpGet("{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<List<SchoolClassDTO>>> GetClassById([FromRoute] Guid id, CancellationToken cancellationToken)
+        public async Task<ActionResult<ApiResponse<SchoolClassDTO>>> GetClassById([FromRoute] Guid id,
+            CancellationToken cancellationToken)
         {
-            return Ok(await _getClassByIdUseCase.Execute(id, cancellationToken));
+            var query = new GetClassByIdQuery(id);
+            var result = await _getClassByIdHandler.Handle(query, cancellationToken);
+            return Ok(new ApiResponse<SchoolClassDTO>
+            {
+                Message = "Retrieved successfully.",
+                Data = result
+            });
         }
 
         [HttpPut("{classId}")]
@@ -121,11 +159,11 @@ namespace WebAPI.Controllers
         public async Task<ActionResult<ApiResponse<SchoolClassDTO>>> UpdateClassName([FromBody] UpdateClassNameRequest request,
           [FromRoute] Guid classId, CancellationToken cancellationToken)
         {
-            var schoolClass = new UpdateClassNameDTO(request.Name);
-            var result = await _updateClassUseCase.Execute(schoolClass, classId, cancellationToken);
+            var command = new UpdateClassCommand(classId, request.Name);
+            var result = await _updateClassHandler.Handle(command, cancellationToken);
             return Ok(new ApiResponse<SchoolClassDTO>
             {
-                Message = "School Class Updated Successfully",
+                Message = "School Class Updated Successfully.",
                 Data = result
             });
         }
@@ -134,26 +172,37 @@ namespace WebAPI.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult> DeleteClass([FromRoute] Guid classId, CancellationToken cancellationToken)
         {
-            await _deleteClassUseCase.Execute(classId, cancellationToken);
+            var command = new DeleteClassCommand(classId);
+            await _deleteClassHandler.Handle(command, cancellationToken);
             return NoContent();
         }
 
 
         // teachers
+        [EnableRateLimiting(RateLimitPolicies.GetResources)]
         [HttpGet("own-classes")]
         [Authorize(Roles = "Teacher")]
-        public async Task<ActionResult<List<SchoolClassDTO>>> GetAllOwnClasses([FromQuery] PaginationDTO pagination,
+        public async Task<ActionResult<ApiResponse<IEnumerable<SchoolClassDTO>>>> GetAllOwnClasses(
+            [FromQuery] PaginationRequest request,
             CancellationToken cancellationToken)
         {
-            return Ok(await _getOwnClasses.Execute(pagination, cancellationToken));
+            var query = new GetTeacherOwnClassesQuery(request.Page, request.PageSize);
+            var result = await _getOwnClassesHandler.Handle(query, cancellationToken);
+            return Ok(new ApiResponse<IEnumerable<SchoolClassDTO>>
+            {
+                Message = "Classes retrieved successfully.",
+                Data = result
+            });
         }
 
+        [EnableRateLimiting(RateLimitPolicies.GetResources)]
         [HttpGet("own-classes/{classId}")]
         [Authorize(Roles = "Teacher")]
         public async Task<ActionResult<TeacherClassDetailDTO>> GetTeacherClassbyId([FromRoute] Guid classId,
             CancellationToken cancellationToken)
         {
-            return Ok(await _getTeacherClassByIdUseCase.Execute(classId, cancellationToken));
+            var query = new GetTeacherClassByIdQuery(classId);
+            return Ok(await _getTeacherClassByIdHandler.Handle(query, cancellationToken));
         }
     }
 }
