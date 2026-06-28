@@ -39,7 +39,7 @@ namespace WebAPI.Controllers
         // admin only
         [EnableRateLimiting(RateLimitPolicies.GetResources)]
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult<ApiResponse<IEnumerable<UserDTO>>>> GetAllActiveUsers(
             [FromQuery] PaginationRequest request,
             CancellationToken cancellationToken)
@@ -54,7 +54,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("deleted")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult<ApiResponse<IEnumerable<UserDTO>>>> GetAllUnActiveUsers(
             [FromQuery] PaginationRequest request,
             CancellationToken cancellationToken)
@@ -70,7 +70,7 @@ namespace WebAPI.Controllers
 
         [EnableRateLimiting(RateLimitPolicies.GetResources)]
         [HttpGet("{id}")]
-        [Authorize(Roles = "Admin,Teacher")]
+        [Authorize(Roles = $"{Roles.Admin},{Roles.Teacher}")]
         public async Task<ActionResult<ApiResponse<UserDTO>>> GetUserById([FromRoute] Guid id, CancellationToken cancellationToken)
         {
             var query = new GetByIdQuery(id);
@@ -89,7 +89,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult<ApiResponse<UserDTO>>> UpdateUser([FromBody] UpdateUserRequest request, [FromRoute] Guid id,
             CancellationToken cancellationToken)
         {
@@ -103,7 +103,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult> DeleteAccount([FromRoute] Guid id, CancellationToken cancellationToken)
         {
             var command = new DeleteUserCommand(id);

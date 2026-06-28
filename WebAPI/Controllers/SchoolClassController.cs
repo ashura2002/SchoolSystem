@@ -50,7 +50,7 @@ namespace WebAPI.Controllers
 
         // admin
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult<ApiResponse<SchoolClassDTO>>> CreateClass([FromBody] CreateSchoolClassRequest request,
             CancellationToken cancellationToken)
         {
@@ -66,7 +66,7 @@ namespace WebAPI.Controllers
 
 
         [HttpPut("{classId}/teacher")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult<ApiResponse<SchoolClassDTO>>> AssignTeacher([FromBody] AssignTeacherRequest request,
             [FromRoute] Guid classId, CancellationToken cancellationToken)
         {
@@ -82,7 +82,7 @@ namespace WebAPI.Controllers
 
 
         [HttpDelete("{classId}/teacher")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult> RemoveAssignedTeacher([FromRoute] Guid classId, CancellationToken cancellationToken)
         {
             var command = new RemoveTeacherCommand(classId);
@@ -92,7 +92,7 @@ namespace WebAPI.Controllers
 
         [EnableRateLimiting(RateLimitPolicies.GetResources)]
         [HttpGet]
-        [Authorize(Roles = "Admin,Student,Teacher")]
+        [Authorize(Roles = $"{Roles.Admin},{Roles.Student},{Roles.Teacher}")]
         public async Task<ActionResult<ApiResponse<IEnumerable<SchoolClassDTO>>>> GetAllClasses(
             [FromQuery] PaginationRequest request,
             CancellationToken cancellationToken)
@@ -108,7 +108,7 @@ namespace WebAPI.Controllers
 
         [EnableRateLimiting(RateLimitPolicies.GetResources)]
         [HttpGet("without-teacher")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult<ApiResponse<IEnumerable<SchoolClassDTO>>>> GetAllClassesWithoutTeacher(
             [FromQuery] PaginationRequest request,
             CancellationToken cancellationToken)
@@ -125,7 +125,7 @@ namespace WebAPI.Controllers
 
         [EnableRateLimiting(RateLimitPolicies.GetResources)]
         [HttpGet("with-teacher")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult<ApiResponse<IEnumerable<SchoolClassDTO>>>> GetAllClassesWithTeacher([FromQuery]
         PaginationRequest request,
             CancellationToken cancellationToken)
@@ -141,7 +141,7 @@ namespace WebAPI.Controllers
 
         [EnableRateLimiting(RateLimitPolicies.GetResources)]
         [HttpGet("{id}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult<ApiResponse<SchoolClassDTO>>> GetClassById([FromRoute] Guid id,
             CancellationToken cancellationToken)
         {
@@ -155,7 +155,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut("{classId}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult<ApiResponse<SchoolClassDTO>>> UpdateClassName([FromBody] UpdateClassNameRequest request,
           [FromRoute] Guid classId, CancellationToken cancellationToken)
         {
@@ -169,7 +169,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpDelete("{classId}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult> DeleteClass([FromRoute] Guid classId, CancellationToken cancellationToken)
         {
             var command = new DeleteClassCommand(classId);
@@ -181,7 +181,7 @@ namespace WebAPI.Controllers
         // teachers
         [EnableRateLimiting(RateLimitPolicies.GetResources)]
         [HttpGet("own-classes")]
-        [Authorize(Roles = "Teacher")]
+        [Authorize(Roles = Roles.Teacher)]
         public async Task<ActionResult<ApiResponse<IEnumerable<SchoolClassDTO>>>> GetAllOwnClasses(
             [FromQuery] PaginationRequest request,
             CancellationToken cancellationToken)
@@ -197,7 +197,7 @@ namespace WebAPI.Controllers
 
         [EnableRateLimiting(RateLimitPolicies.GetResources)]
         [HttpGet("own-classes/{classId}")]
-        [Authorize(Roles = "Teacher")]
+        [Authorize(Roles = Roles.Teacher)]
         public async Task<ActionResult<TeacherClassDetailDTO>> GetTeacherClassbyId([FromRoute] Guid classId,
             CancellationToken cancellationToken)
         {

@@ -42,7 +42,7 @@ namespace WebAPI.Controllers
 
 
         [HttpPost]
-        [Authorize(Roles = "Student")]
+        [Authorize(Roles = Roles.Student)]
         public async Task<ActionResult<ApiResponse<EnrollmentDTO>>> RequestEnrollment([FromBody] CreateEnrollmentRequest request,
             CancellationToken cancellationToken)
         {
@@ -57,7 +57,7 @@ namespace WebAPI.Controllers
 
         [EnableRateLimiting(RateLimitPolicies.GetResources)]
         [HttpGet("my-classes")]
-        [Authorize(Roles = "Student")]
+        [Authorize(Roles = Roles.Student)]
         public async Task<ActionResult<ApiResponse<IEnumerable<EnrollmentDTO>>>> MyClasses(
             [FromQuery] PaginationRequest request,
             CancellationToken cancellationToken)
@@ -72,7 +72,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut("requests/{enrollmentId}")]
-        [Authorize(Roles = "Student")]
+        [Authorize(Roles = Roles.Student)]
         public async Task<ActionResult<ApiResponse<EnrollmentDTO>>> CancelEnrollment([FromRoute] Guid enrollmentId,
             CancellationToken cancellationToken)
         {
@@ -86,7 +86,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpDelete("my-classes/{enrollmentId}")]
-        [Authorize(Roles = "Student")]
+        [Authorize(Roles = Roles.Student)]
         public async Task<ActionResult<ApiResponse<EnrollmentDTO>>> DropEnrollment([FromRoute] Guid enrollmentId,
             CancellationToken cancellationToken)
         {
@@ -101,7 +101,7 @@ namespace WebAPI.Controllers
 
         [EnableRateLimiting(RateLimitPolicies.GetResources)]
         [HttpGet("pending")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult<ApiResponse<IEnumerable<EnrollmentDTO>>>> PendingEnrollments(
             [FromQuery] PaginationRequest request,
             CancellationToken cancellationToken)
@@ -116,7 +116,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("{enrollmentId}/approve")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult<ApiResponse<EnrollmentDTO>>> ApproveEnrollment([FromRoute] Guid enrollmentId,
             CancellationToken cancellationToken)
         {
@@ -130,7 +130,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("{enrollmentId}/reject")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult<ApiResponse<EnrollmentDTO>>> RejectEnrollment([FromRoute] Guid enrollmentId,
             CancellationToken cancellationToken)
         {

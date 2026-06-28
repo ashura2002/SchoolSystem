@@ -32,7 +32,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("admin")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult<ApiResponse<UserDTO>>> CreateAdmin([FromBody] CreateUserRequests requests,
             CancellationToken cancellationToken)
         {
@@ -46,7 +46,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("teacher")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult<ApiResponse<UserDTO>>> CreateTeacher([FromBody] CreateUserRequests requests,
             CancellationToken cancellationToken)
         {
@@ -61,7 +61,7 @@ namespace WebAPI.Controllers
 
 
         [HttpPost("student")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult<ApiResponse<UserDTO>>> CreateStudent([FromBody] CreateUserRequests requests,
             CancellationToken cancellationToken)
         {
