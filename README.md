@@ -1,4 +1,4 @@
-# School Management System API
+# School System API
 
 A RESTful School Management System built with **ASP.NET Core** following **Clean Architecture**, **Domain-Driven Design (DDD)**,
 and **CQRS** principles.
