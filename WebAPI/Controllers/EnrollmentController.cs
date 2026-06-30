@@ -23,12 +23,13 @@ namespace WebAPI.Controllers
         private readonly GetAllMyClassesHandler _getAllMyClassesHandler;
         private readonly CancelEnrollmentHandler _cancelEnrollmentHandler;
         private readonly DropEnrollmentHandler _dropEnrollmentHandler;
+        private readonly GetMyClassByIdhandler _getMyClassByIdhandler;
 
         public EnrollmentController(RequestEnrollmentHandler requestEnrollmentHandler,
             GetAllPendingEnrollmentsHandler getAllPendingEnrollmentsHandler,
             ApproveEnrollmentHandler approveEnrollmentRequestHandler, RejectEnrollmentHandler rejectEnrollmentHandler,
             GetAllMyClassesHandler getAllMyClassesHandler, CancelEnrollmentHandler cancelEnrollmentHandler,
-            DropEnrollmentHandler dropEnrollmentHandler
+            DropEnrollmentHandler dropEnrollmentHandler, GetMyClassByIdhandler getMyClassByIdhandler
             )
         {
             _requestEnrollmentHandler = requestEnrollmentHandler;
@@ -38,6 +39,7 @@ namespace WebAPI.Controllers
             _getAllMyClassesHandler = getAllMyClassesHandler;
             _cancelEnrollmentHandler = cancelEnrollmentHandler;
             _dropEnrollmentHandler = dropEnrollmentHandler;
+            _getMyClassByIdhandler = getMyClassByIdhandler;
         }
 
 
@@ -58,15 +60,31 @@ namespace WebAPI.Controllers
         [EnableRateLimiting(RateLimitPolicies.GetResources)]
         [HttpGet("my-classes")]
         [Authorize(Roles = Roles.Student)]
-        public async Task<ActionResult<ApiResponse<IEnumerable<EnrollmentDTO>>>> MyClasses(
+        public async Task<ActionResult<ApiResponse<IEnumerable<EnrollmentResponseDTO>>>> MyClasses(
             [FromQuery] PaginationRequest request,
             CancellationToken cancellationToken)
         {
             var query = new GetAllMyClassesQuery(request.Page, request.PageSize);
             var result = await _getAllMyClassesHandler.Handle(query, cancellationToken);
-            return Ok(new ApiResponse<IEnumerable<EnrollmentDTO>>
+            return Ok(new ApiResponse<IEnumerable<EnrollmentResponseDTO>>
             {
                 Message = "Enrollments retrieved successfully",
+                Data = result
+            });
+        }
+
+        [EnableRateLimiting(RateLimitPolicies.GetResources)]
+        [HttpGet("my-classes/{enrollmentId}")]
+        [Authorize(Roles = Roles.Student)]
+        public async Task<ActionResult<ApiResponse<EnrollmentDetailsDTO>>> MyClassesById(
+         [FromRoute] Guid enrollmentId,
+         CancellationToken cancellationToken)
+        {
+            var query = new GetMyClassByIdQuery(enrollmentId);
+            var result = await _getMyClassByIdhandler.Handle(query, cancellationToken);
+            return Ok(new ApiResponse<EnrollmentDetailsDTO>
+            {
+                Message = "Enrollment retrieved successfully",
                 Data = result
             });
         }
@@ -102,13 +120,13 @@ namespace WebAPI.Controllers
         [EnableRateLimiting(RateLimitPolicies.GetResources)]
         [HttpGet("pending")]
         [Authorize(Roles = Roles.Admin)]
-        public async Task<ActionResult<ApiResponse<IEnumerable<EnrollmentDTO>>>> PendingEnrollments(
+        public async Task<ActionResult<ApiResponse<IEnumerable<PendingEnrollmentResponseDTO>>>> PendingEnrollments(
             [FromQuery] PaginationRequest request,
             CancellationToken cancellationToken)
         {
             var query = new GetAllPendingEnrollmentQuery(request.Page, request.PageSize);
             var result = await _getAllPendingEnrollmentsHandler.Execute(query, cancellationToken);
-            return Ok(new ApiResponse<IEnumerable<EnrollmentDTO>>
+            return Ok(new ApiResponse<IEnumerable<PendingEnrollmentResponseDTO>>
             {
                 Message = "Enrollment retrieved successfully",
                 Data = result

@@ -58,6 +58,7 @@ namespace Application
             services.AddScoped<GetAllMyClassesHandler>();
             services.AddScoped<CancelEnrollmentHandler>();
             services.AddScoped<DropEnrollmentHandler>();
+            services.AddScoped<GetMyClassByIdhandler>();
             return services;
         }
 
