@@ -15,6 +15,8 @@ namespace Application.Interfaces
         Task<List<SchoolClass>> GetAllClassesWithTeacher(int Page, int PageSize, CancellationToken cancellationToken);
         Task<List<SchoolClass>> GetOwnClasses(int Page, int PageSize, Guid teacherId, CancellationToken cancellationToken);
         Task<SchoolClass?> GetClassById(Guid id, CancellationToken cancellationToken);
+
+        Task<List<SchoolClass>> GetClassesByIds(List<Guid> schoolId, CancellationToken cancellationToken);
         void DeleteClass(SchoolClass schoolClass);
         Task SaveChangesAsync(CancellationToken cancellationToken);
     }

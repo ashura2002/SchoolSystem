@@ -33,6 +33,14 @@ namespace Infrastructure.Repositories
                 .ToListAsync(cancellationToken);
         }
 
+        public async Task<List<SchoolClass>> GetAllClassesByIds(List<Guid> schoolClassId, CancellationToken cancellationToken)
+        {
+            return await _context.SchoolClasses.AsNoTracking()
+                .OrderByDescending(sc => sc.CreatedAt)
+                .Where(sc => schoolClassId.Contains(sc.Id))
+                .ToListAsync(cancellationToken);
+        }
+
         public async Task<List<SchoolClass>> GetAllClassesWithoutTeacher(int Page, int PageSize, CancellationToken cancellationToken)
         {
             return await _context.SchoolClasses
@@ -59,6 +67,15 @@ namespace Infrastructure.Repositories
         {
             return await _context.SchoolClasses
                 .FirstOrDefaultAsync(sc => sc.Id == id, cancellationToken);
+        }
+
+        public async Task<List<SchoolClass>> GetClassesByIds(List<Guid> schoolId, CancellationToken cancellationToken)
+        {
+            return await _context.SchoolClasses
+                .AsNoTracking()
+                .OrderByDescending(e => e.CreatedAt)
+                .Where(e => schoolId.Contains(e.Id))
+                .ToListAsync(cancellationToken);
         }
 
         public async Task<List<SchoolClass>> GetOwnClasses(int Page, int PageSize, Guid teacherId, CancellationToken cancellationToken)

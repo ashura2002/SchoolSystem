@@ -76,6 +76,7 @@ namespace Infrastructure.Repositories
                .FirstOrDefaultAsync(e => e.StudentId == studentId && e.ClassId == classId, cancellationToken);
         }
 
+
         public async Task SaveChangesAsync(CancellationToken cancellationToken)
         {
             await _context.SaveChangesAsync(cancellationToken);
