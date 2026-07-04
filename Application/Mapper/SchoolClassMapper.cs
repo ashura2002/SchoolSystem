@@ -15,21 +15,28 @@ namespace Application.Mapper
                 Id = schoolClass.Id,
                 Name = schoolClass.Name.Value,
                 TeacherId = schoolClass.TeacherId,
+                StartTime = schoolClass.StartTime,
+                EndTime = schoolClass.EndTime,
+                Schedule = schoolClass.Schedule,
                 CreatedAt = schoolClass.CreatedAt,
                 UpdatedAt = schoolClass.UpdatedAt
             };
         }
 
-        public static IEnumerable<SchoolClassDTO> ToResponseList(IEnumerable<SchoolClass> schoolClasses)
+        public static List<SchoolClassDTO> ToResponseList(List<SchoolClass> schoolClasses)
         {
-            return schoolClasses.Select(sc => new SchoolClassDTO
+            var result = schoolClasses.Select(sc => new SchoolClassDTO
             {
                 Id = sc.Id,
                 Name = sc.Name.Value,
                 TeacherId = sc.TeacherId,
+                StartTime = sc.StartTime,
+                EndTime = sc.EndTime,
+                Schedule = sc.Schedule,
                 CreatedAt = sc.CreatedAt,
                 UpdatedAt = sc.UpdatedAt
-            });
+            }).ToList();
+            return result;
         }
 
     }

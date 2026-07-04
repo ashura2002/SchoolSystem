@@ -1,9 +1,7 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
-using Application.Mapper;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Application.Features.Enrollments.Student.Queries
 {
@@ -23,7 +21,7 @@ namespace Application.Features.Enrollments.Student.Queries
         }
 
 
-        public async Task<IEnumerable<EnrollmentResponseDTO>> Handle(GetAllMyClassesQuery query,
+        public async Task<List<EnrollmentResponseDTO>> Handle(GetAllMyClassesQuery query,
             CancellationToken cancellationToken)
         {
             var studentId = _currentUserService.UserId;
@@ -38,13 +36,15 @@ namespace Application.Features.Enrollments.Student.Queries
             var classLookUp = classes.ToDictionary(c => c.Id, c => c.Name.Value);
 
 
-            return enrollments.Select(e => new EnrollmentResponseDTO(
+            var result = enrollments.Select(e => new EnrollmentResponseDTO(
                 e.Id,
                 e.Status,
-                classLookUp[e.ClassId],
+                classLookUp.GetValueOrDefault(e.ClassId, "Unknown"),
                 e.CreatedAt,
                 e.UpdatedAt,
-                e.DeletedAt));
+                e.DeletedAt)).ToList();
+
+            return result;
         }
 
     }

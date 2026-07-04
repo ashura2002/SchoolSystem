@@ -20,7 +20,7 @@ namespace Application.Features.Enrollments.Student.Commands
             _currentUserService = currentUserService;
         }
 
-        public async Task<EnrollmentDTO> Execute(RequestEnrollmentCommand command, CancellationToken cancellationToken)
+        public async Task<EnrollmentDTO> Handle(RequestEnrollmentCommand command, CancellationToken cancellationToken)
         {
             var studentId = _currentUserService.UserId;
 

@@ -10,6 +10,9 @@ namespace Application.DTOs
     public record TeacherClassDetailDTO(
         Guid Id,
         string ClassName,
+        TimeOnly StartTime,
+        TimeOnly EndTime,
+        DayOfWeek Schedule,
         List<Students> Students
         );
 }

@@ -49,7 +49,7 @@ namespace WebAPI.Controllers
             CancellationToken cancellationToken)
         {
             var enrollment = new RequestEnrollmentCommand(request.ClassId);
-            var result = await _requestEnrollmentHandler.Execute(enrollment, cancellationToken);
+            var result = await _requestEnrollmentHandler.Handle(enrollment, cancellationToken);
             return Ok(new ApiResponse<EnrollmentDTO>
             {
                 Message = "Enroll Successfully",
@@ -125,7 +125,7 @@ namespace WebAPI.Controllers
             CancellationToken cancellationToken)
         {
             var query = new GetAllPendingEnrollmentQuery(request.Page, request.PageSize);
-            var result = await _getAllPendingEnrollmentsHandler.Execute(query, cancellationToken);
+            var result = await _getAllPendingEnrollmentsHandler.Handle(query, cancellationToken);
             return Ok(new ApiResponse<IEnumerable<PendingEnrollmentResponseDTO>>
             {
                 Message = "Enrollment retrieved successfully",

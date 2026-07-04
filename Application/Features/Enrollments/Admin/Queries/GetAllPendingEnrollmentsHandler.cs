@@ -1,9 +1,7 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
-using Application.Mapper;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Application.Features.Enrollments.Admin.Queries
 {
@@ -22,16 +20,16 @@ namespace Application.Features.Enrollments.Admin.Queries
         }
 
 
-        public async Task<IEnumerable<PendingEnrollmentResponseDTO>> Execute(GetAllPendingEnrollmentQuery query,
+        public async Task<List<PendingEnrollmentResponseDTO>> Handle(GetAllPendingEnrollmentQuery query,
             CancellationToken cancellationToken)
         {
             // enrollments
             var pendingEnrollments = await _enrollmentRepository.GetAllPendingEnrollments(query.Page, query.PageSize,
                 cancellationToken);
 
-            // map the ids 
-            var classIds = pendingEnrollments.Select(e => e.ClassId).ToList();
-            var usersIds = pendingEnrollments.Select(e => e.StudentId).ToList();
+            // map the ids - use distinct to prevent passing duplicate ids
+            var classIds = pendingEnrollments.Select(e => e.ClassId).Distinct();
+            var usersIds = pendingEnrollments.Select(e => e.StudentId).Distinct();
 
             // get classes by ids
             var classes = await _schoolClassRepository.GetClassesByIds(classIds, cancellationToken);
@@ -43,16 +41,16 @@ namespace Application.Features.Enrollments.Admin.Queries
             // look up for users
             var userLookUp = students.ToDictionary(u => u.Id, u => u.Username.Value);
 
-
-            return pendingEnrollments.Select(e => new PendingEnrollmentResponseDTO(
+            var result = pendingEnrollments.Select(e => new PendingEnrollmentResponseDTO(
                 e.Id,
                 e.Status,
-                userLookUp[e.StudentId],
-                classLookUp[e.ClassId],
+                userLookUp.GetValueOrDefault(e.StudentId, "Unknown"),
+                classLookUp.GetValueOrDefault(e.ClassId, "Unknown"),
                 e.CreatedAt,
                 e.UpdatedAt,
-                e.DeletedAt));
+                e.DeletedAt)).ToList();
 
+            return result;
         }
 
     }

@@ -22,9 +22,9 @@ namespace Application.Mapper
             };
         }
 
-        public static IEnumerable<UserDTO> ToResponseList(IEnumerable<User> users)
+        public static List<UserDTO> ToResponseList(List<User> users)
         {
-            return users.Select(u => new UserDTO
+            var result = users.Select(u => new UserDTO
             {
                 Id = u.Id,
                 Username = u.Username.Value,
@@ -33,7 +33,8 @@ namespace Application.Mapper
                 CreatedAt = u.CreatedAt,
                 UpdatedAt = u.UpdatedAt,
                 DeletedAt = u.DeletedAt
-            });
+            }).ToList();
+            return result;
         }
 
     }

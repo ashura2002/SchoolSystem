@@ -21,7 +21,7 @@ namespace Application.Features.Class.Admin.Commands
         public async Task<SchoolClassDTO> Handle(CreateSchoolClassCommand command, CancellationToken cancellationToken)
         {
             var schoolClassName = ClassNameValueObject.Create(command.Name);
-            var schoolClass = new SchoolClass(schoolClassName);
+            var schoolClass = new SchoolClass(schoolClassName, command.StartTime, command.EndTime, command.Schedule);
 
             await _schoolClassRepository.AddClass(schoolClass);
             await _schoolClassRepository.SaveChangesAsync(cancellationToken);

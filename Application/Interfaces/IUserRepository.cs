@@ -1,5 +1,4 @@
-﻿using Application.DTOs;
-using Domain.Entities;
+﻿using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,6 +14,6 @@ namespace Application.Interfaces
         Task<User?> GetByUsername(string username, CancellationToken cancellationToken);
         Task<User?> GetByEmail(string email, CancellationToken cancellationToken);
         Task SaveChangesAsync(CancellationToken cancellationToken);
-        Task<List<User>> GetUsersByIds(List<Guid> ids, CancellationToken cancellationToken);
+        Task<List<User>> GetUsersByIds(IEnumerable<Guid> ids, CancellationToken cancellationToken);
     }
 }

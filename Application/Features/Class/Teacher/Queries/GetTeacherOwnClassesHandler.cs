@@ -18,7 +18,7 @@ namespace Application.Features.Class.Teacher.Queries
             _currentUserService = currentUserService;
         }
 
-        public async Task<IEnumerable<SchoolClassDTO>> Handle(GetTeacherOwnClassesQuery query,
+        public async Task<List<SchoolClassDTO>> Handle(GetTeacherOwnClassesQuery query,
             CancellationToken cancellationToken)
         {
             var teacherId = _currentUserService.UserId;

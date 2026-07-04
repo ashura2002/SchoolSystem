@@ -6,28 +6,18 @@ using System.Text;
 
 namespace Domain.Entities
 {
-    public class Enrollment
+    public class Enrollment:BaseEntity
     {
-        public Guid Id { get; private set; }
-
         public Guid StudentId { get; private set; }
         public Guid ClassId { get; private set; }
         public EnrollmentStatus Status { get; private set; }
-
-        public DateTime CreatedAt { get; private set; }
-        public DateTime UpdatedAt { get; private set; }
         public DateTime? DeletedAt { get; private set; }
 
         public Enrollment(Guid studentId, Guid classId)
         {
-            Id = Guid.NewGuid();
-
             StudentId = studentId;
             ClassId = classId;
-
             Status = EnrollmentStatus.Pending;
-            CreatedAt = DateTime.UtcNow;
-            UpdatedAt = DateTime.UtcNow;
         }
 
         public void Approve()
@@ -36,7 +26,7 @@ namespace Domain.Entities
                 throw new DomainBadRequestException("Only pending enrollments can be approved");
 
             Status = EnrollmentStatus.Approved;
-            UpdatedAt = DateTime.UtcNow;
+            Touch();
         }
 
         public void Reject()
@@ -45,7 +35,7 @@ namespace Domain.Entities
                 throw new DomainBadRequestException("Only pending enrollments can be rejected");
 
             Status = EnrollmentStatus.Rejected;
-            UpdatedAt = DateTime.UtcNow;
+            Touch();
         }
 
         public void Cancel()
@@ -54,7 +44,7 @@ namespace Domain.Entities
                 throw new DomainBadRequestException("Only pending enrollments can be cancelled");
 
             DeletedAt = DateTime.UtcNow;
-            UpdatedAt = DateTime.UtcNow;
+            Touch();
         }
 
         public void Drop()
@@ -63,7 +53,7 @@ namespace Domain.Entities
                 throw new DomainBadRequestException("Only approved enrollments can be dropped");
 
             DeletedAt = DateTime.UtcNow;
-            UpdatedAt = DateTime.UtcNow;
+            Touch();
         }
     }
 }
