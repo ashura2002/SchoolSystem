@@ -69,7 +69,7 @@ namespace Infrastructure.Repositories
                 .FirstOrDefaultAsync(sc => sc.Id == id, cancellationToken);
         }
 
-        public async Task<List<SchoolClass>> GetClassesByIds(List<Guid> schoolId, CancellationToken cancellationToken)
+        public async Task<List<SchoolClass>> GetClassesByIds(IEnumerable<Guid> schoolId, CancellationToken cancellationToken)
         {
             return await _context.SchoolClasses
                 .AsNoTracking()

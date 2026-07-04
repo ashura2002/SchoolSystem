@@ -17,7 +17,7 @@ namespace Application.Features.Class.Admin.Queries
         }
 
 
-        public async Task<IEnumerable<SchoolClassDTO>> Handle(GetAllClassesQuery query, CancellationToken cancellationToken)
+        public async Task<List<SchoolClassDTO>> Handle(GetAllClassesQuery query, CancellationToken cancellationToken)
         {
             var schoolClasses = await _schoolClassRepository.GetAllClass(query.Page, query.PageSize, cancellationToken);
             return SchoolClassMapper.ToResponseList(schoolClasses);

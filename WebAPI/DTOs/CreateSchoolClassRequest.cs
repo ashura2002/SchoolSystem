@@ -6,5 +6,12 @@ namespace WebAPI.DTOs
     {
         [Required]
         public required string Name { get; set; }
+        [Required]
+        public required TimeOnly StartTime { get; set; }
+        [Required]
+        public required TimeOnly EndTime { get; set; }
+        [Required]
+        public required DayOfWeek Schedule { get; set; }
+
     }
 }

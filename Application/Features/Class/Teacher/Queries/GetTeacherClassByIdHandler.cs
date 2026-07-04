@@ -36,7 +36,8 @@ namespace Application.Features.Class.Teacher.Queries
                 throw new DomainUnauthorizedException("You are not assigned to this class");
 
             // get all enrollment by class id and status is == to approved
-            var approvedStudentsEnrollment = await _enrollmentRepository.GetApprovedStudentByClassId(query.ClassId, cancellationToken);
+            var approvedStudentsEnrollment = await _enrollmentRepository.GetApprovedStudentByClassId(query.ClassId, 
+                cancellationToken);
 
             //extract ids using select
             var studentIds = approvedStudentsEnrollment.Select(e => e.StudentId).ToList();

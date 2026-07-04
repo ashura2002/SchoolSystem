@@ -16,7 +16,7 @@ namespace Application.Features.Users.Queries
             _userRepository = userRepository;
         }
 
-        public async Task<IEnumerable<UserDTO>> Handle(GetAllDeactiveUserQuery query, CancellationToken cancellationToken)
+        public async Task<List<UserDTO>> Handle(GetAllDeactiveUserQuery query, CancellationToken cancellationToken)
         {
             var users = await _userRepository.GetAllDeletedUsers(query.Page, query.PageSize, cancellationToken);
             return UserMapper.ToResponseList(users);

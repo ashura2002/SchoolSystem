@@ -16,14 +16,14 @@ namespace WebAPI.Controllers
     [Route("api/users")]
     public class UserController : ControllerBase
     {
-        private readonly GetAllActiveUsersUseCase _getAllUsersHandler;
+        private readonly GetAllActiveUsersHandler _getAllUsersHandler;
         private readonly GetUserByIdHandler _getUserByIdHandler;
         private readonly GetLoginUserHandler _getLoginUserHandler;
         private readonly UpdateUserHandler _updateUserHandler;
         private readonly DeleteUserHandler _deleteUserHandler;
         private readonly GetAllDeactiveUsersHandler _getAllDeactiveUsersHandler;
 
-        public UserController(GetAllActiveUsersUseCase getAllUsersHandler, GetUserByIdHandler getUserByIdHandler,
+        public UserController(GetAllActiveUsersHandler getAllUsersHandler, GetUserByIdHandler getUserByIdHandler,
             GetLoginUserHandler getLoginUserHandler, UpdateUserHandler updateUserHandler, DeleteUserHandler deleteUserHandler,
             GetAllDeactiveUsersHandler getAllDeactiveUsersHandler
             )
@@ -45,7 +45,7 @@ namespace WebAPI.Controllers
             CancellationToken cancellationToken)
         {
             var query = new GetAllActiveUserQuery(request.Page, request.PageSize);
-            var result = await _getAllUsersHandler.Execute(query, cancellationToken);
+            var result = await _getAllUsersHandler.Handle(query, cancellationToken);
             return Ok(new ApiResponse<IEnumerable<UserDTO>>
             {
                 Message = "Users retrieved successfully",

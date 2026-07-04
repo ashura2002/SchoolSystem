@@ -1,4 +1,5 @@
-﻿using Domain.Exceptions;
+﻿using Domain.Enums;
+using Domain.Exceptions;
 using Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
@@ -6,23 +7,25 @@ using System.Text;
 
 namespace Domain.Entities
 {
-    public class SchoolClass
+    public class SchoolClass : BaseEntity
     {
-        public Guid Id { get; private set; }
         public ClassNameValueObject Name { get; private set; }
         public Guid? TeacherId { get; private set; }
+        public TimeOnly StartTime { get; private set; }
+        public TimeOnly EndTime { get; private set; }
+        public DayOfWeek Schedule { get; private set; }
 
-        public DateTime CreatedAt { get; private set; }
-        public DateTime UpdatedAt { get; private set; }
 
-
-        public SchoolClass(ClassNameValueObject name)
+        public SchoolClass(ClassNameValueObject name, TimeOnly startTime, TimeOnly endTime, DayOfWeek schedule)
         {
-            Id = Guid.NewGuid();
+            if (endTime <= startTime)
+                throw new DomainBadRequestException("End time must be after the start time.");
+
             Name = name;
+            StartTime = startTime;
+            EndTime = endTime;
+            Schedule = schedule;
             TeacherId = null;
-            CreatedAt = DateTime.UtcNow;
-            UpdatedAt = DateTime.UtcNow;
         }
 
         public void UpdateClassName(ClassNameValueObject newClassName)
@@ -30,7 +33,19 @@ namespace Domain.Entities
             if (Name == newClassName) return;
 
             Name = newClassName;
-            UpdatedAt = DateTime.UtcNow;
+            Touch();
+        }
+
+        public void UpdateSchedule(DayOfWeek schedule, TimeOnly startTime, TimeOnly endTime)
+        {
+            if (endTime <= startTime)
+                throw new DomainBadRequestException(
+                    "End time must be after the start time.");
+
+            Schedule = schedule;
+            StartTime = startTime;
+            EndTime = endTime;
+            Touch();
         }
 
         public void AssignTeacher(Guid teacherId)
@@ -42,14 +57,14 @@ namespace Domain.Entities
                 throw new DomainBadRequestException("Teacher Id cannot be empty.");
 
             TeacherId = teacherId;
-            UpdatedAt = DateTime.UtcNow;
+            Touch();
         }
 
         public void RemoveTeacher()
         {
             if (!HasTeacher) throw new DomainBadRequestException("No teacher is assigned to this class.");
             TeacherId = null;
-            UpdatedAt = DateTime.UtcNow;
+            Touch();
         }
 
         public void EnsureCanBeDeleted()
