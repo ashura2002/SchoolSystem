@@ -13,11 +13,14 @@ namespace Application.Features.Enrollments.Student.Commands
     {
         private readonly IEnrollmentRepository _enrollmentRepository;
         private readonly ICurrentUserService _currentUserService;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public RequestEnrollmentHandler(IEnrollmentRepository enrollmentRepository, ICurrentUserService currentUserService)
+        public RequestEnrollmentHandler(IEnrollmentRepository enrollmentRepository, ICurrentUserService currentUserService,
+            IUnitOfWork unitOfWork)
         {
             _enrollmentRepository = enrollmentRepository;
             _currentUserService = currentUserService;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<EnrollmentDTO> Handle(RequestEnrollmentCommand command, CancellationToken cancellationToken)
@@ -29,10 +32,10 @@ namespace Application.Features.Enrollments.Student.Commands
 
 
             // create entity
-            var enrollment = new Enrollment(studentId, command.ClassId);
+            var enrollment = Enrollment.Request(studentId, command.ClassId);
 
             _enrollmentRepository.Add(enrollment);
-            await _enrollmentRepository.SaveChangesAsync(cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return EnrollmentMapper.ToDto(enrollment);
         }

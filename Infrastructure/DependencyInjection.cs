@@ -1,5 +1,7 @@
 ﻿using Application.Interfaces;
 using Infrastructure.Data;
+using Infrastructure.Events;
+using Infrastructure.Persistence;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
 using Infrastructure.Setting;
@@ -22,6 +24,10 @@ namespace Infrastructure
             // repository and interface
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ISchoolClassRepository, SchoolClassRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<INotificationRepository, NotificationRepository>();
+            services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
+            services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
 
 
             // services
@@ -30,7 +36,7 @@ namespace Infrastructure
             services.Configure<JwtSetting>(configuration.GetSection("Jwt"));
             services.AddScoped<IPasswordHasher, PasswordHasher>();
             services.AddScoped<IJwtService, JwtService>();
-            services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
+            services.AddScoped<IEmailService, EmailService>();
             return services;
         }
 

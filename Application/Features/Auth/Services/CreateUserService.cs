@@ -16,11 +16,13 @@ namespace Application.Features.Auth.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher _passwordHasher;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public CreateUserService(IUserRepository userRepository, IPasswordHasher passwordHasher)
+        public CreateUserService(IUserRepository userRepository, IPasswordHasher passwordHasher, IUnitOfWork unitOfWork)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<UserDTO> CreateUser(CreateUserCommand dto, Role role, CancellationToken cancellationToken)
@@ -37,7 +39,7 @@ namespace Application.Features.Auth.Services
             var hashedPassword = _passwordHasher.Hash(password.Value);
 
             // create a domain entity
-            var user = new User(
+            var user = User.Register(
                 username,
                 email,
                 PasswordValueObject.Create(hashedPassword),
@@ -45,7 +47,7 @@ namespace Application.Features.Auth.Services
                 );
 
             await _userRepository.Add(user);
-            await _userRepository.SaveChangesAsync(cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
             return UserMapper.ToDto(user);
         }
 

@@ -12,23 +12,26 @@ namespace Application.Features.Enrollments.Student.Commands
     {
         private readonly IEnrollmentRepository _enrollmentRepository;
         private readonly ICurrentUserService _currentUserService;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public CancelEnrollmentHandler(IEnrollmentRepository enrollmentRepository, ICurrentUserService currentUserService)
+        public CancelEnrollmentHandler(IEnrollmentRepository enrollmentRepository, ICurrentUserService currentUserService,
+             IUnitOfWork unitOfWork)
         {
             _enrollmentRepository = enrollmentRepository;
             _currentUserService = currentUserService;
+            _unitOfWork = unitOfWork;
         }
 
-        public async Task<EnrollmentDTO> Handle(CancelEnrollmentCommand command,CancellationToken cancellationToken)
+        public async Task<EnrollmentDTO> Handle(CancelEnrollmentCommand command, CancellationToken cancellationToken)
         {
-            var enrollment = await _enrollmentRepository.GetById(command.EnrollementId,cancellationToken) ??
+            var enrollment = await _enrollmentRepository.GetById(command.EnrollementId, cancellationToken) ??
                 throw new DomainNotFoundException("Enrollment not found");
             if (enrollment.StudentId != _currentUserService.UserId)
                 throw new DomainBadRequestException("You can only cancel your own enrollment");
 
 
             enrollment.Cancel();
-            await _enrollmentRepository.SaveChangesAsync(cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
             return EnrollmentMapper.ToDto(enrollment);
         }
     }

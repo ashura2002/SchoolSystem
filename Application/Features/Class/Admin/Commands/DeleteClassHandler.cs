@@ -9,10 +9,12 @@ namespace Application.Features.Class.Admin.Commands
     public class DeleteClassHandler
     {
         private readonly ISchoolClassRepository _schoolClassRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public DeleteClassHandler(ISchoolClassRepository schoolClassRepository)
+        public DeleteClassHandler(ISchoolClassRepository schoolClassRepository,IUnitOfWork unitOfWork)
         {
             _schoolClassRepository = schoolClassRepository;
+            _unitOfWork = unitOfWork;
         }
 
 
@@ -27,7 +29,7 @@ namespace Application.Features.Class.Admin.Commands
             // tell ef core mark as deleted
             _schoolClassRepository.DeleteClass(schoolClass);
             // persist changes
-            await _schoolClassRepository.SaveChangesAsync(cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
 
     }

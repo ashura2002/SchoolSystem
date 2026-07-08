@@ -18,6 +18,5 @@ namespace Application.Interfaces
 
         Task<List<SchoolClass>> GetClassesByIds(IEnumerable<Guid> schoolId, CancellationToken cancellationToken);
         void DeleteClass(SchoolClass schoolClass);
-        Task SaveChangesAsync(CancellationToken cancellationToken);
     }
 }

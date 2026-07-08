@@ -12,10 +12,12 @@ namespace Application.Features.Class.Admin.Commands
     public class UpdateClassHandler
     {
         private readonly ISchoolClassRepository _schoolClassRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public UpdateClassHandler(ISchoolClassRepository schoolClassRepository)
+        public UpdateClassHandler(ISchoolClassRepository schoolClassRepository, IUnitOfWork unitOfWork)
         {
             _schoolClassRepository = schoolClassRepository;
+            _unitOfWork = unitOfWork;
         }
 
 
@@ -27,7 +29,7 @@ namespace Application.Features.Class.Admin.Commands
                 throw new DomainNotFoundException("Class not found");
 
             schoolClass.UpdateClassName(updatedClassName);
-            await _schoolClassRepository.SaveChangesAsync(cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
             return SchoolClassMapper.ToDto(schoolClass);
         }
 

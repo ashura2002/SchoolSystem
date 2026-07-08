@@ -10,11 +10,13 @@ namespace Application.Features.Users.Commands
     {
         private readonly IUserRepository _userRepository;
         private readonly ICurrentUserService _currentUserService;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public DeleteUserHandler(IUserRepository userRepository, ICurrentUserService currentUserService)
+        public DeleteUserHandler(IUserRepository userRepository, ICurrentUserService currentUserService, IUnitOfWork unitOfWork)
         {
             _userRepository = userRepository;
             _currentUserService = currentUserService;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task Handle(DeleteUserCommand command, CancellationToken cancellationToken)
@@ -24,7 +26,7 @@ namespace Application.Features.Users.Commands
             if (user.Id == _currentUserService.UserId)
                 throw new DomainBadRequestException("You cannot delete your account");
             user.DeactivateAccount();
-            await _userRepository.SaveChangesAsync(cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
 
     }

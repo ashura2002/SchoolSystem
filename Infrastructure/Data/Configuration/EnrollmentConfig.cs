@@ -29,8 +29,6 @@ namespace Infrastructure.Data.Configuration
 
             // Optional soft delete filter
             builder.HasQueryFilter(e => e.DeletedAt == null);
-
-
         }
     }
 }

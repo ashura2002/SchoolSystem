@@ -11,22 +11,25 @@ namespace Application.Features.Class.Admin.Commands
     {
         private readonly ISchoolClassRepository _schoolClassRepository;
         private readonly ILogger<RemoveTeacherHandler> _logger;
+        private readonly IUnitOfWork _unitOfWork;
 
 
-        public RemoveTeacherHandler(ISchoolClassRepository schoolClassRepository, ILogger<RemoveTeacherHandler> logger)
+        public RemoveTeacherHandler(ISchoolClassRepository schoolClassRepository, ILogger<RemoveTeacherHandler> logger,
+             IUnitOfWork unitOfWork)
         {
             _schoolClassRepository = schoolClassRepository;
             _logger = logger;
+            _unitOfWork = unitOfWork;
         }
 
-        public async Task Handle(RemoveTeacherCommand command,CancellationToken cancellationToken)
+        public async Task Handle(RemoveTeacherCommand command, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Removing teacher from class id {classId}", command.ClassId);
 
-            var schoolClass = await _schoolClassRepository.GetClassById(command.ClassId,cancellationToken) ??
+            var schoolClass = await _schoolClassRepository.GetClassById(command.ClassId, cancellationToken) ??
                 throw new DomainNotFoundException("Class not found!");
             schoolClass.RemoveTeacher();
-            await _schoolClassRepository.SaveChangesAsync(cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
 
     }

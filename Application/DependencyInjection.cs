@@ -1,4 +1,5 @@
-﻿using Application.Features.Auth.Commands;
+﻿using Application.Events;
+using Application.Features.Auth.Commands;
 using Application.Features.Auth.Queries;
 using Application.Features.Auth.Services;
 using Application.Features.Class.Admin.Commands;
@@ -11,6 +12,8 @@ using Application.Features.Enrollments.Student.Queries;
 using Application.Features.Users.Commands;
 using Application.Features.Users.Queries;
 using Application.Features.Users.Services;
+using Application.Interfaces;
+using Domain.Events;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -59,6 +62,10 @@ namespace Application
             services.AddScoped<CancelEnrollmentHandler>();
             services.AddScoped<DropEnrollmentHandler>();
             services.AddScoped<GetMyClassByIdhandler>();
+
+
+            // register event
+            services.AddScoped<IDomainEventHandler<EnrollementRequestedDomainEvent>, EnrollmentRequestedDomainEventHandler>();
             return services;
         }
 

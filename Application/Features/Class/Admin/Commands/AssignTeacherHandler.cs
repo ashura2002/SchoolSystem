@@ -15,15 +15,16 @@ namespace Application.Features.Class.Admin.Commands
         private readonly ISchoolClassRepository _schoolClassRepository;
         private readonly IUserRepository _userRepository;
         private readonly ILogger<AssignTeacherHandler> _logger;
-
+        private readonly IUnitOfWork _unitOfWork;
 
         public AssignTeacherHandler(ISchoolClassRepository schoolClassRepository, IUserRepository userRepository,
-            ILogger<AssignTeacherHandler> logger
+            ILogger<AssignTeacherHandler> logger, IUnitOfWork unitOfWork
             )
         {
             _schoolClassRepository = schoolClassRepository;
             _userRepository = userRepository;
             _logger = logger;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<SchoolClassDTO> Handle(AssignTeacherCommand command, CancellationToken cancellationToken)
@@ -42,7 +43,7 @@ namespace Application.Features.Class.Admin.Commands
 
             schoolClass.AssignTeacher(command.TeacherId);
 
-            await _schoolClassRepository.SaveChangesAsync(cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
             return SchoolClassMapper.ToDto(schoolClass);
         }
 

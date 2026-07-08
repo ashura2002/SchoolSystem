@@ -13,11 +13,15 @@ namespace Application.Features.Enrollments.Admin.Commands
     {
         private readonly IEnrollmentRepository _enrollmentRepository;
         private readonly ILogger<ApproveEnrollmentHandler> _logger;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public ApproveEnrollmentHandler(IEnrollmentRepository enrollmentRepository, ILogger<ApproveEnrollmentHandler> logger)
+        public ApproveEnrollmentHandler(IEnrollmentRepository enrollmentRepository, ILogger<ApproveEnrollmentHandler> logger,
+            IUnitOfWork unitOfWork
+            )
         {
             _enrollmentRepository = enrollmentRepository;
             _logger = logger;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<EnrollmentDTO> Handle(ApprovedEnrollmentCommand command,CancellationToken cancellationToken)
@@ -28,7 +32,7 @@ namespace Application.Features.Enrollments.Admin.Commands
                 throw new DomainNotFoundException("Enrollment not found");
 
             enrollmentToApprove.Approve();
-            await _enrollmentRepository.SaveChangesAsync(cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
             return EnrollmentMapper.ToDto(enrollmentToApprove);
         }
 

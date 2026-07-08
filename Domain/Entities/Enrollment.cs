@@ -1,23 +1,36 @@
 ﻿using Domain.Enums;
+using Domain.Events;
 using Domain.Exceptions;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace Domain.Entities
 {
-    public class Enrollment:BaseEntity
+    public class Enrollment : AggregateRoot
     {
         public Guid StudentId { get; private set; }
         public Guid ClassId { get; private set; }
         public EnrollmentStatus Status { get; private set; }
         public DateTime? DeletedAt { get; private set; }
 
-        public Enrollment(Guid studentId, Guid classId)
+        private Enrollment(Guid studentId, Guid classId)
         {
             StudentId = studentId;
             ClassId = classId;
             Status = EnrollmentStatus.Pending;
+        }
+
+        // factory method for requesting enrollment
+        public static Enrollment Request(Guid studentId, Guid classId)
+        {
+            Enrollment enrollment = new(studentId, classId);
+
+            // raising domain event
+            enrollment.RaiseEvent(new EnrollementRequestedDomainEvent(enrollment.Id, enrollment.StudentId, enrollment.ClassId));
+
+            return enrollment;
         }
 
         public void Approve()

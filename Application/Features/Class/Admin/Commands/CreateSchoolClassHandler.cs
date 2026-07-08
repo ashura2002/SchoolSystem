@@ -12,19 +12,21 @@ namespace Application.Features.Class.Admin.Commands
     public class CreateSchoolClassHandler
     {
         private readonly ISchoolClassRepository _schoolClassRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public CreateSchoolClassHandler(ISchoolClassRepository schoolClassRepository)
+        public CreateSchoolClassHandler(ISchoolClassRepository schoolClassRepository, IUnitOfWork unitOfWork)
         {
             _schoolClassRepository = schoolClassRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<SchoolClassDTO> Handle(CreateSchoolClassCommand command, CancellationToken cancellationToken)
         {
             var schoolClassName = ClassNameValueObject.Create(command.Name);
-            var schoolClass = new SchoolClass(schoolClassName, command.StartTime, command.EndTime, command.Schedule);
+            var schoolClass = SchoolClass.Create(schoolClassName, command.StartTime, command.EndTime, command.Schedule);
 
             await _schoolClassRepository.AddClass(schoolClass);
-            await _schoolClassRepository.SaveChangesAsync(cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
             return SchoolClassMapper.ToDto(schoolClass);
 
         }

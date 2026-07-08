@@ -15,6 +15,9 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 builder.Host.UseSerilog();
 
+// Cors Policy
+builder.Services.AddCorsPolicy();
+
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -42,12 +45,12 @@ if (app.Environment.IsDevelopment())
 }
 
 
-
-app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();
+app.UseMiddleware<ExceptionMiddleware>();
+app.UseCors("AllowAll");
+app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseRateLimiter();
 app.MapControllers();
 
 app.Run();
