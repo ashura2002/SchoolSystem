@@ -14,15 +14,23 @@ namespace Domain.Entities
         public Role Role { get; private set; }
         public DateTime? DeletedAt { get; private set; }
 
-
-        public User(UsernameValueObject username, EmailValueObject email, PasswordValueObject password,
-            Role role)
+        private User(UsernameValueObject username, EmailValueObject email, PasswordValueObject password,
+        Role role)
         {
             Username = username;
             Email = email;
             Password = password;
             Role = role;
         }
+
+        // factory method
+        public static User Register(UsernameValueObject username, EmailValueObject email, PasswordValueObject password,
+        Role role)
+        {
+            User user = new(username, email,password, role);
+            return user;
+        }
+
 
         public void UpdateUsername(UsernameValueObject newUsername)
         {

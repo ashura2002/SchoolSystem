@@ -88,10 +88,5 @@ namespace Infrastructure.Repositories
                 .Take(PageSize)
                 .ToListAsync(cancellationToken);
         }
-
-        public async Task SaveChangesAsync(CancellationToken cancellationToken)
-        {
-            await _context.SaveChangesAsync(cancellationToken);
-        }
     }
 }

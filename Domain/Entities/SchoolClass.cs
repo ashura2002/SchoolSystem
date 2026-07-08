@@ -16,17 +16,28 @@ namespace Domain.Entities
         public DayOfWeek Schedule { get; private set; }
 
 
-        public SchoolClass(ClassNameValueObject name, TimeOnly startTime, TimeOnly endTime, DayOfWeek schedule)
+        private SchoolClass(ClassNameValueObject name, TimeOnly startTime, TimeOnly endTime, DayOfWeek schedule)
         {
-            if (endTime <= startTime)
-                throw new DomainBadRequestException("End time must be after the start time.");
-
             Name = name;
             StartTime = startTime;
             EndTime = endTime;
             Schedule = schedule;
             TeacherId = null;
         }
+
+
+        // factory method 
+        public static SchoolClass Create(ClassNameValueObject name, TimeOnly startTime, TimeOnly endTime, DayOfWeek schedule)
+        {
+            if (endTime <= startTime)
+                throw new DomainBadRequestException("End time must be after the start time.");
+
+            SchoolClass schoolClass = new(name, startTime, endTime, schedule);
+
+            return schoolClass;
+        }
+
+
 
         public void UpdateClassName(ClassNameValueObject newClassName)
         {

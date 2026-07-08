@@ -12,12 +12,14 @@ namespace Application.Features.Enrollments.Student.Commands
     {
         private readonly IEnrollmentRepository _enrollmentRepository;
         private readonly ICurrentUserService _currentUserService;
+        private readonly IUnitOfWork _unitOfWork;
 
-
-        public DropEnrollmentHandler(IEnrollmentRepository enrollmentRepository, ICurrentUserService currentUserService)
+        public DropEnrollmentHandler(IEnrollmentRepository enrollmentRepository, ICurrentUserService currentUserService,
+             IUnitOfWork unitOfWork)
         {
             _enrollmentRepository = enrollmentRepository;
             _currentUserService = currentUserService;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<EnrollmentDTO> Handle(DropEnrollmentCommand command, CancellationToken cancellationToken)
@@ -28,7 +30,7 @@ namespace Application.Features.Enrollments.Student.Commands
                 throw new DomainBadRequestException("You can only drop your own enrollment");
 
             enrollment.Drop();
-            await _enrollmentRepository.SaveChangesAsync(cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
             return EnrollmentMapper.ToDto(enrollment);
         }
 

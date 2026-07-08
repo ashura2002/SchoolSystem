@@ -18,7 +18,7 @@ namespace Domain.Entities
         }
 
         protected void Touch()
-        {
+        {   
             UpdatedAt = DateTime.UtcNow;
         }
     }

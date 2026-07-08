@@ -9,7 +9,6 @@ namespace Application.Interfaces
     public interface IEnrollmentRepository
     {
         void Add(Enrollment enrollment);
-        Task SaveChangesAsync(CancellationToken cancellationToken);
         void Delete(Enrollment enrollment);
         Task<Enrollment?> GetById(Guid enrollmentId, CancellationToken cancellationToken);
         Task<List<Enrollment>> GetAllPendingEnrollments(int Page,int PageSize, CancellationToken cancellationToken);

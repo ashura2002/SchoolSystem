@@ -13,7 +13,6 @@ namespace Application.Interfaces
         Task<List<User>> GetAllDeletedUsers(int Page, int PageSize, CancellationToken cancellationToken);
         Task<User?> GetByUsername(string username, CancellationToken cancellationToken);
         Task<User?> GetByEmail(string email, CancellationToken cancellationToken);
-        Task SaveChangesAsync(CancellationToken cancellationToken);
         Task<List<User>> GetUsersByIds(IEnumerable<Guid> ids, CancellationToken cancellationToken);
     }
 }

@@ -13,11 +13,13 @@ namespace Application.Features.Users.Commands
     {
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher _passwordHasher;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public UpdateUserHandler(IUserRepository userRepository, IPasswordHasher passwordHasher)
+        public UpdateUserHandler(IUserRepository userRepository, IPasswordHasher passwordHasher, IUnitOfWork unitOfWork)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<UserDTO> Handle(UpdateUserCommand command, CancellationToken cancellationToken)
@@ -29,7 +31,7 @@ namespace Application.Features.Users.Commands
             user.UpdateUsername(UsernameValueObject.Create(command.Username));
             user.UpdatePassword(PasswordValueObject.Create(hashedPassword));
 
-            await _userRepository.SaveChangesAsync(cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
             return UserMapper.ToDto(user);
         }
     }
