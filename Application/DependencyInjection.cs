@@ -10,6 +10,7 @@ using Application.Features.Enrollments.Admin.Commands;
 using Application.Features.Enrollments.Admin.Queries;
 using Application.Features.Enrollments.Student.Commands;
 using Application.Features.Enrollments.Student.Queries;
+using Application.Features.Notifications.Commands;
 using Application.Features.Notifications.Queries;
 using Application.Features.Users.Commands;
 using Application.Features.Users.Queries;
@@ -68,6 +69,10 @@ namespace Application
 
             // notifications
             services.AddScoped<GetAllMyNotificationHandler>();
+            services.AddScoped<GetNotificationByIdHandler>();
+            services.AddScoped<MarkAsReadNotificationHandler>();
+            services.AddScoped<MarkAsUnreadNotificationHandler>();
+            services.AddScoped<DeleteNotificationHandler>();
 
 
             // register event

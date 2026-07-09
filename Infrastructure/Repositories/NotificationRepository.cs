@@ -21,6 +21,14 @@ namespace Infrastructure.Repositories
 
         }
 
+        public async Task<Notification?> GetNotificationById(Guid notificationId, Guid userId,
+            CancellationToken cancellationToken)
+        {
+            return await _context.Notifications
+                                 .FirstOrDefaultAsync(n => n.Id == notificationId &&
+                                 n.UserId == userId, cancellationToken);
+        }
+
         void INotificationRepository.Add(Notification notification)
         {
             _context.Notifications.Add(notification);
