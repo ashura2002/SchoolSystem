@@ -1,4 +1,5 @@
-﻿using Application.Events;
+﻿
+using Application.Events;
 using Application.Features.Auth.Commands;
 using Application.Features.Auth.Queries;
 using Application.Features.Auth.Services;
@@ -9,6 +10,7 @@ using Application.Features.Enrollments.Admin.Commands;
 using Application.Features.Enrollments.Admin.Queries;
 using Application.Features.Enrollments.Student.Commands;
 using Application.Features.Enrollments.Student.Queries;
+using Application.Features.Notifications.Queries;
 using Application.Features.Users.Commands;
 using Application.Features.Users.Queries;
 using Application.Features.Users.Services;
@@ -64,8 +66,12 @@ namespace Application
             services.AddScoped<GetMyClassByIdhandler>();
 
 
+            // notifications
+            services.AddScoped<GetAllMyNotificationHandler>();
+
+
             // register event
-            services.AddScoped<IDomainEventHandler<EnrollementRequestedDomainEvent>, EnrollmentRequestedDomainEventHandler>();
+            services.AddScoped<IDomainEventHandler<EnrollmentRequestedDomainEvent>, CreateNotificationEventHandler>();
             return services;
         }
 

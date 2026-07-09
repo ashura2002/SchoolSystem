@@ -13,6 +13,7 @@ namespace WebAPI.Controllers
 
     [ApiController]
     [Route("api/class")]
+    [Authorize]
     public class SchoolClassController : ControllerBase
     {
         private readonly CreateSchoolClassHandler _createSchoolClassHandler;

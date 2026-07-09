@@ -26,10 +26,7 @@ namespace Domain.Entities
         public static Enrollment Request(Guid studentId, Guid classId)
         {
             Enrollment enrollment = new(studentId, classId);
-
-            // raising domain event
-            enrollment.RaiseEvent(new EnrollementRequestedDomainEvent(enrollment.Id, enrollment.StudentId, enrollment.ClassId));
-
+            enrollment.RaiseEvent(new EnrollmentRequestedDomainEvent(enrollment.Id, studentId, classId));
             return enrollment;
         }
 

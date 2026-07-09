@@ -36,7 +36,6 @@ namespace Infrastructure
             services.Configure<JwtSetting>(configuration.GetSection("Jwt"));
             services.AddScoped<IPasswordHasher, PasswordHasher>();
             services.AddScoped<IJwtService, JwtService>();
-            services.AddScoped<IEmailService, EmailService>();
             return services;
         }
 

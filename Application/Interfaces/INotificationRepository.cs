@@ -9,6 +9,6 @@ namespace Application.Interfaces
     {
         void Add(Notification notification);
         void Remove(Notification notification);
-        Task<List<Notification>> GetAllMyNotification();
+        Task<List<Notification>> GetAllMyNotifications(Guid userId, CancellationToken cancellationToken);
     }
 }
