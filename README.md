@@ -25,7 +25,6 @@ This project demonstrates how to build scalable, maintainable, and testable back
 - [Architectural Decisions](#architectural-decisions)
 - [Future Improvements](#future-improvements)
 - [Learning Objectives](#learning-objectives)
-- [Author](#author)
 
 ---
 
@@ -228,247 +227,338 @@ The Domain layer models the core business rules of the system.
 | **Password** | Encapsulates password strength requirements |
 | **ClassName** | Encapsulates class name validation |
 
-Domain Events in the System
-Event	Trigger	Handler Action
-EnrollmentApprovedEvent	Enrollment approved by admin	Creates notification for student
-EnrollmentRejectedEvent	Enrollment rejected by admin	Creates notification for student
-TeacherAssignedEvent	Teacher assigned to class	Creates notification for teacher
-EnrollmentRequestedEvent	Student requests enrollment	Creates notification for admin
-Benefits of Domain Events
-Decoupling: Core business logic doesn't know about notifications
-Single Responsibility: Each handler has one job
-Extensibility: Easy to add new side effects without modifying entities
-Testability: Events and handlers can be tested independently
+### Domain Events in the System
+
+| Event | Trigger | Handler Action |
+|-------|---------|----------------|
+| `EnrollmentApprovedEvent` | Enrollment approved by admin | Creates notification for student |
+| `EnrollmentRejectedEvent` | Enrollment rejected by admin | Creates notification for student |
+| `TeacherAssignedEvent` | Teacher assigned to class | Creates notification for teacher |
+| `EnrollmentRequestedEvent` | Student requests enrollment | Creates notification for admin |
+
+### Benefits of Domain Events
+
+| Benefit | Description |
+|---------|-------------|
+| **Decoupling** | Core business logic doesn't know about notifications |
+| **Single Responsibility** | Each handler has one job |
+| **Extensibility** | Easy to add new side effects without modifying entities |
+| **Testability** | Events and handlers can be tested independently |
 
 CQRS
 The project separates write operations (Commands) from read operations (Queries).
 
-Commands
+### Commands
+
 Commands modify the application's state and return minimal data.
 
-Command	Description
-LoginCommand	Authenticate user and generate JWT
-CreateAdminCommand	Create new admin user
-CreateTeacherCommand	Create new teacher user
-CreateStudentCommand	Create new student user
-UpdateUserCommand	Update user information
-DeleteUserCommand	Soft delete user
-CreateClassCommand	Create new school class
-UpdateClassCommand	Update class information
-DeleteClassCommand	Delete school class
-AssignTeacherCommand	Assign teacher to class
-RemoveTeacherCommand	Remove teacher from class
-RequestEnrollmentCommand	Request enrollment in class
-CancelEnrollmentCommand	Cancel pending enrollment
-ApproveEnrollmentCommand	Approve enrollment request
-RejectEnrollmentCommand	Reject enrollment request
-DropEnrollmentCommand	Drop from enrolled class
-MarkAsReadCommand	Mark notification as read
-MarkAsUnreadCommand	Mark notification as unread
-DeleteNotificationCommand	Delete notification
+| Command | Description |
+|---------|-------------|
+| `LoginCommand` | Authenticate user and generate JWT |
+| `CreateAdminCommand` | Create new admin user |
+| `CreateTeacherCommand` | Create new teacher user |
+| `CreateStudentCommand` | Create new student user |
+| `UpdateUserCommand` | Update user information |
+| `DeleteUserCommand` | Soft delete user |
+| `CreateClassCommand` | Create new school class |
+| `UpdateClassCommand` | Update class information |
+| `DeleteClassCommand` | Delete school class |
+| `AssignTeacherCommand` | Assign teacher to class |
+| `RemoveTeacherCommand` | Remove teacher from class |
+| `RequestEnrollmentCommand` | Request enrollment in class |
+| `CancelEnrollmentCommand` | Cancel pending enrollment |
+| `ApproveEnrollmentCommand` | Approve enrollment request |
+| `RejectEnrollmentCommand` | Reject enrollment request |
+| `DropEnrollmentCommand` | Drop from enrolled class |
+| `MarkAsReadCommand` | Mark notification as read |
+| `MarkAsUnreadCommand` | Mark notification as unread |
+| `DeleteNotificationCommand` | Delete notification |
 
 Queries
 Queries retrieve data without modifying the system.
 
-Query	Description
-GetCurrentUserQuery	Get authenticated user info
-GetUserByIdQuery	Get user by ID
-GetAllUsersQuery	Get all active users (paginated)
-GetDeletedUsersQuery	Get soft-deleted users (paginated)
-GetAllClassesQuery	Get all classes (paginated)
-GetClassByIdQuery	Get class by ID
-GetClassesWithoutTeacherQuery	Get unassigned classes
-GetClassesWithTeacherQuery	Get assigned classes
-GetOwnClassesQuery	Get teacher's assigned classes
-GetPendingEnrollmentsQuery	Get pending enrollments
-GetMyClassesQuery	Get student's enrolled classes
-GetMyClassByIdQuery	Get specific enrolled class
-GetAllNotificationsQuery	Get user's notifications
-GetNotificationByIdQuery	Get notification by ID
+### Queries
+
+Queries retrieve data without modifying the system.
+
+| Query | Description |
+|-------|-------------|
+| `GetCurrentUserQuery` | Get authenticated user info |
+| `GetUserByIdQuery` | Get user by ID |
+| `GetAllUsersQuery` | Get all active users (paginated) |
+| `GetDeletedUsersQuery` | Get soft-deleted users (paginated) |
+| `GetAllClassesQuery` | Get all classes (paginated) |
+| `GetClassByIdQuery` | Get class by ID |
+| `GetClassesWithoutTeacherQuery` | Get unassigned classes |
+| `GetClassesWithTeacherQuery` | Get assigned classes |
+| `GetOwnClassesQuery` | Get teacher's assigned classes |
+| `GetPendingEnrollmentsQuery` | Get pending enrollments |
+| `GetMyClassesQuery` | Get student's enrolled classes |
+| `GetMyClassByIdQuery` | Get specific enrolled class |
+| `GetAllNotificationsQuery` | Get user's notifications |
+| `GetNotificationByIdQuery` | Get notification by ID |
+
 Each command and query has its own dedicated Handler class.
 
 Logging
 The project uses Serilog for structured logging.
 
-Log Categories
-Category	Examples
-Request Logging	HTTP method, path, status code, duration
-Authentication	Login attempts, token generation
-Business Operations	User created, enrollment approved
-Errors	Exceptions, validation failures
-Domain Events	Event raised, event handled
-Configuration Example
-Log.Logger = new LoggerConfiguration()    .MinimumLevel.Information()    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)    .Enrich.FromLogContext()    .WriteTo.Console()    .WriteTo.File("logs/log-.txt", rollingInterval: RollingInterval.Day)    .CreateLogger();
+## Logging
+
+The project uses **Serilog** for structured logging.
+
+### Log Categories
+
+| Category | Examples |
+|----------|----------|
+| **Request Logging** | HTTP method, path, status code, duration |
+| **Authentication** | Login attempts, token generation |
+| **Business Operations** | User created, enrollment approved |
+| **Errors** | Exceptions, validation failures |
+| **Domain Events** | Event raised, event handled |
+
+### Configuration Example
 
 
-Error Handling
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .WriteTo.File("logs/log-.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+
+
+## Error Handling
+
 A Global Exception Middleware provides centralized exception handling and consistent API responses.
-Error Response Format
+
+### Error Response Format
+
+
 {
     "statusCode": 404,
     "message": "User not found",
     "traceId": "0HMVFE0A284AM:00000001"
 }
 
-Exception Types
-Exception Type	HTTP Status	Description
-DomainException	400	Business rule violation
-NotFoundException	404	Entity not found
-UnauthorizedException	401	Authentication required
-ForbiddenException	403	Insufficient permissions
-ValidationException	422	Input validation failed
-Exception	500	Unexpected server error
+### Exception Types
 
-Security
-Security Features
-Feature	Implementation
-JWT Authentication	Bearer token authentication
-Role-based Authorization	Admin, Teacher, Student roles
-Password Hashing	BCrypt/PBKDF2 with salt
-Current User Service	Extract user from JWT claims
-Global Exception Handling	Prevent sensitive data leakage
-Rate Limiting	Prevent API abuse
-Soft Delete	Data recovery capability
+| Exception Type | HTTP Status | Description |
+|----------------|-------------|-------------|
+| `DomainException` | 400 | Business rule violation |
+| `NotFoundException` | 404 | Entity not found |
+| `UnauthorizedException` | 401 | Authentication required |
+| `ForbiddenException` | 403 | Insufficient permissions |
+| `ValidationException` | 422 | Input validation failed |
+| `Exception` | 500 | Unexpected server error |
 
-Role Permissions
-Endpoint	Admin	Teacher	Student
-Create Users	Yes	No	No
-Manage Classes	Yes	No	No
-Assign Teachers	Yes	No	No
-View Own Classes	Yes	Yes	No
-Approve Enrollments	Yes	No	No
-Request Enrollment	No	No	Yes
-View My Classes	No	No	Yes
-View Notifications	Yes	Yes	Yes
+## Security
+
+### Security Features
+
+| Feature | Implementation |
+|---------|----------------|
+| **JWT Authentication** | Bearer token authentication |
+| **Role-based Authorization** | Admin, Teacher, Student roles |
+| **Password Hashing** | BCrypt/PBKDF2 with salt |
+| **Current User Service** | Extract user from JWT claims |
+| **Global Exception Handling** | Prevent sensitive data leakage |
+| **Rate Limiting** | Prevent API abuse |
+| **Soft Delete** | Data recovery capability |
+
+### Role Permissions
+
+| Endpoint | Admin | Teacher | Student |
+|----------|:-----:|:-------:|:-------:|
+| Create Users | Yes | No | No |
+| Manage Classes | Yes | No | No |
+| Assign Teachers | Yes | No | No |
+| View Own Classes | Yes | Yes | No |
+| Approve Enrollments | Yes | No | No |
+| Request Enrollment | No | No | Yes |
+| View My Classes | No | No | Yes |
+| View Notifications | Yes | Yes | Yes |
+
 Pagination
 Collection endpoints support pagination using query parameters.
 
-Request Format
-GET /api/users?Page=1&PageSize=10
-Response Format
-{    "items": [...    ],    "page": 1,    "pageSize": 10,    "totalCount": 100,    "totalPages": 10,    "hasPreviousPage": false,    "hasNextPage": true}
-Paginated Endpoints
-GET /api/users
-GET /api/users/deleted
-GET /api/class
-GET /api/class/without-teacher
-GET /api/class/with-teacher
-GET /api/class/own-classes
-GET /api/enrollment/pending
-GET /api/enrollment/my-classes
+### Response Format
+
+json
+{
+    "items": [...],
+    "page": 1,
+    "pageSize": 10,
+    "totalCount": 100,
+    "totalPages": 10,
+    "hasPreviousPage": false,
+    "hasNextPage": true
+}
 
 API Reference
 Base URL
 {{base_url}}/api
-Authentication
-Method	Endpoint	Description	Auth Required
-POST	/auth/login	Login and get JWT token	No
-POST	/auth/admin	Create admin account	Yes (Admin)
-POST	/auth/teacher	Create teacher account	Yes (Admin)
-POST	/auth/student	Create student account	Yes (Admin)
-Users
-Method	Endpoint	Description	Auth Required
-GET	/users	Get all active users (paginated)	Yes (Admin)
-GET	/users/deleted	Get all deleted users (paginated)	Yes (Admin)
-GET	/users/me	Get current logged-in user	Yes
-GET	/users/{id}	Get user by ID	Yes (Admin)
-PUT	/users/{id}	Update user	Yes (Admin)
-DELETE	/users/{id}	Soft delete user	Yes (Admin)
-Classes
-Method	Endpoint	Description	Auth Required
-GET	/class	Get all classes (paginated)	Yes
-GET	/class/{id}	Get class by ID	Yes (Admin)
-GET	/class/without-teacher	Get classes without teacher	Yes (Admin)
-GET	/class/with-teacher	Get classes with teacher	Yes (Admin)
-GET	/class/own-classes	Get teacher's classes (paginated)	Yes (Teacher)
-GET	/class/own-classes/{id}	Get teacher's class by ID	Yes (Teacher)
-POST	/class	Create new class	Yes (Admin)
-PUT	/class/{id}	Update class	Yes (Admin)
-DELETE	/class/{id}	Delete class	Yes (Admin)
-PUT	/class/{id}/teacher	Assign teacher to class	Yes (Admin)
-DELETE	/class/{id}/teacher	Remove teacher from class	Yes (Admin)
-Enrollment
-Student Endpoints
-Method	Endpoint	Description	Auth Required
-POST	/enrollment	Request enrollment	Yes (Student)
-GET	/enrollment/my-classes	Get enrolled classes (paginated)	Yes (Student)
-GET	/enrollment/my-classes/{id}	Get enrolled class by ID	Yes (Student)
-PUT	/enrollment/requests/{id}	Cancel pending enrollment	Yes (Student)
-DELETE	/enrollment/my-classes/{id}	Drop from class	Yes (Student)
-Admin Endpoints
-Method	Endpoint	Description	Auth Required
-GET	/enrollment/pending	Get pending enrollments (paginated)	Yes (Admin)
-POST	/enrollment/{id}/approve	Approve enrollment	Yes (Admin)
-POST	/enrollment/{id}/reject	Reject enrollment	Yes (Admin)
-Notifications
-Method	Endpoint	Description	Auth Required
-GET	/notifications	Get all notifications	Yes
-GET	/notifications/{id}	Get notification by ID	Yes
-PUT	/notifications/{id}/read	Mark as read	Yes
-PUT	/notifications/{id}/unread	Mark as unread	Yes
-DELETE	/notifications/{id}	Delete notification	Yes
 
-Architectural Decisions
+---
+
+### Authentication
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| POST | `/auth/login` | Login and get JWT token | No |
+| POST | `/auth/admin` | Create admin account | Yes (Admin) |
+| POST | `/auth/teacher` | Create teacher account | Yes (Admin) |
+| POST | `/auth/student` | Create student account | Yes (Admin) |
+
+---
+
+### Users
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/users` | Get all active users (paginated) | Yes (Admin) |
+| GET | `/users/deleted` | Get all deleted users (paginated) | Yes (Admin) |
+| GET | `/users/me` | Get current logged-in user | Yes |
+| GET | `/users/{id}` | Get user by ID | Yes (Admin) |
+| PUT | `/users/{id}` | Update user | Yes (Admin) |
+| DELETE | `/users/{id}` | Soft delete user | Yes (Admin) |
+
+---
+
+### Classes
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/class` | Get all classes (paginated) | Yes |
+| GET | `/class/{id}` | Get class by ID | Yes (Admin) |
+| GET | `/class/without-teacher` | Get classes without teacher | Yes (Admin) |
+| GET | `/class/with-teacher` | Get classes with teacher | Yes (Admin) |
+| GET | `/class/own-classes` | Get teacher's classes (paginated) | Yes (Teacher) |
+| GET | `/class/own-classes/{id}` | Get teacher's class by ID | Yes (Teacher) |
+| POST | `/class` | Create new class | Yes (Admin) |
+| PUT | `/class/{id}` | Update class | Yes (Admin) |
+| DELETE | `/class/{id}` | Delete class | Yes (Admin) |
+| PUT | `/class/{id}/teacher` | Assign teacher to class | Yes (Admin) |
+| DELETE | `/class/{id}/teacher` | Remove teacher from class | Yes (Admin) |
+
+---
+
+### Enrollment
+
+#### Student Endpoints
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| POST | `/enrollment` | Request enrollment | Yes (Student) |
+| GET | `/enrollment/my-classes` | Get enrolled classes (paginated) | Yes (Student) |
+| GET | `/enrollment/my-classes/{id}` | Get enrolled class by ID | Yes (Student) |
+| PUT | `/enrollment/requests/{id}` | Cancel pending enrollment | Yes (Student) |
+| DELETE | `/enrollment/my-classes/{id}` | Drop from class | Yes (Student) |
+
+#### Admin Endpoints
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/enrollment/pending` | Get pending enrollments (paginated) | Yes (Admin) |
+| POST | `/enrollment/{id}/approve` | Approve enrollment | Yes (Admin) |
+| POST | `/enrollment/{id}/reject` | Reject enrollment | Yes (Admin) |
+
+---
+
+### Notifications
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/notifications` | Get all notifications | Yes |
+| GET | `/notifications/{id}` | Get notification by ID | Yes |
+| PUT | `/notifications/{id}/read` | Mark as read | Yes |
+| PUT | `/notifications/{id}/unread` | Mark as unread | Yes |
+| DELETE | `/notifications/{id}` | Delete notification | Yes |
+
+## Architectural Decisions
+
 This project was intentionally designed with maintainability, scalability, and separation of concerns in mind.
 
-Decision	Rationale
-Clean Architecture	Separates the application into Presentation, Application, Domain, and Infrastructure layers, making the codebase easier to maintain and test
-Domain-Driven Design (DDD)	Keeps business rules and validation inside the Domain layer through entities and value objects
-Domain Events	Decouples side effects (like notifications) from core business operations, following the Single Responsibility Principle
-Dependency Inversion Principle (DIP)	Ensures the Application layer depends only on abstractions while Infrastructure provides concrete implementations
-CQRS	Separates write operations (Commands) from read operations (Queries), improving maintainability and preparing the project for MediatR
-Repository Pattern	Abstracts data access from application logic, keeping business rules independent of Entity Framework Core
-Global Exception Middleware	Centralizes exception handling and provides consistent API error responses
-Structured Logging (Serilog)	Captures application events and exceptions for easier debugging
-Cancellation Tokens	Propagated through asynchronous operations to support request cancellation and improve resource usage
-Soft Delete	Preserves data integrity and allows recovery of accidentally deleted records
+| Decision | Rationale |
+|----------|-----------|
+| **Clean Architecture** | Separates the application into Presentation, Application, Domain, and Infrastructure layers, making the codebase easier to maintain and test |
+| **Domain-Driven Design (DDD)** | Keeps business rules and validation inside the Domain layer through entities and value objects |
+| **Domain Events** | Decouples side effects (like notifications) from core business operations, following the Single Responsibility Principle |
+| **Dependency Inversion Principle (DIP)** | Ensures the Application layer depends only on abstractions while Infrastructure provides concrete implementations |
+| **CQRS** | Separates write operations (Commands) from read operations (Queries), improving maintainability and preparing the project for MediatR |
+| **Repository Pattern** | Abstracts data access from application logic, keeping business rules independent of Entity Framework Core |
+| **Global Exception Middleware** | Centralizes exception handling and provides consistent API error responses |
+| **Structured Logging (Serilog)** | Captures application events and exceptions for easier debugging |
+| **Cancellation Tokens** | Propagated through asynchronous operations to support request cancellation and improve resource usage |
+| **Soft Delete** | Preserves data integrity and allows recovery of accidentally deleted records |
 
 Future Improvements
-Improvement	Description
-MediatR	Implement mediator pattern for cleaner handler dispatch
-FluentValidation	Add robust input validation
-Refresh Token Rotation	Improve security with rotating refresh tokens
-Unit Testing	Add comprehensive unit tests
-Integration Testing	Add API integration tests
-Docker	Containerize the application
-Redis Caching	Add distributed caching
-API Versioning	Support multiple API versions
-Health Checks	Add health check endpoints
-OpenTelemetry	Add distributed tracing
-CI/CD (GitHub Actions)	Automate build and deployment
-SignalR	Real-time notifications
-Learning Objectives
+
+## Future Improvements
+
+| Improvement | Description |
+|-------------|-------------|
+| **MediatR** | Implement mediator pattern for cleaner handler dispatch |
+| **FluentValidation** | Add robust input validation |
+| **Refresh Token Rotation** | Improve security with rotating refresh tokens |
+| **Unit Testing** | Add comprehensive unit tests |
+| **Integration Testing** | Add API integration tests |
+| **Docker** | Containerize the application |
+| **Redis Caching** | Add distributed caching |
+| **API Versioning** | Support multiple API versions |
+| **Health Checks** | Add health check endpoints |
+| **OpenTelemetry** | Add distributed tracing |
+| **CI/CD (GitHub Actions)** | Automate build and deployment |
+| **SignalR** | Real-time notifications |
+
+---
+
+## Learning Objectives
+
 This project was built to strengthen understanding of:
 
-Clean Architecture
-Domain-Driven Design (DDD)
-Domain Events and Event-Driven Architecture
-CQRS (Command Query Responsibility Segregation)
-SOLID Principles
-Repository Pattern
-Dependency Injection
-ASP.NET Core Web API
-JWT Authentication
-Entity Framework Core
-RESTful API Design
-Structured Logging
-Global Exception Handling
+- Clean Architecture
+- Domain-Driven Design (DDD)
+- Domain Events and Event-Driven Architecture
+- CQRS (Command Query Responsibility Segregation)
+- SOLID Principles
+- Repository Pattern
+- Dependency Injection
+- ASP.NET Core Web API
+- JWT Authentication
+- Entity Framework Core
+- RESTful API Design
+- Structured Logging
+- Global Exception Handling
 
 
-Getting Started
-Prerequisites
-.NET 8.0 SDK or later
-PostgreSQL
-Visual Studio 2022 / VS Code / Rider
-Installation
-Clone the repository
+## Getting Started
+
+### Prerequisites
+
+- .NET 8.0 SDK or later
+- PostgreSQL
+- Visual Studio 2022 / VS Code / Rider
+
+### Installation
+
+**1. Clone the repository**
 git clone https://github.com/yourusername/school-system-api.git
 cd school-system-api
 
-Update the connection string in appsettings.json
-{    "ConnectionStrings": {        "DefaultConnection": "Host=localhost;Database=SchoolSystemDb;Username=postgres;            Password=yourpassword"    }}
-Apply migrations
+ Update the connection string in appsettings.json
+{
+    "ConnectionStrings": {
+        "DefaultConnection": "Host=localhost;Database=SchoolSystemDb;Username=postgres;Password=yourpassword"
+    }
+}
+
+**Apply migrations**
 dotnet ef database update --project src/Infrastructure --startup-project src/WebAPI
-Run the application
+
+**Run the application**
 dotnet run --project src/WebAPI
-Access the API at https://localhost:5001 or http://localhost:5000
+
+**Access the API**
+ https://localhost:5001 or http://localhost:5000
