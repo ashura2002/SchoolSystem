@@ -1,4 +1,5 @@
 ﻿using Domain.Enums;
+using Domain.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -29,11 +30,18 @@ namespace Domain.Entities
 
         public void MarkAsRead()
         {
+            if (IsRead)
+                throw new DomainBadRequestException("This notification is already read");
+
+            IsRead = true;
             Touch();
         }
 
         public void MarkAsUnRead()
         {
+            if (!IsRead)
+                throw new DomainBadRequestException("This notification is already unread.");
+            IsRead = false;
             Touch();
         }
     }
