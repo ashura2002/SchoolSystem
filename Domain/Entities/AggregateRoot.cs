@@ -15,13 +15,13 @@ namespace Domain.Entities
 
         public void RaiseEvent(IDomainEvent domainEvent)
         {
-            Console.WriteLine("Event Added...");
+            Console.WriteLine("FROM Aggregate root event Added...");
             _domainEvents.Add(domainEvent);
         }
 
         public void ClearEvents()
         {
-            Console.WriteLine("Events cleared...");
+            Console.WriteLine("FROM Aggregate root events cleared...");
             _domainEvents.Clear();
         }
     }

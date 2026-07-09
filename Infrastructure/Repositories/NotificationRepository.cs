@@ -1,6 +1,7 @@
 ﻿using Application.Interfaces;
 using Domain.Entities;
 using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,19 +12,23 @@ namespace Infrastructure.Repositories
     {
         private readonly AppDbContext _context = context;
 
-        public Task<List<Notification>> GetAllMyNotification()
+        public async Task<List<Notification>> GetAllMyNotifications(Guid userId, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return await _context.Notifications
+                                 .AsNoTracking()
+                                 .Where(n => n.UserId == userId)
+                                 .ToListAsync(cancellationToken);
+
         }
 
         void INotificationRepository.Add(Notification notification)
         {
-            _context.Add(notification);
+            _context.Notifications.Add(notification);
         }
 
         void INotificationRepository.Remove(Notification notification)
         {
-            _context.Remove(notification);
+            _context.Notifications.Remove(notification);
         }
     }
 }

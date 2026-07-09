@@ -14,6 +14,7 @@ namespace WebAPI.Controllers
 
     [ApiController]
     [Route("api/enrollment")]
+    [Authorize]
     public class EnrollmentController : ControllerBase
     {
         private readonly RequestEnrollmentHandler _requestEnrollmentHandler;

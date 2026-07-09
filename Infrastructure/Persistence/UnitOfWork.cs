@@ -21,18 +21,22 @@ namespace Infrastructure.Persistence
                 .Entries<AggregateRoot>()
                 .ToList();
 
-            // Collect all domain events from the tracked aggregates.
+            // Copy all domain events from the aggregates into a separate list.
+            // This allows us to safely clear the events before dispatching them.
             var domainEvents = aggregateEntries
                 .SelectMany(entry => entry.Entity.DomainEvents)
                 .ToList();
-
-            // Dispatch all collected domain events.
-            await _dispatcher.DispatchAsync(domainEvents, cancellationToken);
 
             // Clear dispatched events to prevent duplicate dispatching.
             foreach (var entry in aggregateEntries)
             {
                 entry.Entity.ClearEvents();
+            }
+
+            if (domainEvents.Count > 0)
+            {
+                // Dispatch all collected domain events.
+                await _dispatcher.DispatchAsync(domainEvents, cancellationToken);
             }
         }
     }
