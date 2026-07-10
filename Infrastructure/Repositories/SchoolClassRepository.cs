@@ -13,12 +13,12 @@ namespace Infrastructure.Repositories
     {
         private readonly AppDbContext _context = appDbContext;
 
-        public async Task AddClass(SchoolClass schoolClass)
+        public async Task Add(SchoolClass schoolClass)
         {
             _context.SchoolClasses.Add(schoolClass);
         }
 
-        public void DeleteClass(SchoolClass schoolClass)
+        public void Remove(SchoolClass schoolClass)
         {
             _context.SchoolClasses.Remove(schoolClass);
         }

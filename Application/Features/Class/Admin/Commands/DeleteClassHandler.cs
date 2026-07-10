@@ -27,7 +27,7 @@ namespace Application.Features.Class.Admin.Commands
             schoolClass.EnsureCanBeDeleted();
 
             // tell ef core mark as deleted
-            _schoolClassRepository.DeleteClass(schoolClass);
+            _schoolClassRepository.Remove(schoolClass);
             // persist changes
             await _unitOfWork.SaveChangesAsync(cancellationToken);
         }

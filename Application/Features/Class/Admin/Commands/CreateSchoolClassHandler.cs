@@ -25,7 +25,7 @@ namespace Application.Features.Class.Admin.Commands
             var schoolClassName = ClassNameValueObject.Create(command.Name);
             var schoolClass = SchoolClass.Create(schoolClassName, command.StartTime, command.EndTime, command.Schedule);
 
-            await _schoolClassRepository.AddClass(schoolClass);
+            await _schoolClassRepository.Add(schoolClass);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             return SchoolClassMapper.ToDto(schoolClass);
 

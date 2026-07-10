@@ -26,7 +26,7 @@ namespace Domain.Entities
         public static Enrollment Request(Guid studentId, Guid classId)
         {
             Enrollment enrollment = new(studentId, classId);
-            enrollment.RaiseEvent(new EnrollmentRequestedDomainEvent(enrollment.Id, studentId, classId));
+            enrollment.RaiseEvent(new EnrollmentRequestedDomainEvent(studentId, classId));
             return enrollment;
         }
 
@@ -34,7 +34,7 @@ namespace Domain.Entities
         {
             if (Status != EnrollmentStatus.Pending)
                 throw new DomainBadRequestException("Only pending enrollments can be approved");
-
+            RaiseEvent(new EnrollmentApprovedDomainEvent(StudentId, ClassId));
             Status = EnrollmentStatus.Approved;
             Touch();
         }
@@ -43,7 +43,7 @@ namespace Domain.Entities
         {
             if (Status != EnrollmentStatus.Pending)
                 throw new DomainBadRequestException("Only pending enrollments can be rejected");
-
+            RaiseEvent(new EnrollmentRejectedDomainEvent(StudentId, ClassId));
             Status = EnrollmentStatus.Rejected;
             Touch();
         }

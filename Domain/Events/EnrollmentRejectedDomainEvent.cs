@@ -4,9 +4,10 @@ using System.Text;
 
 namespace Domain.Events
 {
-    public class EnrollmentRequestedDomainEvent(Guid studentId, Guid classId) : IDomainEvent
+    public class EnrollmentRejectedDomainEvent(Guid studentId, Guid classId) : IDomainEvent
     {
         public Guid StudentId { get; private set; } = studentId;
         public Guid ClassId { get; private set; } = classId;
+
     }
 }
