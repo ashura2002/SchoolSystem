@@ -539,7 +539,7 @@ This project was built to strengthen understanding of:
 ### Installation
 
 **1. Clone the repository**
-git clone https://github.com/yourusername/school-system-api.git
+git clone https://github.com/ashura2002/school-system-api.git
 cd school-system-api
 
  Update the connection string in appsettings.json
