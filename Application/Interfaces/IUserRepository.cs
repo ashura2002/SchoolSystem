@@ -14,5 +14,6 @@ namespace Application.Interfaces
         Task<User?> GetByUsername(string username, CancellationToken cancellationToken);
         Task<User?> GetByEmail(string email, CancellationToken cancellationToken);
         Task<List<User>> GetUsersByIds(IEnumerable<Guid> ids, CancellationToken cancellationToken);
+        Task<List<User>> GetAllAdmins(CancellationToken cancellationToken);
     }
 }

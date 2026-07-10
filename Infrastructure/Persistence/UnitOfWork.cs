@@ -18,8 +18,7 @@ namespace Infrastructure.Persistence
 
             // Get all tracked aggregate roots.
             var aggregateEntries = _context.ChangeTracker
-                .Entries<AggregateRoot>()
-                .ToList();
+                .Entries<AggregateRoot>();
 
             // Copy all domain events from the aggregates into a separate list.
             // This allows us to safely clear the events before dispatching them.

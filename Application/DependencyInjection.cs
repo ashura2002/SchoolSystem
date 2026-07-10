@@ -76,7 +76,10 @@ namespace Application
 
 
             // register event
-            services.AddScoped<IDomainEventHandler<EnrollmentRequestedDomainEvent>, CreateNotificationEventHandler>();
+            services.AddScoped<IDomainEventHandler<EnrollmentRequestedDomainEvent>, StudentNotificationEventHandler>();
+            services.AddScoped<IDomainEventHandler<EnrollmentRequestedDomainEvent>, AdminNotificationEventHandler>();
+            services.AddScoped<IDomainEventHandler<EnrollmentApprovedDomainEvent>, ApprovedEnrollmentEventHandler>();
+            services.AddScoped<IDomainEventHandler<EnrollmentRejectedDomainEvent>, RejectEnrollmentEventHandler>();
             return services;
         }
 

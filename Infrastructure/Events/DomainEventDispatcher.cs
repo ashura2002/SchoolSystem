@@ -16,6 +16,7 @@ namespace Infrastructure.Events
             foreach (var domainEvent in domainEvents)
             {
                 // get the actual runtime type of the event
+                // ex output: EnrollmentRequestedDomainEvent
                 var eventType = domainEvent.GetType();
 
                 // construct the correspondng handler type

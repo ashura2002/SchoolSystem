@@ -1,4 +1,4 @@
-﻿using Application.DTOs;
+﻿using Domain.Enums;
 using Application.Interfaces;
 using Domain.Entities;
 using Domain.ValueObjects;
@@ -29,6 +29,14 @@ namespace Infrastructure.Repositories
                 .Skip((Page - 1) * PageSize)
                 .Take(PageSize)
                 .AsNoTracking().ToListAsync(cancellationToken);
+        }
+
+        public async Task<List<User>> GetAllAdmins(CancellationToken cancellationToken)
+        {
+            return await _context.Users
+                .AsNoTracking()
+                .Where(u => u.Role == Role.Admin)
+                .ToListAsync(cancellationToken);
         }
 
         public async Task<List<User>> GetAllDeletedUsers(int Page, int PageSize, CancellationToken cancellationToken)
