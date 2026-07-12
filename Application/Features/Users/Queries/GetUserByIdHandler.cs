@@ -19,7 +19,7 @@ namespace Application.Features.Users.Queries
 
         public async Task<UserDTO> Handle(GetByIdQuery query, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetById(query.UserId, cancellationToken) ??
+            var user = await _userRepository.GetByIdAsync(query.UserId, cancellationToken) ??
                 throw new DomainNotFoundException("User not found");
             return UserMapper.ToDto(user);
         }

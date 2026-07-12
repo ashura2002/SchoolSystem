@@ -25,7 +25,7 @@ namespace Application.Features.Enrollments.Student.Queries
             CancellationToken cancellationToken)
         {
             var studentId = _currentUserService.UserId;
-            var enrollments = await _enrollmentRepository.GetApprovedByStudentId(query.Page, query.PageSize,
+            var enrollments = await _enrollmentRepository.GetApprovedByStudentIdAsync(query.Page, query.PageSize,
                 studentId, cancellationToken);
 
             var classIds = enrollments.Select(sc => sc.ClassId).ToList();

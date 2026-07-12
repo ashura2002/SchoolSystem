@@ -19,7 +19,7 @@ namespace Application.Features.Users.Services
 
         public async Task<UserDTO> Execute(string username, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetByUsername(username, cancellationToken) ??
+            var user = await _userRepository.GetByUsernameAsync(username, cancellationToken) ??
                 throw new DomainNotFoundException("User not found");
             return UserMapper.ToDto(user);
         }

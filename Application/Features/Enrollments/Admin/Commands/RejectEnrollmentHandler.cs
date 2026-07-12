@@ -25,17 +25,16 @@ namespace Application.Features.Enrollments.Admin.Commands
         }
 
 
-        public async Task<EnrollmentDTO> Handle(RejectEnrollmentCommand command, CancellationToken cancellationToken)
+        public async Task Handle(RejectEnrollmentCommand command, CancellationToken cancellationToken)
         {
 
             _logger.LogInformation("Reject enrollment for {EnrollmentId}", command.EnrollmentId);
 
-            var requestToReject = await _enrollmentRepository.GetById(command.EnrollmentId, cancellationToken) ??
+            var requestToReject = await _enrollmentRepository.GetByIdAsync(command.EnrollmentId, cancellationToken) ??
                 throw new DomainNotFoundException("Enrollment not found");
 
             requestToReject.Reject();
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-            return EnrollmentMapper.ToDto(requestToReject);
 
         }
 

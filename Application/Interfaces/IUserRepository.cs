@@ -7,13 +7,13 @@ namespace Application.Interfaces
 {
     public interface IUserRepository
     {
-        Task Add(User user);
-        Task<User?> GetById(Guid userId, CancellationToken cancellationToken);
-        Task<List<User>> GetAllActiveUsers(int Page, int PageSize, CancellationToken cancellationToken);
-        Task<List<User>> GetAllDeletedUsers(int Page, int PageSize, CancellationToken cancellationToken);
-        Task<User?> GetByUsername(string username, CancellationToken cancellationToken);
-        Task<User?> GetByEmail(string email, CancellationToken cancellationToken);
-        Task<List<User>> GetUsersByIds(IEnumerable<Guid> ids, CancellationToken cancellationToken);
-        Task<List<User>> GetAllAdmins(CancellationToken cancellationToken);
+        void Add(User user);
+        Task<User?> GetByIdAsync(Guid userId, CancellationToken cancellationToken);
+        Task<List<User>> GetAllActiveUsersAsync(int Page, int PageSize, CancellationToken cancellationToken);
+        Task<List<User>> GetAllDeletedUsersAsync(int Page, int PageSize, CancellationToken cancellationToken);
+        Task<User?> GetByUsernameAsync(string username, CancellationToken cancellationToken);
+        Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken);
+        Task<List<User>> GetUsersByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken);
+        Task<List<User>> GetAllAdminsAsync(CancellationToken cancellationToken);
     }
 }

@@ -20,14 +20,14 @@ namespace Application.Features.Class.Admin.Commands
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<SchoolClassDTO> Handle(CreateSchoolClassCommand command, CancellationToken cancellationToken)
+        public async Task<Guid> Handle(CreateSchoolClassCommand command, CancellationToken cancellationToken)
         {
             var schoolClassName = ClassNameValueObject.Create(command.Name);
             var schoolClass = SchoolClass.Create(schoolClassName, command.StartTime, command.EndTime, command.Schedule);
 
             await _schoolClassRepository.Add(schoolClass);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-            return SchoolClassMapper.ToDto(schoolClass);
+            return schoolClass.Id;
 
         }
     }

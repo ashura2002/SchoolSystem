@@ -10,10 +10,10 @@ namespace Application.Interfaces
     {
         void Add(Enrollment enrollment);
         void Delete(Enrollment enrollment);
-        Task<Enrollment?> GetById(Guid enrollmentId, CancellationToken cancellationToken);
-        Task<List<Enrollment>> GetAllPendingEnrollments(int Page,int PageSize, CancellationToken cancellationToken);
-        Task<List<Enrollment>> GetApprovedByStudentId(int Page, int PageSize, Guid studentId, CancellationToken cancellationToken);
-        Task<List<Enrollment>> GetApprovedStudentByClassId(Guid classId, CancellationToken cancellationToken);
-        Task<Enrollment?> GetByStudentAndClass(Guid studentId, Guid classId, CancellationToken cancellationToken);
+        Task<Enrollment?> GetByIdAsync(Guid enrollmentId, CancellationToken cancellationToken);
+        Task<List<Enrollment>> GetAllPendingEnrollmentsAsync(int Page,int PageSize, CancellationToken cancellationToken);
+        Task<List<Enrollment>> GetApprovedByStudentIdAsync(int Page, int PageSize, Guid studentId, CancellationToken cancellationToken);
+        Task<List<Enrollment>> GetApprovedStudentByClassIdAsync(Guid classId, CancellationToken cancellationToken);
+        Task<Enrollment?> GetByStudentAndClassAsync(Guid studentId, Guid classId, CancellationToken cancellationToken);
     }
 }

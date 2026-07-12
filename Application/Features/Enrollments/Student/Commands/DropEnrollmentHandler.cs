@@ -22,16 +22,15 @@ namespace Application.Features.Enrollments.Student.Commands
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<EnrollmentDTO> Handle(DropEnrollmentCommand command, CancellationToken cancellationToken)
+        public async Task Handle(DropEnrollmentCommand command, CancellationToken cancellationToken)
         {
-            var enrollment = await _enrollmentRepository.GetById(command.EnrollmentId, cancellationToken) ??
+            var enrollment = await _enrollmentRepository.GetByIdAsync(command.EnrollmentId, cancellationToken) ??
                 throw new DomainNotFoundException("Enrollment not found");
             if (enrollment.StudentId != _currentUserService.UserId)
                 throw new DomainBadRequestException("You can only drop your own enrollment");
 
             enrollment.Drop();
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-            return EnrollmentMapper.ToDto(enrollment);
         }
 
     }

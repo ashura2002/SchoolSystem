@@ -32,7 +32,7 @@ namespace Infrastructure.Repositories
             _context.Enrollments.Remove(enrollment);
         }
 
-        public async Task<List<Enrollment>> GetAllPendingEnrollments(int Page, int PageSize, CancellationToken cancellationToken)
+        public async Task<List<Enrollment>> GetAllPendingEnrollmentsAsync(int Page, int PageSize, CancellationToken cancellationToken)
         {
             return await _context.Enrollments
                 .AsNoTracking()
@@ -43,7 +43,7 @@ namespace Infrastructure.Repositories
                 .ToListAsync(cancellationToken);
         }
 
-        public async Task<List<Enrollment>> GetApprovedByStudentId(int Page, int PageSize, Guid studentId,
+        public async Task<List<Enrollment>> GetApprovedByStudentIdAsync(int Page, int PageSize, Guid studentId,
             CancellationToken cancellationToken)
         {
             return await _context.Enrollments
@@ -55,7 +55,7 @@ namespace Infrastructure.Repositories
              .ToListAsync(cancellationToken);
         }
 
-        public async Task<List<Enrollment>> GetApprovedStudentByClassId(Guid classId, CancellationToken cancellationToken)
+        public async Task<List<Enrollment>> GetApprovedStudentByClassIdAsync(Guid classId, CancellationToken cancellationToken)
         {
             return await _context.Enrollments
                 .AsNoTracking()
@@ -63,13 +63,13 @@ namespace Infrastructure.Repositories
                 .ToListAsync(cancellationToken);
         }
 
-        public async Task<Enrollment?> GetById(Guid enrollmentId, CancellationToken cancellationToken)
+        public async Task<Enrollment?> GetByIdAsync(Guid enrollmentId, CancellationToken cancellationToken)
         {
             return await _context.Enrollments
                 .FirstOrDefaultAsync(e => e.Id == enrollmentId, cancellationToken);
         }
 
-        public async Task<Enrollment?> GetByStudentAndClass(Guid studentId, Guid classId, CancellationToken cancellationToken)
+        public async Task<Enrollment?> GetByStudentAndClassAsync(Guid studentId, Guid classId, CancellationToken cancellationToken)
         {
             return await _context.Enrollments
                 .AsNoTracking()

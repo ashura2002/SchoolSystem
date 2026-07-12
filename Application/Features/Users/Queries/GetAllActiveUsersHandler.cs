@@ -18,7 +18,7 @@ namespace Application.Features.Users.Queries
 
         public async Task<List<UserDTO>> Handle(GetAllActiveUserQuery query, CancellationToken cancellationToken)
         {
-            var users = await _userRepository.GetAllActiveUsers(query.Page, query.PageSize, cancellationToken);
+            var users = await _userRepository.GetAllActiveUsersAsync(query.Page, query.PageSize, cancellationToken);
             return UserMapper.ToResponseList(users);
         }
     }

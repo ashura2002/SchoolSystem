@@ -5,19 +5,18 @@ using System.Text;
 using Domain.Enums;
 using Application.Features.Auth.Services;
 
-
-namespace Application.Features.Auth.Commands
+namespace Application.Features.Users.Commands
 {
     public class CreateAdminUserHandler
     {
-        private readonly CreateUserService _createUserService;
+        private readonly UserRegistrationService _createUserService;
 
-        public CreateAdminUserHandler(CreateUserService createUserService)
+        public CreateAdminUserHandler(UserRegistrationService createUserService)
         {
             _createUserService = createUserService;
         }
 
-        public async Task<UserDTO> Handle(CreateUserCommand command, CancellationToken cancellationToken)
+        public async Task<Guid> Handle(CreateUserCommand command, CancellationToken cancellationToken)
         {
             return await _createUserService.CreateUser(command, Role.Admin, cancellationToken);
         }

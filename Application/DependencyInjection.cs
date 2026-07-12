@@ -38,7 +38,7 @@ namespace Application
             services.AddScoped<GetUserByIdHandler>();
             services.AddScoped<UpdateUserHandler>();
             services.AddScoped<GetAllActiveUsersHandler>();
-            services.AddScoped<CreateUserService>();
+            services.AddScoped<UserRegistrationService>();
             services.AddScoped<LoginHandler>();
             services.AddScoped<GetLoginUserHandler>();
             services.AddScoped<GetAllDeactiveUsersHandler>();

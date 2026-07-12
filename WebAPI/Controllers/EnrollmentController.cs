@@ -46,12 +46,12 @@ namespace WebAPI.Controllers
 
         [HttpPost]
         [Authorize(Roles = Roles.Student)]
-        public async Task<ActionResult<ApiResponse<EnrollmentDTO>>> RequestEnrollment([FromBody] CreateEnrollmentRequest request,
+        public async Task<ActionResult<ApiResponse<Guid>>> RequestEnrollment([FromBody] CreateEnrollmentRequest request,
             CancellationToken cancellationToken)
         {
             var enrollment = new RequestEnrollmentCommand(request.ClassId);
             var result = await _requestEnrollmentHandler.Handle(enrollment, cancellationToken);
-            return Ok(new ApiResponse<EnrollmentDTO>
+            return StatusCode(StatusCodes.Status201Created, new ApiResponse<Guid>
             {
                 Message = "Enroll Successfully",
                 Data = result
@@ -90,32 +90,24 @@ namespace WebAPI.Controllers
             });
         }
 
-        [HttpPut("requests/{enrollmentId}")]
+        [HttpPatch("{enrollmentId}/cancel")]
         [Authorize(Roles = Roles.Student)]
-        public async Task<ActionResult<ApiResponse<EnrollmentDTO>>> CancelEnrollment([FromRoute] Guid enrollmentId,
+        public async Task<IActionResult> CancelEnrollment([FromRoute] Guid enrollmentId,
             CancellationToken cancellationToken)
         {
             var command = new CancelEnrollmentCommand(enrollmentId);
-            var result = await _cancelEnrollmentHandler.Handle(command, cancellationToken);
-            return Ok(new ApiResponse<EnrollmentDTO>
-            {
-                Message = "Cancel successfully",
-                Data = result
-            });
+            await _cancelEnrollmentHandler.Handle(command, cancellationToken);
+            return NoContent();
         }
 
         [HttpDelete("my-classes/{enrollmentId}")]
         [Authorize(Roles = Roles.Student)]
-        public async Task<ActionResult<ApiResponse<EnrollmentDTO>>> DropEnrollment([FromRoute] Guid enrollmentId,
+        public async Task<IActionResult> DropEnrollment([FromRoute] Guid enrollmentId,
             CancellationToken cancellationToken)
         {
             var command = new DropEnrollmentCommand(enrollmentId);
-            var enrollment = await _dropEnrollmentHandler.Handle(command, cancellationToken);
-            return Ok(new ApiResponse<EnrollmentDTO>
-            {
-                Message = "Drop successfully",
-                Data = enrollment
-            });
+            await _dropEnrollmentHandler.Handle(command, cancellationToken);
+            return NoContent();
         }
 
         [EnableRateLimiting(RateLimitPolicies.GetResources)]
@@ -134,32 +126,24 @@ namespace WebAPI.Controllers
             });
         }
 
-        [HttpPost("{enrollmentId}/approve")]
+        [HttpPatch("{enrollmentId}/approve")]
         [Authorize(Roles = Roles.Admin)]
-        public async Task<ActionResult<ApiResponse<EnrollmentDTO>>> ApproveEnrollment([FromRoute] Guid enrollmentId,
+        public async Task<IActionResult> ApproveEnrollment([FromRoute] Guid enrollmentId,
             CancellationToken cancellationToken)
         {
             var command = new ApprovedEnrollmentCommand(enrollmentId);
-            var result = await _approveEnrollmentRequestHandler.Handle(command, cancellationToken);
-            return Ok(new ApiResponse<EnrollmentDTO>
-            {
-                Message = "Approved Successfully",
-                Data = result
-            });
+            await _approveEnrollmentRequestHandler.Handle(command, cancellationToken);
+            return NoContent();
         }
 
-        [HttpPost("{enrollmentId}/reject")]
+        [HttpPatch("{enrollmentId}/reject")]
         [Authorize(Roles = Roles.Admin)]
-        public async Task<ActionResult<ApiResponse<EnrollmentDTO>>> RejectEnrollment([FromRoute] Guid enrollmentId,
+        public async Task<IActionResult> RejectEnrollment([FromRoute] Guid enrollmentId,
             CancellationToken cancellationToken)
         {
             var command = new RejectEnrollmentCommand(enrollmentId);
-            var result = await _rejectEnrollmentHandler.Handle(command, cancellationToken);
-            return Ok(new ApiResponse<EnrollmentDTO>
-            {
-                Message = "Rejected Successfully",
-                Data = result
-            });
+            await _rejectEnrollmentHandler.Handle(command, cancellationToken);
+            return NoContent();
         }
     }
 }

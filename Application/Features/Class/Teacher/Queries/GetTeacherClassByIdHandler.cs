@@ -36,13 +36,13 @@ namespace Application.Features.Class.Teacher.Queries
                 throw new DomainUnauthorizedException("You are not assigned to this class");
 
             // get all enrollment by class id and status is == to approved
-            var approvedStudentsEnrollment = await _enrollmentRepository.GetApprovedStudentByClassId(query.ClassId, 
+            var approvedStudentsEnrollment = await _enrollmentRepository.GetApprovedStudentByClassIdAsync(query.ClassId, 
                 cancellationToken);
 
             //extract ids using select
             var studentIds = approvedStudentsEnrollment.Select(e => e.StudentId).ToList();
 
-            var students = await _userRepository.GetUsersByIds(studentIds, cancellationToken);
+            var students = await _userRepository.GetUsersByIdsAsync(studentIds, cancellationToken);
 
             return TeacherClassMapper.ToDto(schoolClass, students);
         }

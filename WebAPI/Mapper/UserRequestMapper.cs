@@ -1,4 +1,4 @@
-﻿using Application.Features.Auth.Commands;
+﻿using Application.Features.Users.Commands;
 
 
 namespace WebAPI.DTOs

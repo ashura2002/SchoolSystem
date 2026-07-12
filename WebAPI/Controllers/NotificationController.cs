@@ -55,30 +55,22 @@ namespace WebAPI.Controllers
             });
         }
 
-        [HttpPut("{id}/read")]
-        public async Task<ActionResult<ApiResponse<NotificationDTO>>> MarkAsRead([FromRoute] Guid id,
+        [HttpPatch("{id}/read")]
+        public async Task<IActionResult> MarkAsRead([FromRoute] Guid id,
           CancellationToken cancellationToken)
         {
             MarkAsReadNotificationCommand command = new(id);
-            var result = await _markAsReadNotificationHandler.Handle(command, cancellationToken);
-            return Ok(new ApiResponse<NotificationDTO>
-            {
-                Message = "Notification marked as read successfully.",
-                Data = result
-            });
+            await _markAsReadNotificationHandler.Handle(command, cancellationToken);
+            return NoContent();
         }
 
-        [HttpPut("{id}/unread")]
-        public async Task<ActionResult<ApiResponse<NotificationDTO>>> MarkAsUnread([FromRoute] Guid id,
+        [HttpPatch("{id}/unread")]
+        public async Task<IActionResult> MarkAsUnread([FromRoute] Guid id,
             CancellationToken cancellationToken)
         {
             MarkAsUnreadNotificationCommand command = new(id);
-            var result = await _markAsUnreadNotificationHandler.Handle(command, cancellationToken);
-            return Ok(new ApiResponse<NotificationDTO>
-            {
-                Message = "Notification marked as unread successfully.",
-                Data = result
-            });
+            await _markAsUnreadNotificationHandler.Handle(command, cancellationToken);
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
