@@ -24,7 +24,7 @@ namespace Application.Features.Enrollments.Admin.Queries
             CancellationToken cancellationToken)
         {
             // enrollments
-            var pendingEnrollments = await _enrollmentRepository.GetAllPendingEnrollments(query.Page, query.PageSize,
+            var pendingEnrollments = await _enrollmentRepository.GetAllPendingEnrollmentsAsync(query.Page, query.PageSize,
                 cancellationToken);
 
             // map the ids - use distinct to prevent passing duplicate ids
@@ -34,7 +34,7 @@ namespace Application.Features.Enrollments.Admin.Queries
             // get classes by ids
             var classes = await _schoolClassRepository.GetClassesByIds(classIds, cancellationToken);
             // get users by ids
-            var students = await _userRepository.GetUsersByIds(usersIds, cancellationToken);
+            var students = await _userRepository.GetUsersByIdsAsync(usersIds, cancellationToken);
 
             // dictionary for class
             var classLookUp = classes.ToDictionary(c => c.Id, c => c.Name.Value);

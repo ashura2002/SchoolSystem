@@ -1,6 +1,4 @@
-﻿using Application.DTOs;
-using Application.Interfaces;
-using Application.Mapper;
+﻿using Application.Interfaces;
 using Domain.Exceptions;
 using Domain.ValueObjects;
 using System;
@@ -22,17 +20,16 @@ namespace Application.Features.Users.Commands
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<UserDTO> Handle(UpdateUserCommand command, CancellationToken cancellationToken)
+        public async Task Handle(UpdateUserCommand command, CancellationToken cancellationToken)
         {
 
-            var user = await _userRepository.GetById(command.UserId, cancellationToken) ??
+            var user = await _userRepository.GetByIdAsync(command.UserId, cancellationToken) ??
                         throw new DomainNotFoundException("User not found");
             var hashedPassword = _passwordHasher.Hash(command.Password);
             user.UpdateUsername(UsernameValueObject.Create(command.Username));
             user.UpdatePassword(PasswordValueObject.Create(hashedPassword));
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-            return UserMapper.ToDto(user);
         }
     }
 }

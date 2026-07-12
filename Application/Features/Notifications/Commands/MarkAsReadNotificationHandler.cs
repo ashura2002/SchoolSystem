@@ -14,7 +14,7 @@ namespace Application.Features.Notifications.Commands
         private readonly ICurrentUserService _currentUser = currentUser;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-        public async Task<NotificationDTO> Handle(MarkAsReadNotificationCommand command, CancellationToken cancellationToken)
+        public async Task Handle(MarkAsReadNotificationCommand command, CancellationToken cancellationToken)
         {
             var currentUser = _currentUser.UserId;
             var notification = await _repo.GetNotificationById(command.NotificationId, currentUser, cancellationToken) ??
@@ -24,8 +24,6 @@ namespace Application.Features.Notifications.Commands
 
             notification.MarkAsRead();
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-            return new NotificationDTO(notification.Id, notification.UserId, notification.Content, notification.IsRead,
-                notification.CreatedAt, notification.UpdatedAt);
         }
     }
 }

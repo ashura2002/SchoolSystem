@@ -1,6 +1,4 @@
-﻿using Application.DTOs;
-using Application.Interfaces;
-using Application.Mapper;
+﻿using Application.Interfaces;
 using Domain.Exceptions;
 using System;
 using System.Collections.Generic;
@@ -22,9 +20,9 @@ namespace Application.Features.Enrollments.Student.Commands
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<EnrollmentDTO> Handle(CancelEnrollmentCommand command, CancellationToken cancellationToken)
+        public async Task Handle(CancelEnrollmentCommand command, CancellationToken cancellationToken)
         {
-            var enrollment = await _enrollmentRepository.GetById(command.EnrollementId, cancellationToken) ??
+            var enrollment = await _enrollmentRepository.GetByIdAsync(command.EnrollmentId, cancellationToken) ??
                 throw new DomainNotFoundException("Enrollment not found");
             if (enrollment.StudentId != _currentUserService.UserId)
                 throw new DomainBadRequestException("You can only cancel your own enrollment");
@@ -32,7 +30,6 @@ namespace Application.Features.Enrollments.Student.Commands
 
             enrollment.Cancel();
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-            return EnrollmentMapper.ToDto(enrollment);
         }
     }
 }

@@ -21,7 +21,7 @@ namespace Application.Features.Class.Admin.Commands
         }
 
 
-        public async Task<SchoolClassDTO> Handle(UpdateClassCommand command, CancellationToken cancellationToken)
+        public async Task Handle(UpdateClassCommand command, CancellationToken cancellationToken)
         {
             var updatedClassName = ClassNameValueObject.Create(command.Name);
 
@@ -30,7 +30,6 @@ namespace Application.Features.Class.Admin.Commands
 
             schoolClass.UpdateClassName(updatedClassName);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-            return SchoolClassMapper.ToDto(schoolClass);
         }
 
     }

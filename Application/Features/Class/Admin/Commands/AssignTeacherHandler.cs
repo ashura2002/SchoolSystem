@@ -27,14 +27,14 @@ namespace Application.Features.Class.Admin.Commands
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<SchoolClassDTO> Handle(AssignTeacherCommand command, CancellationToken cancellationToken)
+        public async Task Handle(AssignTeacherCommand command, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Assigning teacher {TeacherId} to class {ClassId}", command.TeacherId, command.ClassId);
 
             var schoolClass = await _schoolClassRepository.GetClassById(command.ClassId, cancellationToken) ??
                 throw new DomainNotFoundException("Class not found");
 
-            var teacher = await _userRepository.GetById(command.TeacherId, cancellationToken) ??
+            var teacher = await _userRepository.GetByIdAsync(command.TeacherId, cancellationToken) ??
                 throw new DomainNotFoundException("Teacher not found");
 
             if (teacher.Role != Role.Teacher)
@@ -44,7 +44,6 @@ namespace Application.Features.Class.Admin.Commands
             schoolClass.AssignTeacher(command.TeacherId);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-            return SchoolClassMapper.ToDto(schoolClass);
         }
 
 

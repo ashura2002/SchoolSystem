@@ -4,5 +4,5 @@ using System.Text;
 
 namespace Application.Features.Enrollments.Student.Commands
 {
-    public record CancelEnrollmentCommand(Guid EnrollementId);
+    public record CancelEnrollmentCommand(Guid EnrollmentId);
 }

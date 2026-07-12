@@ -21,7 +21,7 @@ namespace Application.Features.Users.Commands
 
         public async Task Handle(DeleteUserCommand command, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetById(command.UserId, cancellationToken)
+            var user = await _userRepository.GetByIdAsync(command.UserId, cancellationToken)
                 ?? throw new DomainNotFoundException("User not found");
             if (user.Id == _currentUserService.UserId)
                 throw new DomainBadRequestException("You cannot delete your account");

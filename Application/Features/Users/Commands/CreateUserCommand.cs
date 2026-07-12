@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Application.Features.Auth.Commands
+namespace Application.Features.Users.Commands
 {
     public record CreateUserCommand(string Username, string Email, string Password);
 }

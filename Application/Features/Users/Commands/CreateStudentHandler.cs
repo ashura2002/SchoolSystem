@@ -6,18 +6,18 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Application.Features.Auth.Commands
+namespace Application.Features.Users.Commands
 {
     public class CreateStudentHandler
     {
-        private readonly CreateUserService _createUserService;
+        private readonly UserRegistrationService _createUserService;
 
-        public CreateStudentHandler(CreateUserService createStudentService)
+        public CreateStudentHandler(UserRegistrationService createStudentService)
         {
             _createUserService = createStudentService;
         }
 
-        public async Task<UserDTO> Execute(CreateUserCommand command,CancellationToken cancellationToken)
+        public async Task<Guid> Handle(CreateUserCommand command,CancellationToken cancellationToken)
         {
             return await _createUserService.CreateUser(command, Role.Student,cancellationToken);
         }

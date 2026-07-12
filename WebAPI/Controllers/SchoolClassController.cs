@@ -52,13 +52,13 @@ namespace WebAPI.Controllers
         // admin
         [HttpPost]
         [Authorize(Roles = Roles.Admin)]
-        public async Task<ActionResult<ApiResponse<SchoolClassDTO>>> CreateClass([FromBody] CreateSchoolClassRequest request,
+        public async Task<ActionResult<ApiResponse<Guid>>> CreateClass([FromBody] CreateSchoolClassRequest request,
             CancellationToken cancellationToken)
         {
-            var command = new CreateSchoolClassCommand(request.Name,request.StartTime, request.EndTime, request.Schedule);
+            var command = new CreateSchoolClassCommand(request.Name, request.StartTime, request.EndTime, request.Schedule);
             var result = await _createSchoolClassHandler.Handle(command, cancellationToken);
 
-            return Ok(new ApiResponse<SchoolClassDTO>
+            return StatusCode(StatusCodes.Status201Created, new ApiResponse<Guid>
             {
                 Message = "Class created successfully",
                 Data = result
@@ -66,25 +66,20 @@ namespace WebAPI.Controllers
         }
 
 
-        [HttpPut("{classId}/teacher")]
+        [HttpPatch("{classId}/assign-teacher")]
         [Authorize(Roles = Roles.Admin)]
-        public async Task<ActionResult<ApiResponse<SchoolClassDTO>>> AssignTeacher([FromBody] AssignTeacherRequest request,
+        public async Task<IActionResult> AssignTeacher([FromBody] AssignTeacherRequest request,
             [FromRoute] Guid classId, CancellationToken cancellationToken)
         {
             var command = new AssignTeacherCommand(classId, request.TeacherId);
-            var result = await _assignTeacherHandler.Handle(command, cancellationToken);
-
-            return Ok(new ApiResponse<SchoolClassDTO>
-            {
-                Message = "Teacher assigned to class successfully",
-                Data = result
-            });
+            await _assignTeacherHandler.Handle(command, cancellationToken);
+            return NoContent();
         }
 
 
-        [HttpDelete("{classId}/teacher")]
+        [HttpPatch("{classId}/remove-teacher")]
         [Authorize(Roles = Roles.Admin)]
-        public async Task<ActionResult> RemoveAssignedTeacher([FromRoute] Guid classId, CancellationToken cancellationToken)
+        public async Task<IActionResult> RemoveAssignedTeacher([FromRoute] Guid classId, CancellationToken cancellationToken)
         {
             var command = new RemoveTeacherCommand(classId);
             await _removeTeacherHandler.Handle(command, cancellationToken);
@@ -155,23 +150,19 @@ namespace WebAPI.Controllers
             });
         }
 
-        [HttpPut("{classId}")]
+        [HttpPatch("{classId}/class-name")]
         [Authorize(Roles = Roles.Admin)]
-        public async Task<ActionResult<ApiResponse<SchoolClassDTO>>> UpdateClassName([FromBody] UpdateClassNameRequest request,
+        public async Task<IActionResult> UpdateClassName([FromBody] UpdateClassNameRequest request,
           [FromRoute] Guid classId, CancellationToken cancellationToken)
         {
             var command = new UpdateClassCommand(classId, request.Name);
-            var result = await _updateClassHandler.Handle(command, cancellationToken);
-            return Ok(new ApiResponse<SchoolClassDTO>
-            {
-                Message = "School Class Updated Successfully.",
-                Data = result
-            });
+            await _updateClassHandler.Handle(command, cancellationToken);
+            return NoContent();
         }
 
         [HttpDelete("{classId}")]
         [Authorize(Roles = Roles.Admin)]
-        public async Task<ActionResult> DeleteClass([FromRoute] Guid classId, CancellationToken cancellationToken)
+        public async Task<IActionResult> DeleteClass([FromRoute] Guid classId, CancellationToken cancellationToken)
         {
             var command = new DeleteClassCommand(classId);
             await _deleteClassHandler.Handle(command, cancellationToken);

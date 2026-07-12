@@ -24,16 +24,15 @@ namespace Application.Features.Enrollments.Admin.Commands
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<EnrollmentDTO> Handle(ApprovedEnrollmentCommand command,CancellationToken cancellationToken)
+        public async Task Handle(ApprovedEnrollmentCommand command, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Approving enrollment {EnrollmentId}", command.EnrollmentId);
 
-            var enrollmentToApprove = await _enrollmentRepository.GetById(command.EnrollmentId,cancellationToken) ??
+            var enrollmentToApprove = await _enrollmentRepository.GetByIdAsync(command.EnrollmentId, cancellationToken) ??
                 throw new DomainNotFoundException("Enrollment not found");
 
             enrollmentToApprove.Approve();
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-            return EnrollmentMapper.ToDto(enrollmentToApprove);
         }
 
     }
