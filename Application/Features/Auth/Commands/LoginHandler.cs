@@ -21,12 +21,11 @@ namespace Application.Features.Auth.Commands
             _jwtService = jwtService;
         }
 
-
-        public async Task<string> Handle(LoginCommand dto,CancellationToken cancellationToken)
+        public async Task<string> Handle(LoginCommand command, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetByUsernameAsync(dto.Username, cancellationToken) ??
+            var user = await _userRepository.GetByUsernameAsync(command.Username, cancellationToken) ??
                 throw new DomainUnauthorizedException("Invalid Credentials");
-            var isPasswordMatch = _passwordHasher.Verify(dto.Password, user.Password.Value);
+            var isPasswordMatch = _passwordHasher.Verify(command.Password, user.Password.Value);
             if (!isPasswordMatch) throw new DomainUnauthorizedException("Wrong Password");
             return _jwtService.GenerateToken(user);
         }

@@ -18,7 +18,7 @@ namespace Application.Events
 
         public async Task Handle(EnrollmentRejectedDomainEvent domainEvent, CancellationToken cancellationToken)
         {
-            var schoolClass = await _schoolClassRepository.GetClassById(domainEvent.ClassId, cancellationToken) ??
+            var schoolClass = await _schoolClassRepository.GetClassByIdAsync(domainEvent.ClassId, cancellationToken) ??
                 throw new DomainBadRequestException("Class not founc");
             var notification = Notification.Create(domainEvent.StudentId,
                 $"You enrollment in {schoolClass.Name.Value} class was rejected by admin.");

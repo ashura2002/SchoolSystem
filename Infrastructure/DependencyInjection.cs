@@ -5,7 +5,6 @@ using Infrastructure.Persistence;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
 using Infrastructure.Setting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,7 +20,7 @@ namespace Infrastructure
         {
             services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
-            // repository and interface
+            // repository and interfaces
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ISchoolClassRepository, SchoolClassRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -34,8 +33,8 @@ namespace Infrastructure
             services.AddHttpContextAccessor();
             services.AddScoped<ICurrentUserService, CurrentUserService>();
             services.Configure<JwtSetting>(configuration.GetSection("Jwt"));
-            services.AddScoped<IPasswordHasher, PasswordHasher>();
-            services.AddScoped<IJwtService, JwtService>();
+            services.AddTransient<IPasswordHasher, PasswordHasher>();
+            services.AddTransient<IJwtService, JwtService>();
             return services;
         }
 

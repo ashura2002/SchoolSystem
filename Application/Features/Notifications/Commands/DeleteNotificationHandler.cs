@@ -16,7 +16,7 @@ namespace Application.Features.Notifications.Commands
         public async Task Handle(DeleteNotificationCommand command, CancellationToken cancellationToken)
         {
             var currentUser = _currentUserService.UserId;
-            var notification = await _notificationRepository.GetNotificationById(command.NotificationId,
+            var notification = await _notificationRepository.GetNotificationByIdAsync(command.NotificationId,
                 currentUser, cancellationToken) ?? throw new DomainNotFoundException("Notification not found");
 
             if (notification.UserId != currentUser)

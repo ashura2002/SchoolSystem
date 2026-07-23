@@ -9,7 +9,7 @@ namespace Application.Interfaces
     {
         void Add(Notification notification);
         void Remove(Notification notification);
-        Task<List<Notification>> GetAllMyNotifications(Guid userId, CancellationToken cancellationToken);
-        Task<Notification?> GetNotificationById(Guid notificationId, Guid userId, CancellationToken cancellationToken);
+        Task<List<Notification>> GetAllMyNotificationsAsync(Guid userId, CancellationToken cancellationToken);
+        Task<Notification?> GetNotificationByIdAsync(Guid notificationId, Guid userId, CancellationToken cancellationToken);
     }
 }

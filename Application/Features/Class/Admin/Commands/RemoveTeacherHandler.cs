@@ -26,7 +26,7 @@ namespace Application.Features.Class.Admin.Commands
         {
             _logger.LogInformation("Removing teacher from class id {classId}", command.ClassId);
 
-            var schoolClass = await _schoolClassRepository.GetClassById(command.ClassId, cancellationToken) ??
+            var schoolClass = await _schoolClassRepository.GetClassByIdAsync(command.ClassId, cancellationToken) ??
                 throw new DomainNotFoundException("Class not found!");
             schoolClass.RemoveTeacher();
             await _unitOfWork.SaveChangesAsync(cancellationToken);

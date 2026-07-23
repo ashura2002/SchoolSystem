@@ -55,7 +55,8 @@ namespace WebAPI.Controllers
         public async Task<ActionResult<ApiResponse<Guid>>> CreateClass([FromBody] CreateSchoolClassRequest request,
             CancellationToken cancellationToken)
         {
-            var command = new CreateSchoolClassCommand(request.Name, request.StartTime, request.EndTime, request.Schedule);
+            var command = new CreateSchoolClassCommand(request.Name, request.StartTime, request.EndTime, request.Schedule,
+                request.StudentCapacity);
             var result = await _createSchoolClassHandler.Handle(command, cancellationToken);
 
             return StatusCode(StatusCodes.Status201Created, new ApiResponse<Guid>

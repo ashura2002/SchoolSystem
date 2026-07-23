@@ -1,5 +1,4 @@
-﻿using Application.DTOs;
-using Application.Interfaces;
+﻿using Application.Interfaces;
 using Domain.Entities;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +12,7 @@ namespace Infrastructure.Repositories
     {
         private readonly AppDbContext _context = appDbContext;
 
-        public async Task Add(SchoolClass schoolClass)
+        public void Add(SchoolClass schoolClass)
         {
             _context.SchoolClasses.Add(schoolClass);
         }
@@ -23,7 +22,7 @@ namespace Infrastructure.Repositories
             _context.SchoolClasses.Remove(schoolClass);
         }
 
-        public async Task<List<SchoolClass>> GetAllClass(int Page, int PageSize, CancellationToken cancellationToken)
+        public async Task<List<SchoolClass>> GetAllClassAsync(int Page, int PageSize, CancellationToken cancellationToken)
         {
             return await _context.SchoolClasses
                 .AsNoTracking()
@@ -41,7 +40,7 @@ namespace Infrastructure.Repositories
                 .ToListAsync(cancellationToken);
         }
 
-        public async Task<List<SchoolClass>> GetAllClassesWithoutTeacher(int Page, int PageSize, CancellationToken cancellationToken)
+        public async Task<List<SchoolClass>> GetAllClassesWithoutTeacherAsync(int Page, int PageSize, CancellationToken cancellationToken)
         {
             return await _context.SchoolClasses
                 .AsNoTracking()
@@ -52,7 +51,7 @@ namespace Infrastructure.Repositories
                 .ToListAsync(cancellationToken);
         }
 
-        public async Task<List<SchoolClass>> GetAllClassesWithTeacher(int Page, int PageSize, CancellationToken cancellationToken)
+        public async Task<List<SchoolClass>> GetAllClassesWithTeacherAsync(int Page, int PageSize, CancellationToken cancellationToken)
         {
             return await _context.SchoolClasses
                 .AsNoTracking()
@@ -63,13 +62,13 @@ namespace Infrastructure.Repositories
                 .ToListAsync(cancellationToken);
         }
 
-        public async Task<SchoolClass?> GetClassById(Guid id, CancellationToken cancellationToken)
+        public async Task<SchoolClass?> GetClassByIdAsync(Guid id, CancellationToken cancellationToken)
         {
             return await _context.SchoolClasses
                 .FirstOrDefaultAsync(sc => sc.Id == id, cancellationToken);
         }
 
-        public async Task<List<SchoolClass>> GetClassesByIds(IEnumerable<Guid> schoolId, CancellationToken cancellationToken)
+        public async Task<List<SchoolClass>> GetClassesByIdsAsync(IEnumerable<Guid> schoolId, CancellationToken cancellationToken)
         {
             return await _context.SchoolClasses
                 .AsNoTracking()
@@ -78,7 +77,7 @@ namespace Infrastructure.Repositories
                 .ToListAsync(cancellationToken);
         }
 
-        public async Task<List<SchoolClass>> GetOwnClasses(int Page, int PageSize, Guid teacherId, CancellationToken cancellationToken)
+        public async Task<List<SchoolClass>> GetOwnClassesAsync(int Page, int PageSize, Guid teacherId, CancellationToken cancellationToken)
         {
             return await _context.SchoolClasses
                 .AsNoTracking()

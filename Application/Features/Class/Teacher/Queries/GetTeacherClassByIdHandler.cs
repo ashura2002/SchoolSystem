@@ -28,7 +28,7 @@ namespace Application.Features.Class.Teacher.Queries
         public async Task<TeacherClassDetailDTO> Handle(GetTeacherClassByIdQuery query, CancellationToken cancellationToken)
         {
             // find class
-            var schoolClass = await _schoolClassRepository.GetClassById(query.ClassId, cancellationToken) ??
+            var schoolClass = await _schoolClassRepository.GetClassByIdAsync(query.ClassId, cancellationToken) ??
                 throw new DomainNotFoundException("Class not found");
 
             // check ownership
@@ -36,7 +36,7 @@ namespace Application.Features.Class.Teacher.Queries
                 throw new DomainUnauthorizedException("You are not assigned to this class");
 
             // get all enrollment by class id and status is == to approved
-            var approvedStudentsEnrollment = await _enrollmentRepository.GetApprovedStudentByClassIdAsync(query.ClassId, 
+            var approvedStudentsEnrollment = await _enrollmentRepository.GetApprovedEnrollmentStudentByClassIdAsync(query.ClassId, 
                 cancellationToken);
 
             //extract ids using select

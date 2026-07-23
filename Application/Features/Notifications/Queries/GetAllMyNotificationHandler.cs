@@ -15,7 +15,7 @@ namespace Application.Features.Notifications.Queries
         public async Task<List<NotificationDTO>> Handle(GetAllMyNotificationQuery _, CancellationToken cancellationToken)
         {
             var currentUserId = _currentUserService.UserId;
-            var notifications = await _notificationRepository.GetAllMyNotifications(currentUserId, cancellationToken);
+            var notifications = await _notificationRepository.GetAllMyNotificationsAsync(currentUserId, cancellationToken);
             return notifications.Select(n =>
             new NotificationDTO(n.Id, n.UserId, n.Content, n.IsRead, n.CreatedAt, n.UpdatedAt)).ToList();
         }

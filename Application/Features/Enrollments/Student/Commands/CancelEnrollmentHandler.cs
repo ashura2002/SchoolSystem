@@ -22,8 +22,8 @@ namespace Application.Features.Enrollments.Student.Commands
 
         public async Task Handle(CancelEnrollmentCommand command, CancellationToken cancellationToken)
         {
-            var enrollment = await _enrollmentRepository.GetByIdAsync(command.EnrollmentId, cancellationToken) ??
-                throw new DomainNotFoundException("Enrollment not found");
+            var enrollment = await _enrollmentRepository.GetEnrollmentByIdAsync(command.EnrollmentId, cancellationToken) ??
+           throw new DomainNotFoundException("Enrollment not found");
             if (enrollment.StudentId != _currentUserService.UserId)
                 throw new DomainBadRequestException("You can only cancel your own enrollment");
 

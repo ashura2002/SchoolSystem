@@ -17,7 +17,7 @@ namespace Application.Features.Notifications.Commands
         public async Task Handle(MarkAsReadNotificationCommand command, CancellationToken cancellationToken)
         {
             var currentUser = _currentUser.UserId;
-            var notification = await _repo.GetNotificationById(command.NotificationId, currentUser, cancellationToken) ??
+            var notification = await _repo.GetNotificationByIdAsync(command.NotificationId, currentUser, cancellationToken) ??
                 throw new DomainNotFoundException("Notification not found");
             if (notification.UserId != currentUser)
                 throw new DomainBadRequestException("You are not authorized to access this notification.");

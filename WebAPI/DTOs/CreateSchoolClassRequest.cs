@@ -13,5 +13,7 @@ namespace WebAPI.DTOs
         [Required]
         public required DayOfWeek Schedule { get; set; }
 
+        [Required]
+        public int StudentCapacity { get; set; }
     }
 }

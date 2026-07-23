@@ -1,11 +1,7 @@
-﻿using Application.DTOs;
-using Application.Interfaces;
-using Domain.Exceptions;
+﻿using Application.Interfaces;
 using Domain.Entities;
+using Domain.Exceptions;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using Application.Mapper;
 
 namespace Application.Features.Enrollments.Student.Commands
 {
@@ -27,16 +23,14 @@ namespace Application.Features.Enrollments.Student.Commands
         {
             var studentId = _currentUserService.UserId;
 
-            var existing = await _enrollmentRepository.GetByStudentAndClassAsync(studentId, command.ClassId, cancellationToken);
+            var existing = await _enrollmentRepository.GetEnrollmentByStudentAndClassAsync(studentId, command.ClassId, cancellationToken);
             if (existing != null) throw new DomainBadRequestException("You are already enrolled in this class");
-
 
             // create entity
             var enrollment = Enrollment.Request(studentId, command.ClassId);
 
             _enrollmentRepository.Add(enrollment);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-
             return enrollment.Id;
         }
 

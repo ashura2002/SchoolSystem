@@ -30,7 +30,7 @@ namespace Application.Features.Enrollments.Admin.Commands
 
             _logger.LogInformation("Reject enrollment for {EnrollmentId}", command.EnrollmentId);
 
-            var requestToReject = await _enrollmentRepository.GetByIdAsync(command.EnrollmentId, cancellationToken) ??
+            var requestToReject = await _enrollmentRepository.GetEnrollmentByIdAsync(command.EnrollmentId, cancellationToken) ??
                 throw new DomainNotFoundException("Enrollment not found");
 
             requestToReject.Reject();

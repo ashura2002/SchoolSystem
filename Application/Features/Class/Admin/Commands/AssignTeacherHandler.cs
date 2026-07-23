@@ -1,6 +1,4 @@
-﻿using Application.DTOs;
-using Application.Interfaces;
-using Application.Mapper;
+﻿using Application.Interfaces;
 using Domain.Exceptions;
 using Domain.Enums;
 using System;
@@ -31,7 +29,7 @@ namespace Application.Features.Class.Admin.Commands
         {
             _logger.LogInformation("Assigning teacher {TeacherId} to class {ClassId}", command.TeacherId, command.ClassId);
 
-            var schoolClass = await _schoolClassRepository.GetClassById(command.ClassId, cancellationToken) ??
+            var schoolClass = await _schoolClassRepository.GetClassByIdAsync(command.ClassId, cancellationToken) ??
                 throw new DomainNotFoundException("Class not found");
 
             var teacher = await _userRepository.GetByIdAsync(command.TeacherId, cancellationToken) ??

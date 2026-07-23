@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Domain.Entities
 {
-    public class AggregateRoot : BaseEntity
+    public abstract class AggregateRoot : BaseEntity
     {
         private readonly List<IDomainEvent> _domainEvents = new();
 

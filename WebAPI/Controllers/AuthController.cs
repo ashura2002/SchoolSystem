@@ -1,8 +1,4 @@
-﻿using Application.DTOs;
-using Application.Features.Auth.Commands;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Identity.Data;
+﻿using Application.Features.Auth.Commands;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using WebAPI.Constants;
