@@ -18,7 +18,7 @@ namespace Application.Events
 
         public async Task Handle(EnrollmentApprovedDomainEvent domainEvent, CancellationToken cancellationToken)
         {
-            var schoolClass = await _schoolClassRepository.GetClassById(domainEvent.ClassId, cancellationToken) ??
+            var schoolClass = await _schoolClassRepository.GetClassByIdAsync(domainEvent.ClassId, cancellationToken) ??
                 throw new DomainNotFoundException("Class not found");
 
             var notification = Notification.Create(domainEvent.StudentId,

@@ -1,5 +1,4 @@
-﻿using Domain.Enums;
-using Domain.Exceptions;
+﻿using Domain.Exceptions;
 using Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
@@ -15,29 +14,36 @@ namespace Domain.Entities
         public TimeOnly EndTime { get; private set; }
         public DayOfWeek Schedule { get; private set; }
 
+        public int StudentCapacity { get; private set; }
+        public int CurrentStudents { get; private set; }
+        public int RemainingSlots => StudentCapacity - CurrentStudents;
 
-        private SchoolClass(ClassNameValueObject name, TimeOnly startTime, TimeOnly endTime, DayOfWeek schedule)
+        private SchoolClass(ClassNameValueObject name, TimeOnly startTime, TimeOnly endTime, DayOfWeek schedule,
+            int studentCapacity)
         {
             Name = name;
             StartTime = startTime;
             EndTime = endTime;
             Schedule = schedule;
             TeacherId = null;
+            StudentCapacity = studentCapacity;
+            CurrentStudents = 0;
         }
 
 
         // factory method 
-        public static SchoolClass Create(ClassNameValueObject name, TimeOnly startTime, TimeOnly endTime, DayOfWeek schedule)
+        public static SchoolClass Create(ClassNameValueObject name, TimeOnly startTime, TimeOnly endTime, DayOfWeek schedule,
+            int studentCapacity = 25)
         {
             if (endTime <= startTime)
                 throw new DomainBadRequestException("End time must be after the start time.");
 
-            SchoolClass schoolClass = new(name, startTime, endTime, schedule);
+            if (studentCapacity <= 0) throw new DomainBadRequestException("Capacity must be greater than zero.");
+
+            SchoolClass schoolClass = new(name, startTime, endTime, schedule, studentCapacity);
 
             return schoolClass;
         }
-
-
 
         public void UpdateClassName(ClassNameValueObject newClassName)
         {
@@ -86,5 +92,23 @@ namespace Domain.Entities
 
         public bool HasTeacher => TeacherId != null;
 
+        // busines rule for students capacity
+        public void EnrollStudent()
+        {
+            if (CurrentStudents >= StudentCapacity)
+                throw new DomainBadRequestException("This class has reached its maximum student capacity.");
+
+            CurrentStudents++;
+            Touch();
+        }
+
+        public void RemoveStudent()
+        {
+            if (CurrentStudents <= 0) 
+                throw new DomainBadRequestException("There are no students enrolled in this class.");
+
+            CurrentStudents--;
+            Touch();
+        }
     }
 }

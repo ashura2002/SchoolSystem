@@ -21,7 +21,7 @@ namespace Application.Features.Class.Admin.Commands
         public async Task Handle(DeleteClassCommand command, CancellationToken cancellationToken)
         {
             // load data from db
-            var schoolClass = await _schoolClassRepository.GetClassById(command.ClassId, cancellationToken) ??
+            var schoolClass = await _schoolClassRepository.GetClassByIdAsync(command.ClassId, cancellationToken) ??
                 throw new DomainNotFoundException("Class not found");
 
             schoolClass.EnsureCanBeDeleted();

@@ -25,13 +25,13 @@ namespace Application.Features.Enrollments.Student.Queries
             CancellationToken cancellationToken)
         {
             var studentId = _currentUserService.UserId;
-            var enrollments = await _enrollmentRepository.GetApprovedByStudentIdAsync(query.Page, query.PageSize,
+            var enrollments = await _enrollmentRepository.GetApprovedEnrollmentByStudentIdAsync(query.Page, query.PageSize,
                 studentId, cancellationToken);
 
             var classIds = enrollments.Select(sc => sc.ClassId).ToList();
 
 
-            var classes = await _schoolClassRepository.GetClassesByIds(classIds, cancellationToken);
+            var classes = await _schoolClassRepository.GetClassesByIdsAsync(classIds, cancellationToken);
 
             var classLookUp = classes.ToDictionary(c => c.Id, c => c.Name.Value);
 

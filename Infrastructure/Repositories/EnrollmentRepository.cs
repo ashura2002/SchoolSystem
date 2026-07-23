@@ -1,5 +1,4 @@
-﻿using Application.DTOs;
-using Application.Interfaces;
+﻿using Application.Interfaces;
 using Domain.Entities;
 using Domain.Enums;
 using Infrastructure.Data;
@@ -43,7 +42,7 @@ namespace Infrastructure.Repositories
                 .ToListAsync(cancellationToken);
         }
 
-        public async Task<List<Enrollment>> GetApprovedByStudentIdAsync(int Page, int PageSize, Guid studentId,
+        public async Task<List<Enrollment>> GetApprovedEnrollmentByStudentIdAsync(int Page, int PageSize, Guid studentId,
             CancellationToken cancellationToken)
         {
             return await _context.Enrollments
@@ -55,7 +54,7 @@ namespace Infrastructure.Repositories
              .ToListAsync(cancellationToken);
         }
 
-        public async Task<List<Enrollment>> GetApprovedStudentByClassIdAsync(Guid classId, CancellationToken cancellationToken)
+        public async Task<List<Enrollment>> GetApprovedEnrollmentStudentByClassIdAsync(Guid classId, CancellationToken cancellationToken)
         {
             return await _context.Enrollments
                 .AsNoTracking()
@@ -63,13 +62,13 @@ namespace Infrastructure.Repositories
                 .ToListAsync(cancellationToken);
         }
 
-        public async Task<Enrollment?> GetByIdAsync(Guid enrollmentId, CancellationToken cancellationToken)
+        public async Task<Enrollment?> GetEnrollmentByIdAsync(Guid enrollmentId, CancellationToken cancellationToken)
         {
             return await _context.Enrollments
                 .FirstOrDefaultAsync(e => e.Id == enrollmentId, cancellationToken);
         }
 
-        public async Task<Enrollment?> GetByStudentAndClassAsync(Guid studentId, Guid classId, CancellationToken cancellationToken)
+        public async Task<Enrollment?> GetEnrollmentByStudentAndClassAsync(Guid studentId, Guid classId, CancellationToken cancellationToken)
         {
             return await _context.Enrollments
                 .AsNoTracking()

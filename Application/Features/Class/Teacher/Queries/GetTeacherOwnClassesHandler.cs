@@ -22,7 +22,7 @@ namespace Application.Features.Class.Teacher.Queries
             CancellationToken cancellationToken)
         {
             var teacherId = _currentUserService.UserId;
-            var schoolClasses = await _schoolClassRepository.GetOwnClasses(query.Page,query.PageSize, teacherId, cancellationToken);
+            var schoolClasses = await _schoolClassRepository.GetOwnClassesAsync(query.Page,query.PageSize, teacherId, cancellationToken);
             return SchoolClassMapper.ToResponseList(schoolClasses);
         }
     }

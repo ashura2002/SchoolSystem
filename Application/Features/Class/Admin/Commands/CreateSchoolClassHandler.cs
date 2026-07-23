@@ -23,9 +23,10 @@ namespace Application.Features.Class.Admin.Commands
         public async Task<Guid> Handle(CreateSchoolClassCommand command, CancellationToken cancellationToken)
         {
             var schoolClassName = ClassNameValueObject.Create(command.Name);
-            var schoolClass = SchoolClass.Create(schoolClassName, command.StartTime, command.EndTime, command.Schedule);
+            var schoolClass = SchoolClass.Create(schoolClassName, command.StartTime, command.EndTime, command.Schedule,
+                command.StudentCapacity);
 
-            await _schoolClassRepository.Add(schoolClass);
+            _schoolClassRepository.Add(schoolClass);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             return schoolClass.Id;
 

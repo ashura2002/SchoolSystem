@@ -25,7 +25,7 @@ namespace Application.Features.Class.Admin.Commands
         {
             var updatedClassName = ClassNameValueObject.Create(command.Name);
 
-            var schoolClass = await _schoolClassRepository.GetClassById(command.ClassId, cancellationToken) ??
+            var schoolClass = await _schoolClassRepository.GetClassByIdAsync(command.ClassId, cancellationToken) ??
                 throw new DomainNotFoundException("Class not found");
 
             schoolClass.UpdateClassName(updatedClassName);

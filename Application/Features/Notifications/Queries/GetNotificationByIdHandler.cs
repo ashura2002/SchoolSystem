@@ -15,7 +15,7 @@ namespace Application.Features.Notifications.Queries
         public async Task<NotificationDTO> Handle(GetNotificationByIdQuery query, CancellationToken cancellationToken)
         {
             var currentUser = _currentUserService.UserId;
-            var notification = await _notificationRepository.GetNotificationById(query.NotificationId, currentUser,
+            var notification = await _notificationRepository.GetNotificationByIdAsync(query.NotificationId, currentUser,
                 cancellationToken) ??
                 throw new DomainNotFoundException("Notification not found");
 

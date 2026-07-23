@@ -10,32 +10,36 @@ namespace Application.Mapper
     {
         public static SchoolClassDTO ToDto(SchoolClass schoolClass)
         {
-            return new SchoolClassDTO
-            {
-                Id = schoolClass.Id,
-                Name = schoolClass.Name.Value,
-                TeacherId = schoolClass.TeacherId,
-                StartTime = schoolClass.StartTime,
-                EndTime = schoolClass.EndTime,
-                Schedule = schoolClass.Schedule,
-                CreatedAt = schoolClass.CreatedAt,
-                UpdatedAt = schoolClass.UpdatedAt
-            };
+            return new SchoolClassDTO(schoolClass.Id,
+                schoolClass.Name.Value,
+                schoolClass.TeacherId,
+                schoolClass.StartTime,
+                schoolClass.EndTime,
+                schoolClass.Schedule,
+                schoolClass.CreatedAt,
+                schoolClass.UpdatedAt,
+                schoolClass.StudentCapacity,
+                schoolClass.CurrentStudents,
+                schoolClass.RemainingSlots);
+
         }
 
         public static List<SchoolClassDTO> ToResponseList(List<SchoolClass> schoolClasses)
         {
             var result = schoolClasses.Select(sc => new SchoolClassDTO
-            {
-                Id = sc.Id,
-                Name = sc.Name.Value,
-                TeacherId = sc.TeacherId,
-                StartTime = sc.StartTime,
-                EndTime = sc.EndTime,
-                Schedule = sc.Schedule,
-                CreatedAt = sc.CreatedAt,
-                UpdatedAt = sc.UpdatedAt
-            }).ToList();
+            (
+                sc.Id,
+                sc.Name.Value,
+                sc.TeacherId,
+                sc.StartTime,
+                sc.EndTime,
+                sc.Schedule,
+                sc.CreatedAt,
+                sc.UpdatedAt,
+                sc.StudentCapacity,
+                sc.CurrentStudents,
+                sc.RemainingSlots
+            )).ToList();
             return result;
         }
 

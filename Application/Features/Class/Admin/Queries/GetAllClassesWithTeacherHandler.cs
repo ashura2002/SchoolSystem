@@ -19,7 +19,7 @@ namespace Application.Features.Class.Admin.Queries
         public async Task<List<SchoolClassDTO>> Handle(GetAllClassesWithTeacherQuery query,
             CancellationToken cancellationToken)
         {
-            var schoolClasses = await _schoolClassRepository.GetAllClassesWithTeacher(query.Page, query.PageSize, cancellationToken);
+            var schoolClasses = await _schoolClassRepository.GetAllClassesWithTeacherAsync(query.Page, query.PageSize, cancellationToken);
             return SchoolClassMapper.ToResponseList(schoolClasses);
         }
     }

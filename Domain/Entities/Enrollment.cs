@@ -2,7 +2,6 @@
 using Domain.Events;
 using Domain.Exceptions;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 

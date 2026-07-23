@@ -12,7 +12,7 @@ namespace Infrastructure.Repositories
     {
         private readonly AppDbContext _context = context;
 
-        public async Task<List<Notification>> GetAllMyNotifications(Guid userId, CancellationToken cancellationToken)
+        public async Task<List<Notification>> GetAllMyNotificationsAsync(Guid userId, CancellationToken cancellationToken)
         {
             return await _context.Notifications
                                  .AsNoTracking()
@@ -21,7 +21,7 @@ namespace Infrastructure.Repositories
 
         }
 
-        public async Task<Notification?> GetNotificationById(Guid notificationId, Guid userId,
+        public async Task<Notification?> GetNotificationByIdAsync(Guid notificationId, Guid userId,
             CancellationToken cancellationToken)
         {
             return await _context.Notifications

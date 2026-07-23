@@ -1,8 +1,4 @@
-﻿using Application.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Domain.Enums;
+﻿using Domain.Enums;
 using Application.Features.Auth.Services;
 
 namespace Application.Features.Users.Commands

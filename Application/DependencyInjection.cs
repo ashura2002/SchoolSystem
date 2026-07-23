@@ -1,5 +1,4 @@
-﻿
-using Application.Events;
+﻿using Application.Events;
 using Application.Features.Auth.Commands;
 using Application.Features.Auth.Queries;
 using Application.Features.Auth.Services;

@@ -32,7 +32,7 @@ namespace Application.Features.Enrollments.Admin.Queries
             var usersIds = pendingEnrollments.Select(e => e.StudentId).Distinct();
 
             // get classes by ids
-            var classes = await _schoolClassRepository.GetClassesByIds(classIds, cancellationToken);
+            var classes = await _schoolClassRepository.GetClassesByIdsAsync(classIds, cancellationToken);
             // get users by ids
             var students = await _userRepository.GetUsersByIdsAsync(usersIds, cancellationToken);
 

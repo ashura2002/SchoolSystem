@@ -25,11 +25,11 @@ namespace Application.Features.Enrollments.Student.Queries
         public async Task<EnrollmentDetailsDTO> Handle(GetMyClassByIdQuery query, CancellationToken cancellationToken)
         {
             var studentId = _currentUserService.UserId;
-            var enrollment = await _enrollmentRepository.GetByIdAsync(query.EnrollmentId, cancellationToken) ??
+            var enrollment = await _enrollmentRepository.GetEnrollmentByIdAsync(query.EnrollmentId, cancellationToken) ??
                 throw new DomainNotFoundException("Enrollment not found");
             if (enrollment.StudentId != studentId) throw new DomainBadRequestException("You can only see your own enrollment");
 
-            var schoolClass = await _schoolClassRepository.GetClassById(enrollment.ClassId, cancellationToken) ??
+            var schoolClass = await _schoolClassRepository.GetClassByIdAsync(enrollment.ClassId, cancellationToken) ??
                 throw new DomainNotFoundException("Class not found");
 
             return new EnrollmentDetailsDTO(enrollment.Id, schoolClass.Name.Value, enrollment.Status);
