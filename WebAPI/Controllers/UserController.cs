@@ -48,46 +48,57 @@ namespace WebAPI.Controllers
         // creation of admin
         [HttpPost("admin")]
         [Authorize(Roles = Roles.Admin)]
-        public async Task<ActionResult<ApiResponse<Guid>>> CreateAdmin([FromBody] CreateUserRequests requests,
+        public async Task<ActionResult<ApiResponse<Guid>>> CreateAdmin([FromBody] CreateUserRequest request,
         CancellationToken cancellationToken)
         {
-            var admin = UserRequestMapper.ToDTO(requests);
+            var admin = UserRequestMapper.ToDTO(request);
             var result = await _createAdminUserUseCase.Handle(admin, cancellationToken);
-            return StatusCode(StatusCodes.Status201Created, new ApiResponse<Guid>
-            {
-                Message = "Created successfully",
-                Data = result
-            });
+            return CreatedAtAction(nameof(GetUserById),
+                  new { id = result },
+                  new ApiResponse<Guid>
+                  {
+                      Message = "Created successfully",
+                      Data = result
+                  }
+                );
         }
 
         // creation of teacher
         [HttpPost("teacher")]
         [Authorize(Roles = Roles.Admin)]
-        public async Task<ActionResult<ApiResponse<Guid>>> CreateTeacher([FromBody] CreateUserRequests requests,
+        public async Task<ActionResult<ApiResponse<Guid>>> CreateTeacher([FromBody] CreateUserRequest request,
             CancellationToken cancellationToken)
         {
-            var teacher = UserRequestMapper.ToDTO(requests);
+            var teacher = UserRequestMapper.ToDTO(request);
             var result = await _createTeacherUseCase.Handle(teacher, cancellationToken);
-            return StatusCode(StatusCodes.Status201Created, new ApiResponse<Guid>
-            {
-                Message = "Created Successfully",
-                Data = result
-            });
+            return CreatedAtAction(
+                nameof(GetUserById),
+                new { id = result },
+                new ApiResponse<Guid>
+                {
+                    Message = "Created successfully",
+                    Data = result
+                }
+               );
         }
 
         // creation of student
         [HttpPost("student")]
         [Authorize(Roles = Roles.Admin)]
-        public async Task<ActionResult<ApiResponse<Guid>>> CreateStudent([FromBody] CreateUserRequests requests,
+        public async Task<ActionResult<ApiResponse<Guid>>> CreateStudent([FromBody] CreateUserRequest request,
          CancellationToken cancellationToken)
         {
-            var student = UserRequestMapper.ToDTO(requests);
+            var student = UserRequestMapper.ToDTO(request);
             var result = await _createStudentUseCase.Handle(student, cancellationToken);
-            return StatusCode(StatusCodes.Status201Created, new ApiResponse<Guid>
-            {
-                Message = "Created Successfully",
-                Data = result
-            });
+            return CreatedAtAction(
+                nameof(GetUserById),
+                new { id = result },
+                new ApiResponse<Guid>
+                {
+                    Message = "Created successfully",
+                    Data = result
+                }
+              );
         }
 
 
@@ -100,11 +111,11 @@ namespace WebAPI.Controllers
         {
             var query = new GetAllActiveUserQuery(request.Page, request.PageSize);
             var result = await _getAllUsersHandler.Handle(query, cancellationToken);
-            return Ok(new ApiResponse<IEnumerable<UserDTO>>
+            return new ApiResponse<IEnumerable<UserDTO>>
             {
                 Message = "Users retrieved successfully",
                 Data = result
-            });
+            };
         }
 
         [EnableRateLimiting(RateLimitPolicies.GetResources)]
@@ -116,11 +127,11 @@ namespace WebAPI.Controllers
         {
             var query = new GetAllDeactiveUserQuery(request.Page, request.PageSize);
             var result = await _getAllDeactiveUsersHandler.Handle(query, cancellationToken);
-            return Ok(new ApiResponse<IEnumerable<UserDTO>>
+            return new ApiResponse<IEnumerable<UserDTO>>
             {
                 Message = "Users retrieved successfully",
                 Data = result
-            });
+            };
         }
 
         [EnableRateLimiting(RateLimitPolicies.GetResources)]
@@ -131,22 +142,27 @@ namespace WebAPI.Controllers
         {
             var query = new GetByIdQuery(id);
             var result = await _getUserByIdHandler.Handle(query, cancellationToken);
-            return Ok(new ApiResponse<UserDTO>
+            return new ApiResponse<UserDTO>
             {
                 Message = "User retrieved successfully",
                 Data = result
-            });
+            };
         }
 
         [HttpGet("me")]
-        public async Task<ActionResult<UserDTO>> GetMe(CancellationToken cancellationToken)
+        public async Task<ActionResult<ApiResponse<UserDTO>>> GetMe(CancellationToken cancellationToken)
         {
-            return Ok(await _getLoginUserHandler.Handle(new GetLoginUserQuery(), cancellationToken));
+            var result = await _getLoginUserHandler.Handle(new GetLoginUserQuery(), cancellationToken);
+            return new ApiResponse<UserDTO>
+            {
+                Message = "User retrieved successfully",
+                Data = result
+            };
         }
 
         [HttpPatch("{id}")]
         [Authorize(Roles = Roles.Admin)]
-        public async Task<IActionResult> UpdateUser([FromBody] UpdateUserRequest request,
+        public async Task<ActionResult> UpdateUser([FromBody] UpdateUserRequest request,
             [FromRoute] Guid id,
             CancellationToken cancellationToken)
         {
@@ -157,12 +173,11 @@ namespace WebAPI.Controllers
 
         [HttpDelete("{id}")]
         [Authorize(Roles = Roles.Admin)]
-        public async Task<IActionResult> DeleteAccount([FromRoute] Guid id, CancellationToken cancellationToken)
+        public async Task<ActionResult> DeleteAccount([FromRoute] Guid id, CancellationToken cancellationToken)
         {
             var command = new DeleteUserCommand(id);
             await _deleteUserHandler.Handle(command, cancellationToken);
             return NoContent();
-
         }
     }
 }

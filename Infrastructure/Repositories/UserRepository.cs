@@ -20,6 +20,12 @@ namespace Infrastructure.Repositories
             _context.Users.Add(user);
         }
 
+        public async Task<bool> EmailExistsAsync(string email, CancellationToken cancellationToken)
+        {
+            return await _context.Users
+                .Where(u => u.DeletedAt == null)
+                .AnyAsync(u => u.Email == EmailValueObject.Create(email), cancellationToken);
+        }
 
         public async Task<List<User>> GetAllActiveUsersAsync(int Page, int PageSize, CancellationToken cancellationToken)
         {
@@ -75,10 +81,16 @@ namespace Infrastructure.Repositories
         public async Task<List<User>> GetUsersByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken)
         {
             return await _context.Users
-                  .Where(u => ids.Contains(u.Id))
-                  .AsNoTracking()
-                  .ToListAsync(cancellationToken);
+                    .Where(u => ids.Contains(u.Id) && u.DeletedAt == null)
+                    .AsNoTracking()
+                    .ToListAsync(cancellationToken);
         }
 
+        public async Task<bool> UsernameExistsAsync(string username, CancellationToken cancellationToken)
+        {
+            return await _context.Users
+                .Where(u => u.DeletedAt == null)
+                .AnyAsync(u => u.Username == UsernameValueObject.Create(username), cancellationToken);
+        }
     }
 }

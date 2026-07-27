@@ -56,7 +56,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPatch("{id}/read")]
-        public async Task<IActionResult> MarkAsRead([FromRoute] Guid id,
+        public async Task<ActionResult> MarkAsRead([FromRoute] Guid id,
           CancellationToken cancellationToken)
         {
             MarkAsReadNotificationCommand command = new(id);
@@ -65,7 +65,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPatch("{id}/unread")]
-        public async Task<IActionResult> MarkAsUnread([FromRoute] Guid id,
+        public async Task<ActionResult> MarkAsUnread([FromRoute] Guid id,
             CancellationToken cancellationToken)
         {
             MarkAsUnreadNotificationCommand command = new(id);
@@ -74,7 +74,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteNotification(
+        public async Task<ActionResult> DeleteNotification(
         [FromRoute] Guid id,
         CancellationToken cancellationToken)
         {

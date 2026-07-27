@@ -15,6 +15,7 @@ using Application.Features.Users.Commands;
 using Application.Features.Users.Queries;
 using Application.Features.Users.Services;
 using Application.Interfaces;
+using Application.Interfaces.CustomeMediatR.Command;
 using Domain.Events;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -38,7 +39,7 @@ namespace Application
             services.AddScoped<UpdateUserHandler>();
             services.AddScoped<GetAllActiveUsersHandler>();
             services.AddScoped<UserRegistrationService>();
-            services.AddScoped<LoginHandler>();
+            services.AddScoped<ICommandHandlerWithResponse<LoginCommand, string>,LoginHandler>();
             services.AddScoped<GetLoginUserHandler>();
             services.AddScoped<GetAllDeactiveUsersHandler>();
 

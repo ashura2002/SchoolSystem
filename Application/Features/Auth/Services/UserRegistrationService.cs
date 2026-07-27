@@ -30,10 +30,12 @@ namespace Application.Features.Auth.Services
             var email = EmailValueObject.Create(dto.Email);
             var password = PasswordValueObject.Create(dto.Password);
 
-            if (await _userRepository.GetByUsernameAsync(username.Value, cancellationToken) != null)
-                throw new DomainBadRequestException("Username Already Exist");
-            if (await _userRepository.GetByEmailAsync(email.Value, cancellationToken) != null)
-                throw new DomainBadRequestException("Email Already Exist");
+            if (await _userRepository.UsernameExistsAsync(username.Value, cancellationToken))
+                throw new DomainBadRequestException("Username already exists.");
+
+            if (await _userRepository.EmailExistsAsync(email.Value, cancellationToken))
+                throw new DomainBadRequestException("Email already exist");
+
             var hashedPassword = _passwordHasher.Hash(password.Value);
 
             // create a domain entity

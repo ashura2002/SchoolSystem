@@ -59,17 +59,21 @@ namespace WebAPI.Controllers
                 request.StudentCapacity);
             var result = await _createSchoolClassHandler.Handle(command, cancellationToken);
 
-            return StatusCode(StatusCodes.Status201Created, new ApiResponse<Guid>
-            {
-                Message = "Class created successfully",
-                Data = result
-            });
+            return CreatedAtAction(
+                nameof(GetClassById),
+                new { id = result },
+                new ApiResponse<Guid>
+                {
+                    Message = "Class created successfully",
+                    Data = result
+                }
+                );
         }
 
 
         [HttpPatch("{classId}/assign-teacher")]
         [Authorize(Roles = Roles.Admin)]
-        public async Task<IActionResult> AssignTeacher([FromBody] AssignTeacherRequest request,
+        public async Task<ActionResult> AssignTeacher([FromBody] AssignTeacherRequest request,
             [FromRoute] Guid classId, CancellationToken cancellationToken)
         {
             var command = new AssignTeacherCommand(classId, request.TeacherId);
@@ -80,7 +84,7 @@ namespace WebAPI.Controllers
 
         [HttpPatch("{classId}/remove-teacher")]
         [Authorize(Roles = Roles.Admin)]
-        public async Task<IActionResult> RemoveAssignedTeacher([FromRoute] Guid classId, CancellationToken cancellationToken)
+        public async Task<ActionResult> RemoveAssignedTeacher([FromRoute] Guid classId, CancellationToken cancellationToken)
         {
             var command = new RemoveTeacherCommand(classId);
             await _removeTeacherHandler.Handle(command, cancellationToken);
@@ -96,11 +100,11 @@ namespace WebAPI.Controllers
         {
             var query = new GetAllClassesQuery(request.Page, request.PageSize);
             var result = await _getAllClassHandler.Handle(query, cancellationToken);
-            return Ok(new ApiResponse<IEnumerable<SchoolClassDTO>>
+            return new ApiResponse<IEnumerable<SchoolClassDTO>>
             {
                 Message = "Classes retrieved successfully.",
                 Data = result
-            });
+            };
         }
 
         [EnableRateLimiting(RateLimitPolicies.GetResources)]
@@ -153,7 +157,7 @@ namespace WebAPI.Controllers
 
         [HttpPatch("{classId}/class-name")]
         [Authorize(Roles = Roles.Admin)]
-        public async Task<IActionResult> UpdateClassName([FromBody] UpdateClassNameRequest request,
+        public async Task<ActionResult> UpdateClassName([FromBody] UpdateClassNameRequest request,
           [FromRoute] Guid classId, CancellationToken cancellationToken)
         {
             var command = new UpdateClassCommand(classId, request.Name);
@@ -163,7 +167,7 @@ namespace WebAPI.Controllers
 
         [HttpDelete("{classId}")]
         [Authorize(Roles = Roles.Admin)]
-        public async Task<IActionResult> DeleteClass([FromRoute] Guid classId, CancellationToken cancellationToken)
+        public async Task<ActionResult> DeleteClass([FromRoute] Guid classId, CancellationToken cancellationToken)
         {
             var command = new DeleteClassCommand(classId);
             await _deleteClassHandler.Handle(command, cancellationToken);

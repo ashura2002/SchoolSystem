@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WebAPI.DTOs
 {
-    public class CreateUserRequests
+    public class CreateUserRequest
     {
         [Required]
         public required string Username { get; set; }

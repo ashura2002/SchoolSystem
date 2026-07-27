@@ -12,6 +12,9 @@ namespace Infrastructure.Data.Configuration
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
+            // Explicitly configure the primary key for learning purposes.
+            // EF Core can infer "Id" by convention, but this makes the key configuration
+            // obvious when reviewing entity mappings.
             builder.HasKey(user => user.Id);
 
             builder.Property(u => u.Username)
