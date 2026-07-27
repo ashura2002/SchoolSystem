@@ -23,8 +23,14 @@ namespace Application.Features.Enrollments.Student.Commands
         {
             var studentId = _currentUserService.UserId;
 
-            var existing = await _enrollmentRepository.GetEnrollmentByStudentAndClassAsync(studentId, command.ClassId, cancellationToken);
-            if (existing != null) throw new DomainBadRequestException("You are already enrolled in this class");
+            if (await _enrollmentRepository.EnrollmentExistsAsync(
+                    studentId,
+                    command.ClassId,
+                    cancellationToken))
+            {
+                throw new DomainBadRequestException(
+                    "You are already enrolled in this class");
+            }
 
             // create entity
             var enrollment = Enrollment.Request(studentId, command.ClassId);

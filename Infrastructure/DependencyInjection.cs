@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using Application.Interfaces.CustomeMediatR;
 using Infrastructure.Data;
 using Infrastructure.Events;
 using Infrastructure.Persistence;
@@ -27,6 +28,7 @@ namespace Infrastructure
             services.AddScoped<INotificationRepository, NotificationRepository>();
             services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
             services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
+            services.AddScoped<ICustomMediatR, CustomMediatR>();
 
 
             // services

@@ -68,11 +68,10 @@ namespace Infrastructure.Repositories
                 .FirstOrDefaultAsync(e => e.Id == enrollmentId, cancellationToken);
         }
 
-        public async Task<Enrollment?> GetEnrollmentByStudentAndClassAsync(Guid studentId, Guid classId, CancellationToken cancellationToken)
+        public async Task<bool> EnrollmentExistsAsync(Guid studentId, Guid classId, CancellationToken cancellationToken)
         {
             return await _context.Enrollments
-                .AsNoTracking()
-               .FirstOrDefaultAsync(e => e.StudentId == studentId && e.ClassId == classId, cancellationToken);
+                .AnyAsync(e => e.StudentId == studentId && e.ClassId == classId,cancellationToken);
         }
     }
 }

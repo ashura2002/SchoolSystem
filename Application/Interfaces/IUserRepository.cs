@@ -15,5 +15,7 @@ namespace Application.Interfaces
         Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken);
         Task<List<User>> GetUsersByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken);
         Task<List<User>> GetAllAdminsAsync(CancellationToken cancellationToken);
+        Task<bool> UsernameExistsAsync(string username ,CancellationToken cancellationToken);
+        Task<bool> EmailExistsAsync(string email, CancellationToken cancellationToken);
     }
 }

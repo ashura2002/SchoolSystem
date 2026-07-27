@@ -12,6 +12,11 @@ namespace Infrastructure.Repositories
     {
         private readonly AppDbContext _context = context;
 
+        public void Add(Notification notification)
+        {
+            _context.Notifications.Add(notification);
+        }
+
         public async Task<List<Notification>> GetAllMyNotificationsAsync(Guid userId, CancellationToken cancellationToken)
         {
             return await _context.Notifications
@@ -29,12 +34,7 @@ namespace Infrastructure.Repositories
                                  n.UserId == userId, cancellationToken);
         }
 
-        void INotificationRepository.Add(Notification notification)
-        {
-            _context.Notifications.Add(notification);
-        }
-
-        void INotificationRepository.Remove(Notification notification)
+        public void Remove(Notification notification)
         {
             _context.Notifications.Remove(notification);
         }

@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using Application.Interfaces.CustomeMediatR.Command;
 using Domain.Exceptions;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Text;
 
 namespace Application.Features.Auth.Commands
 {
-    public class LoginHandler
+    public class LoginHandler:ICommandHandlerWithResponse<LoginCommand, string>
     {
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher _passwordHasher;
@@ -32,3 +33,5 @@ namespace Application.Features.Auth.Commands
 
     }
 }
+// custom mediatR then transition to the actual mediatR
+// add seeded admin

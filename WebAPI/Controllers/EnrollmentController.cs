@@ -51,11 +51,15 @@ namespace WebAPI.Controllers
         {
             var enrollment = new RequestEnrollmentCommand(request.ClassId);
             var result = await _requestEnrollmentHandler.Handle(enrollment, cancellationToken);
-            return StatusCode(StatusCodes.Status201Created, new ApiResponse<Guid>
-            {
-                Message = "Enroll Successfully",
-                Data = result
-            });
+            return CreatedAtAction(
+                nameof(MyClassesById),
+                new { id = result },
+                new ApiResponse<Guid>
+                {
+                    Message = "Enroll Successfully",
+                    Data = result
+                }
+                );
         }
 
         [EnableRateLimiting(RateLimitPolicies.GetResources)]
@@ -67,11 +71,11 @@ namespace WebAPI.Controllers
         {
             var query = new GetAllMyClassesQuery(request.Page, request.PageSize);
             var result = await _getAllMyClassesHandler.Handle(query, cancellationToken);
-            return Ok(new ApiResponse<IEnumerable<EnrollmentResponseDTO>>
+            return new ApiResponse<IEnumerable<EnrollmentResponseDTO>>
             {
                 Message = "Enrollments retrieved successfully",
                 Data = result
-            });
+            };
         }
 
         [EnableRateLimiting(RateLimitPolicies.GetResources)]
@@ -83,16 +87,16 @@ namespace WebAPI.Controllers
         {
             var query = new GetMyClassByIdQuery(enrollmentId);
             var result = await _getMyClassByIdhandler.Handle(query, cancellationToken);
-            return Ok(new ApiResponse<EnrollmentDetailsDTO>
+            return new ApiResponse<EnrollmentDetailsDTO>
             {
                 Message = "Enrollment retrieved successfully",
                 Data = result
-            });
+            };
         }
 
         [HttpPatch("{enrollmentId}/cancel")]
         [Authorize(Roles = Roles.Student)]
-        public async Task<IActionResult> CancelEnrollment([FromRoute] Guid enrollmentId,
+        public async Task<ActionResult> CancelEnrollment([FromRoute] Guid enrollmentId,
             CancellationToken cancellationToken)
         {
             var command = new CancelEnrollmentCommand(enrollmentId);
@@ -102,7 +106,7 @@ namespace WebAPI.Controllers
 
         [HttpDelete("my-classes/{enrollmentId}")]
         [Authorize(Roles = Roles.Student)]
-        public async Task<IActionResult> DropEnrollment([FromRoute] Guid enrollmentId,
+        public async Task<ActionResult> DropEnrollment([FromRoute] Guid enrollmentId,
             CancellationToken cancellationToken)
         {
             var command = new DropEnrollmentCommand(enrollmentId);
@@ -119,16 +123,16 @@ namespace WebAPI.Controllers
         {
             var query = new GetAllPendingEnrollmentQuery(request.Page, request.PageSize);
             var result = await _getAllPendingEnrollmentsHandler.Handle(query, cancellationToken);
-            return Ok(new ApiResponse<IEnumerable<PendingEnrollmentResponseDTO>>
+            return new ApiResponse<IEnumerable<PendingEnrollmentResponseDTO>>
             {
                 Message = "Enrollment retrieved successfully",
                 Data = result
-            });
+            };
         }
 
         [HttpPatch("{enrollmentId}/approve")]
         [Authorize(Roles = Roles.Admin)]
-        public async Task<IActionResult> ApproveEnrollment([FromRoute] Guid enrollmentId,
+        public async Task<ActionResult> ApproveEnrollment([FromRoute] Guid enrollmentId,
             CancellationToken cancellationToken)
         {
             var command = new ApprovedEnrollmentCommand(enrollmentId);
@@ -138,7 +142,7 @@ namespace WebAPI.Controllers
 
         [HttpPatch("{enrollmentId}/reject")]
         [Authorize(Roles = Roles.Admin)]
-        public async Task<IActionResult> RejectEnrollment([FromRoute] Guid enrollmentId,
+        public async Task<ActionResult> RejectEnrollment([FromRoute] Guid enrollmentId,
             CancellationToken cancellationToken)
         {
             var command = new RejectEnrollmentCommand(enrollmentId);
