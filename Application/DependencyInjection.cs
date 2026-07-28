@@ -15,7 +15,6 @@ using Application.Features.Users.Commands;
 using Application.Features.Users.Queries;
 using Application.Features.Users.Services;
 using Application.Interfaces;
-using Application.Interfaces.CustomeMediatR.Command;
 using Domain.Events;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -28,52 +27,19 @@ namespace Application
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
-            // users and auth
-            services.AddScoped<CreateAdminUserHandler>();
-            services.AddScoped<CreateStudentHandler>();
-            services.AddScoped<CreateTeacherHandler>();
-            services.AddScoped<DeleteUserHandler>();
+            // Get the compiled Application assembly (Application.dll)
+            var assembly = typeof(DependencyInjection).Assembly;
+            
+            services.AddMediatR(cfg =>
+            {
+                // Scan the assembly and automatically register all IRequestHandler implementations
+                cfg.RegisterServicesFromAssembly(assembly);
+            });
+
+            // application service
+            services.AddScoped<UserRegistrationService>();
             services.AddScoped<GetByUsernameHandler>();
             services.AddScoped<GetUserByEmailHandler>();
-            services.AddScoped<GetUserByIdHandler>();
-            services.AddScoped<UpdateUserHandler>();
-            services.AddScoped<GetAllActiveUsersHandler>();
-            services.AddScoped<UserRegistrationService>();
-            services.AddScoped<ICommandHandlerWithResponse<LoginCommand, string>,LoginHandler>();
-            services.AddScoped<GetLoginUserHandler>();
-            services.AddScoped<GetAllDeactiveUsersHandler>();
-
-            // school class
-            services.AddScoped<CreateSchoolClassHandler>();
-            services.AddScoped<AssignTeacherHandler>();
-            services.AddScoped<RemoveTeacherHandler>();
-            services.AddScoped<GetAllClassHandler>();
-            services.AddScoped<GetClassesWithoutTeacherHandler>();
-            services.AddScoped<GetAllClassesWithTeacherHandler>();
-            services.AddScoped<GetClassByIdHandler>();
-            services.AddScoped<GetTeacherOwnClassesHandler>();
-            services.AddScoped<UpdateClassHandler>();
-            services.AddScoped<DeleteClassHandler>();
-            services.AddScoped<GetTeacherClassByIdHandler>();
-
-            // enrollment
-            services.AddScoped<RequestEnrollmentHandler>();
-            services.AddScoped<GetAllPendingEnrollmentsHandler>();
-            services.AddScoped<ApproveEnrollmentHandler>();
-            services.AddScoped<RejectEnrollmentHandler>();
-            services.AddScoped<GetAllMyClassesHandler>();
-            services.AddScoped<CancelEnrollmentHandler>();
-            services.AddScoped<DropEnrollmentHandler>();
-            services.AddScoped<GetMyClassByIdhandler>();
-
-
-            // notifications
-            services.AddScoped<GetAllMyNotificationHandler>();
-            services.AddScoped<GetNotificationByIdHandler>();
-            services.AddScoped<MarkAsReadNotificationHandler>();
-            services.AddScoped<MarkAsUnreadNotificationHandler>();
-            services.AddScoped<DeleteNotificationHandler>();
-
 
             // register event
             services.AddScoped<IDomainEventHandler<EnrollmentRequestedDomainEvent>, StudentNotificationEventHandler>();

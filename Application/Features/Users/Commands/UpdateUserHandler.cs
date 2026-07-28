@@ -1,13 +1,14 @@
 ﻿using Application.Interfaces;
 using Domain.Exceptions;
 using Domain.ValueObjects;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Application.Features.Users.Commands
 {
-    public class UpdateUserHandler
+    public class UpdateUserHandler:IRequestHandler<UpdateUserCommand>
     {
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher _passwordHasher;
@@ -20,13 +21,12 @@ namespace Application.Features.Users.Commands
             _unitOfWork = unitOfWork;
         }
 
-        public async Task Handle(UpdateUserCommand command, CancellationToken cancellationToken)
+        public async Task Handle(UpdateUserCommand request, CancellationToken cancellationToken)
         {
-
-            var user = await _userRepository.GetByIdAsync(command.UserId, cancellationToken) ??
+            var user = await _userRepository.GetByIdAsync(request.UserId, cancellationToken) ??
                         throw new DomainNotFoundException("User not found");
-            var hashedPassword = _passwordHasher.Hash(command.Password);
-            user.UpdateUsername(UsernameValueObject.Create(command.Username));
+            var hashedPassword = _passwordHasher.Hash(request.Password);
+            user.UpdateUsername(UsernameValueObject.Create(request.Username));
             user.UpdatePassword(PasswordValueObject.Create(hashedPassword));
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);

@@ -1,11 +1,12 @@
 ﻿using Application.Interfaces;
 using Domain.Entities;
 using Domain.Exceptions;
+using MediatR;
 using System;
 
 namespace Application.Features.Enrollments.Student.Commands
 {
-    public class RequestEnrollmentHandler
+    public class RequestEnrollmentHandler : IRequestHandler<RequestEnrollmentCommand, Guid>
     {
         private readonly IEnrollmentRepository _enrollmentRepository;
         private readonly ICurrentUserService _currentUserService;
@@ -19,13 +20,13 @@ namespace Application.Features.Enrollments.Student.Commands
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Guid> Handle(RequestEnrollmentCommand command, CancellationToken cancellationToken)
+        public async Task<Guid> Handle(RequestEnrollmentCommand request, CancellationToken cancellationToken)
         {
             var studentId = _currentUserService.UserId;
 
             if (await _enrollmentRepository.EnrollmentExistsAsync(
                     studentId,
-                    command.ClassId,
+                    request.ClassId,
                     cancellationToken))
             {
                 throw new DomainBadRequestException(
@@ -33,11 +34,11 @@ namespace Application.Features.Enrollments.Student.Commands
             }
 
             // create entity
-            var enrollment = Enrollment.Request(studentId, command.ClassId);
+            var enrollment = Enrollment.Request(studentId, request.ClassId);
 
             _enrollmentRepository.Add(enrollment);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-            return enrollment.Id;
+            return enrollment.Id; ;
         }
 
     }

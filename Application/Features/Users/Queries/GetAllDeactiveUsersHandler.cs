@@ -1,13 +1,15 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
 using Application.Mapper;
+using Domain.Entities;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Application.Features.Users.Queries
 {
-    public class GetAllDeactiveUsersHandler
+    public class GetAllDeactiveUsersHandler : IRequestHandler<GetAllDeactiveUserQuery, List<UserDTO>>
     {
         private readonly IUserRepository _userRepository;
 
@@ -16,11 +18,10 @@ namespace Application.Features.Users.Queries
             _userRepository = userRepository;
         }
 
-        public async Task<List<UserDTO>> Handle(GetAllDeactiveUserQuery query, CancellationToken cancellationToken)
+        public async Task<List<UserDTO>> Handle(GetAllDeactiveUserQuery request, CancellationToken cancellationToken)
         {
-            var users = await _userRepository.GetAllDeletedUsersAsync(query.Page, query.PageSize, cancellationToken);
+            var users = await _userRepository.GetAllDeletedUsersAsync(request.Page, request.PageSize, cancellationToken);
             return UserMapper.ToResponseList(users);
         }
-
     }
 }

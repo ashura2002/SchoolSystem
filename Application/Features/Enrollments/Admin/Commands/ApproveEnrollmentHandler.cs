@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces;
 using Domain.Exceptions;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Text;
 
 namespace Application.Features.Enrollments.Admin.Commands
 {
-    public class ApproveEnrollmentHandler
+    public class ApproveEnrollmentHandler:IRequestHandler<ApprovedEnrollmentCommand>
     {
         private readonly IEnrollmentRepository _enrollmentRepository;
         private readonly ILogger<ApproveEnrollmentHandler> _logger;
@@ -24,11 +25,11 @@ namespace Application.Features.Enrollments.Admin.Commands
             _schoolClassRepository = schoolClass;
         }
 
-        public async Task Handle(ApprovedEnrollmentCommand command, CancellationToken cancellationToken)
+        public async Task Handle(ApprovedEnrollmentCommand request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Approving enrollment {EnrollmentId}", command.EnrollmentId);
+            _logger.LogInformation("Approving enrollment {EnrollmentId}", request.EnrollmentId);
 
-            var enrollmentToApprove = await _enrollmentRepository.GetEnrollmentByIdAsync(command.EnrollmentId, cancellationToken) ??
+            var enrollmentToApprove = await _enrollmentRepository.GetEnrollmentByIdAsync(request.EnrollmentId, cancellationToken) ??
                 throw new DomainNotFoundException("Enrollment not found");
 
             var schoolClass = await _schoolClassRepository.GetClassByIdAsync(enrollmentToApprove.ClassId, cancellationToken) ??

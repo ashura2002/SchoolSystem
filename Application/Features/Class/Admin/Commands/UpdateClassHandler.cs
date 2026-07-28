@@ -1,15 +1,14 @@
-﻿using Application.DTOs;
-using Application.Interfaces;
-using Application.Mapper;
+﻿using Application.Interfaces;
 using Domain.Exceptions;
 using Domain.ValueObjects;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Application.Features.Class.Admin.Commands
 {
-    public class UpdateClassHandler
+    public class UpdateClassHandler:IRequestHandler<UpdateClassCommand>
     {
         private readonly ISchoolClassRepository _schoolClassRepository;
         private readonly IUnitOfWork _unitOfWork;
@@ -20,17 +19,15 @@ namespace Application.Features.Class.Admin.Commands
             _unitOfWork = unitOfWork;
         }
 
-
-        public async Task Handle(UpdateClassCommand command, CancellationToken cancellationToken)
+        public async Task Handle(UpdateClassCommand request, CancellationToken cancellationToken)
         {
-            var updatedClassName = ClassNameValueObject.Create(command.Name);
+            var updatedClassName = ClassNameValueObject.Create(request.Name);
 
-            var schoolClass = await _schoolClassRepository.GetClassByIdAsync(command.ClassId, cancellationToken) ??
+            var schoolClass = await _schoolClassRepository.GetClassByIdAsync(request.ClassId, cancellationToken) ??
                 throw new DomainNotFoundException("Class not found");
 
             schoolClass.UpdateClassName(updatedClassName);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
-
     }
 }

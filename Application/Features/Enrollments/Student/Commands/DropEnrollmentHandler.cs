@@ -1,12 +1,13 @@
 ﻿using Application.Interfaces;
 using Domain.Exceptions;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Application.Features.Enrollments.Student.Commands
 {
-    public class DropEnrollmentHandler
+    public class DropEnrollmentHandler:IRequestHandler<DropEnrollmentCommand>
     {
         private readonly IEnrollmentRepository _enrollmentRepository;
         private readonly ICurrentUserService _currentUserService;
@@ -22,9 +23,9 @@ namespace Application.Features.Enrollments.Student.Commands
             _schoolClassRepository = schoolClass;
         }
 
-        public async Task Handle(DropEnrollmentCommand command, CancellationToken cancellationToken)
+        public async Task Handle(DropEnrollmentCommand request, CancellationToken cancellationToken)
         {
-            var enrollment = await _enrollmentRepository.GetEnrollmentByIdAsync(command.EnrollmentId, cancellationToken) ??
+            var enrollment = await _enrollmentRepository.GetEnrollmentByIdAsync(request.EnrollmentId, cancellationToken) ??
            throw new DomainNotFoundException("Enrollment not found");
             if (enrollment.StudentId != _currentUserService.UserId)
                 throw new DomainBadRequestException("You can only drop your own enrollment");

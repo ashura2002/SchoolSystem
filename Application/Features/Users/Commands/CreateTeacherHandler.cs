@@ -1,13 +1,14 @@
 ﻿using Application.DTOs;
 using Application.Features.Auth.Services;
 using Domain.Enums;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Application.Features.Users.Commands
 {
-    public class CreateTeacherHandler
+    public class CreateTeacherHandler:IRequestHandler<CreateUserCommand, Guid>
     {
         private readonly UserRegistrationService _createUserService;
 
@@ -16,9 +17,9 @@ namespace Application.Features.Users.Commands
             _createUserService = createUserService;
         }
 
-        public async Task<Guid> Handle(CreateUserCommand command, CancellationToken cancellationToken)
+        public async Task<Guid> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
-            return await _createUserService.CreateUser(command, Role.Teacher, cancellationToken);
+            return await _createUserService.CreateUser(request, Role.Teacher, cancellationToken);
         }
 
     }

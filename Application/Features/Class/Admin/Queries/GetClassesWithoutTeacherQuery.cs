@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Application.DTOs;
+using MediatR;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Application.Features.Class.Admin.Queries
 {
-    public record GetClassesWithoutTeacherQuery(int Page, int PageSize);
+    public record GetClassesWithoutTeacherQuery(int Page, int PageSize):IRequest<List<SchoolClassDTO>>;
 }

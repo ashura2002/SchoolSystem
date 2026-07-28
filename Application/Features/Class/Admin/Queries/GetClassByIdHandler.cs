@@ -2,13 +2,14 @@
 using Application.Interfaces;
 using Application.Mapper;
 using Domain.Exceptions;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Application.Features.Class.Admin.Queries
 {
-    public class GetClassByIdHandler
+    public class GetClassByIdHandler:IRequestHandler<GetClassByIdQuery, SchoolClassDTO>
     {
         private readonly ISchoolClassRepository _schoolClassRepository;
 
@@ -17,12 +18,11 @@ namespace Application.Features.Class.Admin.Queries
             _schoolClassRepository = schoolClassRepository;
         }
 
-        public async Task<SchoolClassDTO> Handle(GetClassByIdQuery query, CancellationToken cancellationToken)
+        public async Task<SchoolClassDTO> Handle(GetClassByIdQuery request, CancellationToken cancellationToken)
         {
-            var schoolClass = await _schoolClassRepository.GetClassByIdAsync(query.ClassId, cancellationToken) ??
+            var schoolClass = await _schoolClassRepository.GetClassByIdAsync(request.ClassId, cancellationToken) ??
                 throw new DomainNotFoundException("Class not found");
             return SchoolClassMapper.ToDto(schoolClass);
         }
-
     }
 }

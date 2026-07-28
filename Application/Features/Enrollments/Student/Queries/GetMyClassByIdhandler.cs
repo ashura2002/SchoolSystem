@@ -1,13 +1,15 @@
 ﻿using Application.DTOs;
+using Application.Features.Class.Admin.Queries;
 using Application.Interfaces;
 using Domain.Exceptions;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Application.Features.Enrollments.Student.Queries
 {
-    public class GetMyClassByIdhandler
+    public class GetMyClassByIdhandler:IRequestHandler<GetMyClassByIdQuery, EnrollmentDetailsDTO>
     {
         private readonly IEnrollmentRepository _enrollmentRepository;
         private readonly ICurrentUserService _currentUserService;
@@ -22,10 +24,10 @@ namespace Application.Features.Enrollments.Student.Queries
         }
 
 
-        public async Task<EnrollmentDetailsDTO> Handle(GetMyClassByIdQuery query, CancellationToken cancellationToken)
+        public async Task<EnrollmentDetailsDTO> Handle(GetMyClassByIdQuery request, CancellationToken cancellationToken)
         {
             var studentId = _currentUserService.UserId;
-            var enrollment = await _enrollmentRepository.GetEnrollmentByIdAsync(query.EnrollmentId, cancellationToken) ??
+            var enrollment = await _enrollmentRepository.GetEnrollmentByIdAsync(request.EnrollmentId, cancellationToken) ??
                 throw new DomainNotFoundException("Enrollment not found");
             if (enrollment.StudentId != studentId) throw new DomainBadRequestException("You can only see your own enrollment");
 

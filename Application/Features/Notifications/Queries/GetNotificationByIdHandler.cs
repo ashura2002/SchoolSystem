@@ -1,21 +1,23 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
 using Domain.Exceptions;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Application.Features.Notifications.Queries
 {
-    public class GetNotificationByIdHandler(INotificationRepository notificationRepository, ICurrentUserService currentUserService)
+    public class GetNotificationByIdHandler(INotificationRepository notificationRepository, ICurrentUserService currentUserService):
+        IRequestHandler<GetNotificationByIdQuery, NotificationDTO>
     {
         private readonly INotificationRepository _notificationRepository = notificationRepository;
         private readonly ICurrentUserService _currentUserService = currentUserService;
 
-        public async Task<NotificationDTO> Handle(GetNotificationByIdQuery query, CancellationToken cancellationToken)
+        public async Task<NotificationDTO> Handle(GetNotificationByIdQuery reques, CancellationToken cancellationToken)
         {
             var currentUser = _currentUserService.UserId;
-            var notification = await _notificationRepository.GetNotificationByIdAsync(query.NotificationId, currentUser,
+            var notification = await _notificationRepository.GetNotificationByIdAsync(reques.NotificationId, currentUser,
                 cancellationToken) ??
                 throw new DomainNotFoundException("Notification not found");
 

@@ -1,6 +1,7 @@
 ﻿using Application.DTOs;
 using Application.Features.Notifications.Commands;
 using Application.Features.Notifications.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.DTOs;
@@ -12,21 +13,12 @@ namespace WebAPI.Controllers
     [Authorize]
     public class NotificationController : ControllerBase
     {
-        private readonly GetAllMyNotificationHandler _getAllMyNotificationHandler;
-        private readonly GetNotificationByIdHandler _getNotificationByIdHandler;
-        private readonly MarkAsReadNotificationHandler _markAsReadNotificationHandler;
-        private readonly MarkAsUnreadNotificationHandler _markAsUnreadNotificationHandler;
-        private readonly DeleteNotificationHandler _deleteNotificationHandler;
+        private readonly IMediator _mediator;
 
-        public NotificationController(GetAllMyNotificationHandler getAllMyNotificationHandler,
-            GetNotificationByIdHandler getNotificationByIdHandler, MarkAsReadNotificationHandler markAsReadNotificationHandler,
-            MarkAsUnreadNotificationHandler markAsUnreadNotificationHandler, DeleteNotificationHandler deleteNotificationHandler)
+
+        public NotificationController(IMediator mediator)
         {
-            _getAllMyNotificationHandler = getAllMyNotificationHandler;
-            _getNotificationByIdHandler = getNotificationByIdHandler;
-            _markAsReadNotificationHandler = markAsReadNotificationHandler;
-            _markAsUnreadNotificationHandler = markAsUnreadNotificationHandler;
-            _deleteNotificationHandler = deleteNotificationHandler;
+            _mediator = mediator;
         }
 
         [HttpGet]
@@ -34,7 +26,7 @@ namespace WebAPI.Controllers
             CancellationToken cancellationToken)
         {
             GetAllMyNotificationQuery query = new();
-            var notifications = await _getAllMyNotificationHandler.Handle(query, cancellationToken);
+            var notifications = await _mediator.Send(query, cancellationToken);
             return Ok(new ApiResponse<IEnumerable<NotificationDTO>>
             {
                 Message = "Notification retrieved successfully",
@@ -47,7 +39,7 @@ namespace WebAPI.Controllers
         [FromRoute] Guid id, CancellationToken cancellationToken)
         {
             GetNotificationByIdQuery query = new(id);
-            var result = await _getNotificationByIdHandler.Handle(query, cancellationToken);
+            var result = await _mediator.Send(query, cancellationToken);
             return Ok(new ApiResponse<NotificationDTO>
             {
                 Message = "Retrieved sucessfully",
@@ -60,7 +52,7 @@ namespace WebAPI.Controllers
           CancellationToken cancellationToken)
         {
             MarkAsReadNotificationCommand command = new(id);
-            await _markAsReadNotificationHandler.Handle(command, cancellationToken);
+            await _mediator.Send(command, cancellationToken);
             return NoContent();
         }
 
@@ -69,7 +61,7 @@ namespace WebAPI.Controllers
             CancellationToken cancellationToken)
         {
             MarkAsUnreadNotificationCommand command = new(id);
-            await _markAsUnreadNotificationHandler.Handle(command, cancellationToken);
+            await _mediator.Send(command, cancellationToken);
             return NoContent();
         }
 
@@ -80,7 +72,7 @@ namespace WebAPI.Controllers
         {
             DeleteNotificationCommand command = new(id);
 
-            await _deleteNotificationHandler.Handle(command, cancellationToken);
+            await _mediator.Send(command, cancellationToken);
 
             return NoContent();
         }

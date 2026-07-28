@@ -1,5 +1,5 @@
 ﻿using Application.Features.Auth.Commands;
-using Application.Interfaces.CustomeMediatR;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using WebAPI.Constants;
@@ -12,14 +12,13 @@ namespace WebAPI.Controllers
     [Route("api/auth")]
     public class AuthController : ControllerBase
     {
-        //private readonly LoginHandler _loginUseCase
-        private readonly ICustomMediatR _customMediatR;
+        private readonly IMediator _mediator;
 
         public AuthController(
-          ICustomMediatR customMediatR
+          IMediator mediator
           )
         {
-            _customMediatR = customMediatR;
+            _mediator = mediator;
         }
 
 
@@ -28,7 +27,7 @@ namespace WebAPI.Controllers
         public async Task<ActionResult<ApiResponse<string>>> Login(LoginUserRequest request, CancellationToken cancellationToken)
         {
             var command = new LoginCommand(request.Username, request.Password);
-            var result = await _customMediatR.SendAsync(command, cancellationToken);
+            var result = await _mediator.Send(command,cancellationToken);
             return new ApiResponse<string>
             {
                 Message = "Login successfully",

@@ -3,6 +3,7 @@ using Application.Features.Enrollments.Admin.Commands;
 using Application.Features.Enrollments.Admin.Queries;
 using Application.Features.Enrollments.Student.Commands;
 using Application.Features.Enrollments.Student.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -17,30 +18,13 @@ namespace WebAPI.Controllers
     [Authorize]
     public class EnrollmentController : ControllerBase
     {
-        private readonly RequestEnrollmentHandler _requestEnrollmentHandler;
-        private readonly GetAllPendingEnrollmentsHandler _getAllPendingEnrollmentsHandler;
-        private readonly ApproveEnrollmentHandler _approveEnrollmentRequestHandler;
-        private readonly RejectEnrollmentHandler _rejectEnrollmentHandler;
-        private readonly GetAllMyClassesHandler _getAllMyClassesHandler;
-        private readonly CancelEnrollmentHandler _cancelEnrollmentHandler;
-        private readonly DropEnrollmentHandler _dropEnrollmentHandler;
-        private readonly GetMyClassByIdhandler _getMyClassByIdhandler;
-
-        public EnrollmentController(RequestEnrollmentHandler requestEnrollmentHandler,
-            GetAllPendingEnrollmentsHandler getAllPendingEnrollmentsHandler,
-            ApproveEnrollmentHandler approveEnrollmentRequestHandler, RejectEnrollmentHandler rejectEnrollmentHandler,
-            GetAllMyClassesHandler getAllMyClassesHandler, CancelEnrollmentHandler cancelEnrollmentHandler,
-            DropEnrollmentHandler dropEnrollmentHandler, GetMyClassByIdhandler getMyClassByIdhandler
+        private readonly IMediator _mediator;
+    
+        public EnrollmentController(
+            IMediator mediator
             )
         {
-            _requestEnrollmentHandler = requestEnrollmentHandler;
-            _getAllPendingEnrollmentsHandler = getAllPendingEnrollmentsHandler;
-            _approveEnrollmentRequestHandler = approveEnrollmentRequestHandler;
-            _rejectEnrollmentHandler = rejectEnrollmentHandler;
-            _getAllMyClassesHandler = getAllMyClassesHandler;
-            _cancelEnrollmentHandler = cancelEnrollmentHandler;
-            _dropEnrollmentHandler = dropEnrollmentHandler;
-            _getMyClassByIdhandler = getMyClassByIdhandler;
+            _mediator = mediator;
         }
 
 
@@ -49,8 +33,8 @@ namespace WebAPI.Controllers
         public async Task<ActionResult<ApiResponse<Guid>>> RequestEnrollment([FromBody] CreateEnrollmentRequest request,
             CancellationToken cancellationToken)
         {
-            var enrollment = new RequestEnrollmentCommand(request.ClassId);
-            var result = await _requestEnrollmentHandler.Handle(enrollment, cancellationToken);
+            var command = new RequestEnrollmentCommand(request.ClassId);
+            var result = await _mediator.Send(command, cancellationToken);
             return CreatedAtAction(
                 nameof(MyClassesById),
                 new { id = result },
@@ -70,7 +54,7 @@ namespace WebAPI.Controllers
             CancellationToken cancellationToken)
         {
             var query = new GetAllMyClassesQuery(request.Page, request.PageSize);
-            var result = await _getAllMyClassesHandler.Handle(query, cancellationToken);
+            var result = await _mediator.Send(query, cancellationToken);
             return new ApiResponse<IEnumerable<EnrollmentResponseDTO>>
             {
                 Message = "Enrollments retrieved successfully",
@@ -86,7 +70,7 @@ namespace WebAPI.Controllers
          CancellationToken cancellationToken)
         {
             var query = new GetMyClassByIdQuery(enrollmentId);
-            var result = await _getMyClassByIdhandler.Handle(query, cancellationToken);
+            var result = await _mediator.Send(query, cancellationToken);
             return new ApiResponse<EnrollmentDetailsDTO>
             {
                 Message = "Enrollment retrieved successfully",
@@ -100,7 +84,7 @@ namespace WebAPI.Controllers
             CancellationToken cancellationToken)
         {
             var command = new CancelEnrollmentCommand(enrollmentId);
-            await _cancelEnrollmentHandler.Handle(command, cancellationToken);
+            await _mediator.Send(command, cancellationToken);
             return NoContent();
         }
 
@@ -110,7 +94,7 @@ namespace WebAPI.Controllers
             CancellationToken cancellationToken)
         {
             var command = new DropEnrollmentCommand(enrollmentId);
-            await _dropEnrollmentHandler.Handle(command, cancellationToken);
+            await _mediator.Send(command, cancellationToken);
             return NoContent();
         }
 
@@ -122,7 +106,7 @@ namespace WebAPI.Controllers
             CancellationToken cancellationToken)
         {
             var query = new GetAllPendingEnrollmentQuery(request.Page, request.PageSize);
-            var result = await _getAllPendingEnrollmentsHandler.Handle(query, cancellationToken);
+            var result = await _mediator.Send(query, cancellationToken);
             return new ApiResponse<IEnumerable<PendingEnrollmentResponseDTO>>
             {
                 Message = "Enrollment retrieved successfully",
@@ -136,7 +120,7 @@ namespace WebAPI.Controllers
             CancellationToken cancellationToken)
         {
             var command = new ApprovedEnrollmentCommand(enrollmentId);
-            await _approveEnrollmentRequestHandler.Handle(command, cancellationToken);
+            await _mediator.Send(command, cancellationToken);
             return NoContent();
         }
 
@@ -146,7 +130,7 @@ namespace WebAPI.Controllers
             CancellationToken cancellationToken)
         {
             var command = new RejectEnrollmentCommand(enrollmentId);
-            await _rejectEnrollmentHandler.Handle(command, cancellationToken);
+            await _mediator.Send(command, cancellationToken);
             return NoContent();
         }
     }

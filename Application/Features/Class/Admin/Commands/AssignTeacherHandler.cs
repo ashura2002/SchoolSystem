@@ -5,10 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.Logging;
+using MediatR;
 
 namespace Application.Features.Class.Admin.Commands
 {
-    public class AssignTeacherHandler
+    public class AssignTeacherHandler:IRequestHandler<AssignTeacherCommand>
     {
         private readonly ISchoolClassRepository _schoolClassRepository;
         private readonly IUserRepository _userRepository;
@@ -25,25 +26,24 @@ namespace Application.Features.Class.Admin.Commands
             _unitOfWork = unitOfWork;
         }
 
-        public async Task Handle(AssignTeacherCommand command, CancellationToken cancellationToken)
+        public async Task Handle(AssignTeacherCommand request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Assigning teacher {TeacherId} to class {ClassId}", command.TeacherId, command.ClassId);
+            _logger.LogInformation("Assigning teacher {TeacherId} to class {ClassId}", request.TeacherId, request.ClassId);
 
-            var schoolClass = await _schoolClassRepository.GetClassByIdAsync(command.ClassId, cancellationToken) ??
+            var schoolClass = await _schoolClassRepository.GetClassByIdAsync(request.ClassId, cancellationToken) ??
                 throw new DomainNotFoundException("Class not found");
 
-            var teacher = await _userRepository.GetByIdAsync(command.TeacherId, cancellationToken) ??
+            var user = await _userRepository.GetByIdAsync(request.TeacherId, cancellationToken) ??
                 throw new DomainNotFoundException("Teacher not found");
 
-            if (teacher.Role != Role.Teacher)
+            if (user.Role != Role.Teacher)
                 throw new DomainBadRequestException("This user is not a teacher.");
 
 
-            schoolClass.AssignTeacher(command.TeacherId);
+            schoolClass.AssignTeacher(request.TeacherId);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
-
 
     }
 }
