@@ -1,11 +1,12 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
+using MediatR;
 using System;
 using System.Collections.Generic;
 
 namespace Application.Features.Enrollments.Student.Queries
 {
-    public class GetAllMyClassesHandler
+    public class GetAllMyClassesHandler:IRequestHandler<GetAllMyClassesQuery, List<EnrollmentResponseDTO>>
     {
         private readonly IEnrollmentRepository _enrollmentRepository;
         private readonly ICurrentUserService _currentUserService;
@@ -21,11 +22,11 @@ namespace Application.Features.Enrollments.Student.Queries
         }
 
 
-        public async Task<List<EnrollmentResponseDTO>> Handle(GetAllMyClassesQuery query,
+        public async Task<List<EnrollmentResponseDTO>> Handle(GetAllMyClassesQuery request,
             CancellationToken cancellationToken)
         {
             var studentId = _currentUserService.UserId;
-            var enrollments = await _enrollmentRepository.GetApprovedEnrollmentByStudentIdAsync(query.Page, query.PageSize,
+            var enrollments = await _enrollmentRepository.GetApprovedEnrollmentByStudentIdAsync(request.Page, request.PageSize,
                 studentId, cancellationToken);
 
             var classIds = enrollments.Select(sc => sc.ClassId).ToList();

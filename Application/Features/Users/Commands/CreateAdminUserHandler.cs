@@ -1,9 +1,10 @@
 ﻿using Domain.Enums;
 using Application.Features.Auth.Services;
+using MediatR;
 
 namespace Application.Features.Users.Commands
 {
-    public class CreateAdminUserHandler
+    public class CreateAdminUserHandler:IRequestHandler<CreateUserCommand, Guid>
     {
         private readonly UserRegistrationService _createUserService;
 
@@ -12,9 +13,9 @@ namespace Application.Features.Users.Commands
             _createUserService = createUserService;
         }
 
-        public async Task<Guid> Handle(CreateUserCommand command, CancellationToken cancellationToken)
+        public async Task<Guid> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
-            return await _createUserService.CreateUser(command, Role.Admin, cancellationToken);
+            return await _createUserService.CreateUser(request, Role.Admin, cancellationToken);
         }
 
     }

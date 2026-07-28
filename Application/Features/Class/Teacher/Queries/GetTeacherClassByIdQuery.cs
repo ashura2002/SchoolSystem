@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Application.DTOs;
+using MediatR;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Application.Features.Class.Teacher.Queries
 {
-    public record GetTeacherClassByIdQuery(Guid ClassId);
+    public record GetTeacherClassByIdQuery(Guid ClassId):IRequest<TeacherClassDetailDTO>;
 }

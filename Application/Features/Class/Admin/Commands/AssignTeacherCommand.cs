@@ -1,8 +1,9 @@
-﻿using System;
+﻿using MediatR;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Application.Features.Class.Admin.Commands
 {
-    public record AssignTeacherCommand(Guid ClassId, Guid TeacherId);
+    public record AssignTeacherCommand(Guid ClassId, Guid TeacherId):IRequest;
 }

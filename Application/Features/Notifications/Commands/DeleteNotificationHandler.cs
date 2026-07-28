@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces;
 using Domain.Exceptions;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,16 +8,16 @@ using System.Text;
 namespace Application.Features.Notifications.Commands
 {
     public class DeleteNotificationHandler(INotificationRepository notification, ICurrentUserService currentUser,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork):IRequestHandler<DeleteNotificationCommand>
     {
         private readonly INotificationRepository _notificationRepository = notification;
         private readonly ICurrentUserService _currentUserService = currentUser;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-        public async Task Handle(DeleteNotificationCommand command, CancellationToken cancellationToken)
+        public async Task Handle(DeleteNotificationCommand request, CancellationToken cancellationToken)
         {
             var currentUser = _currentUserService.UserId;
-            var notification = await _notificationRepository.GetNotificationByIdAsync(command.NotificationId,
+            var notification = await _notificationRepository.GetNotificationByIdAsync(request.NotificationId,
                 currentUser, cancellationToken) ?? throw new DomainNotFoundException("Notification not found");
 
             if (notification.UserId != currentUser)

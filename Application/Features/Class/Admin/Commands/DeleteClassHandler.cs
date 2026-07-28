@@ -1,12 +1,13 @@
 ﻿using Application.Interfaces;
 using Domain.Exceptions;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Application.Features.Class.Admin.Commands
 {
-    public class DeleteClassHandler
+    public class DeleteClassHandler:IRequestHandler<DeleteClassCommand>
     {
         private readonly ISchoolClassRepository _schoolClassRepository;
         private readonly IUnitOfWork _unitOfWork;
@@ -17,20 +18,18 @@ namespace Application.Features.Class.Admin.Commands
             _unitOfWork = unitOfWork;
         }
 
-
-        public async Task Handle(DeleteClassCommand command, CancellationToken cancellationToken)
+        public async Task Handle(DeleteClassCommand request, CancellationToken cancellationToken)
         {
-            // load data from db
-            var schoolClass = await _schoolClassRepository.GetClassByIdAsync(command.ClassId, cancellationToken) ??
-                throw new DomainNotFoundException("Class not found");
+             //load data from db
+                var schoolClass = await _schoolClassRepository.GetClassByIdAsync(request.ClassId, cancellationToken) ??
+                    throw new DomainNotFoundException("Class not found");
 
-            schoolClass.EnsureCanBeDeleted();
+                schoolClass.EnsureCanBeDeleted();
 
-            // tell ef core mark as deleted
-            _schoolClassRepository.Remove(schoolClass);
-            // persist changes
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+                // tell ef core mark as deleted
+                _schoolClassRepository.Remove(schoolClass);
+                // persist changes
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
-
     }
 }

@@ -1,12 +1,13 @@
 ﻿using Application.Interfaces;
 using Domain.Exceptions;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Application.Features.Enrollments.Student.Commands
 {
-    public class CancelEnrollmentHandler
+    public class CancelEnrollmentHandler:IRequestHandler<CancelEnrollmentCommand>
     {
         private readonly IEnrollmentRepository _enrollmentRepository;
         private readonly ICurrentUserService _currentUserService;
@@ -20,9 +21,9 @@ namespace Application.Features.Enrollments.Student.Commands
             _unitOfWork = unitOfWork;
         }
 
-        public async Task Handle(CancelEnrollmentCommand command, CancellationToken cancellationToken)
+        public async Task Handle(CancelEnrollmentCommand request, CancellationToken cancellationToken)
         {
-            var enrollment = await _enrollmentRepository.GetEnrollmentByIdAsync(command.EnrollmentId, cancellationToken) ??
+            var enrollment = await _enrollmentRepository.GetEnrollmentByIdAsync(request.EnrollmentId, cancellationToken) ??
            throw new DomainNotFoundException("Enrollment not found");
             if (enrollment.StudentId != _currentUserService.UserId)
                 throw new DomainBadRequestException("You can only cancel your own enrollment");

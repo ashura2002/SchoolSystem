@@ -1,12 +1,13 @@
 ﻿using Application.Interfaces;
 using Domain.Exceptions;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Application.Features.Users.Commands
 {
-    public class DeleteUserHandler
+    public class DeleteUserHandler:IRequestHandler<DeleteUserCommand>
     {
         private readonly IUserRepository _userRepository;
         private readonly ICurrentUserService _currentUserService;
@@ -19,9 +20,9 @@ namespace Application.Features.Users.Commands
             _unitOfWork = unitOfWork;
         }
 
-        public async Task Handle(DeleteUserCommand command, CancellationToken cancellationToken)
+        public async Task Handle(DeleteUserCommand request, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetByIdAsync(command.UserId, cancellationToken)
+            var user = await _userRepository.GetByIdAsync(request.UserId, cancellationToken)
                 ?? throw new DomainNotFoundException("User not found");
             if (user.Id == _currentUserService.UserId)
                 throw new DomainBadRequestException("You cannot delete your account");
