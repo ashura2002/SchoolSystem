@@ -8,6 +8,8 @@ using WebAPI.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//service registrations
+
 //serilog configuration
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -27,7 +29,6 @@ builder.Services.AddSwaggerDocumentation();
 // dependencies
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
-builder.Services.AddPresentation();
 builder.Services.AddJwtAuthenticationDI(builder.Configuration);
 
 // for rate limiting 
@@ -45,6 +46,7 @@ if (app.Environment.IsDevelopment())
 }
 
 
+// middleware pipeline
 app.UseHttpsRedirection();
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseCors("AllowAll");

@@ -12,26 +12,30 @@ namespace Application.Mapper
         public static EnrollmentDTO ToDto(Enrollment enrollment)
         {
             return new EnrollmentDTO
-            {
-                Id = enrollment.Id,
-                ClassId = enrollment.ClassId,
-                StudentId = enrollment.StudentId,
-                Status = enrollment.Status,
-                CreatedAt = enrollment.CreatedAt
-            };
+            (
+                enrollment.Id,
+                enrollment.ClassId,
+                enrollment.StudentId,
+                enrollment.Status,
+                enrollment.CreatedAt,
+                enrollment.UpdatedAt,
+                enrollment.DeletedAt
+            );
         }
     
 
-        public static IEnumerable<EnrollmentDTO> ToResponseList(IEnumerable<Enrollment> enrollments)
+        public static List<EnrollmentDTO> ToResponseList(IEnumerable<EnrollmentDTO> enrollments)
         {
             return enrollments.Select(e => new EnrollmentDTO
-            {
-                Id = e.Id,
-                ClassId = e.ClassId,
-                StudentId = e.StudentId,
-                Status = e.Status,
-                CreatedAt = e.CreatedAt
-            });
+            (
+                e.Id,
+                e.ClassId,
+                e.StudentId,
+                e.Status,
+                e.CreatedAt,
+                e.UpdatedAt,
+                e.DeletedAt
+            )).ToList() ;
         }
 
     }

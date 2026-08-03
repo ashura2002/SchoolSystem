@@ -4,7 +4,8 @@ using System.Text;
 
 namespace Application.DTOs
 {
-    public record SchoolClassDTO(Guid Id, 
+    public record SchoolClassDTO(
+        Guid Id, 
         string Name, 
         Guid? TeacherId, 
         TimeOnly StartTime, 

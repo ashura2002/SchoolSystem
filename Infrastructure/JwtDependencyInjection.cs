@@ -16,7 +16,7 @@ namespace Infrastructure
         public static IServiceCollection AddJwtAuthenticationDI(this IServiceCollection services, IConfiguration configuration)
         {
 
-            var jwtSettings = configuration.GetSection("Jwt").Get<JwtSetting>()
+            var jwtSettings = configuration.GetSection("Jwt").Get<JwtSettings>()
                 ?? throw new InvalidOperationException("JWT settings are missing."); ;
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

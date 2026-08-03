@@ -10,18 +10,18 @@ namespace Application.Features.Users.Services
 {
     public class GetUserByEmailHandler
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IUserReadRepository _userReadRepository;
 
-        public GetUserByEmailHandler(IUserRepository userRepository)
+        public GetUserByEmailHandler(IUserReadRepository userRepository)
         {
-            _userRepository = userRepository;
+            _userReadRepository = userRepository;
         }
 
         public async Task<UserDTO> Execute(string email, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetByEmailAsync(email, cancellationToken) ??
+            var user = await _userReadRepository.GetByEmailAsync(email, cancellationToken) ??
                 throw new DomainNotFoundException("User not found");
-            return UserMapper.ToDto(user);
+            return user;
         }
     }
 }

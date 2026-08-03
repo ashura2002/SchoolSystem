@@ -13,7 +13,7 @@ namespace Domain.Entities
         public IReadOnlyCollection<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 
 
-        public void RaiseEvent(IDomainEvent domainEvent)
+        protected void RaiseEvent(IDomainEvent domainEvent)
         {
             Console.WriteLine("FROM Aggregate root event Added...");
             _domainEvents.Add(domainEvent);

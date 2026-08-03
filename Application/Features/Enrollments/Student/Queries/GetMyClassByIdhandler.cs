@@ -15,7 +15,9 @@ namespace Application.Features.Enrollments.Student.Queries
         private readonly ICurrentUserService _currentUserService;
         private readonly ISchoolClassRepository _schoolClassRepository;
 
-        public GetMyClassByIdhandler(IEnrollmentRepository enrollmentRepository, ICurrentUserService currentUserService,
+        public GetMyClassByIdhandler(
+            IEnrollmentRepository enrollmentRepository, 
+            ICurrentUserService currentUserService,
             ISchoolClassRepository schoolClassRepository)
         {
             _enrollmentRepository = enrollmentRepository;

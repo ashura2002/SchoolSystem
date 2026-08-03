@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Application.Features.Users.Commands
 {
-    public class CreateAdminUserHandler:IRequestHandler<CreateUserCommand, Guid>
+    public class CreateAdminUserHandler:IRequestHandler<CreateAdminCommand, Guid>
     {
         private readonly UserRegistrationService _createUserService;
 
@@ -13,10 +13,15 @@ namespace Application.Features.Users.Commands
             _createUserService = createUserService;
         }
 
-        public async Task<Guid> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+        public async Task<Guid> Handle(CreateAdminCommand request, CancellationToken cancellationToken)
         {
-            return await _createUserService.CreateUser(request, Role.Admin, cancellationToken);
+            return await _createUserService.CreateUser(
+                request.Username,
+                request.Email,
+                request.Password,
+                Role.Admin,
+                cancellationToken
+                );
         }
-
     }
 }

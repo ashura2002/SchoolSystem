@@ -21,7 +21,7 @@ namespace Application.Features.Class.Admin.Commands
 
         public async Task Handle(UpdateClassCommand request, CancellationToken cancellationToken)
         {
-            var updatedClassName = ClassNameValueObject.Create(request.Name);
+            var updatedClassName = ClassNameVO.Create(request.Name);
 
             var schoolClass = await _schoolClassRepository.GetClassByIdAsync(request.ClassId, cancellationToken) ??
                 throw new DomainNotFoundException("Class not found");

@@ -18,17 +18,17 @@ namespace Infrastructure.Data.Configuration
             builder.HasKey(user => user.Id);
 
             builder.Property(u => u.Username)
-                .HasConversion(v => v.Value, v => UsernameValueObject.Create(v))
+                .HasConversion(v => v.Value, v => UsernameVO.Create(v))
                 .HasMaxLength(255)
                 .IsRequired();
 
             builder.Property(u => u.Email)
-                .HasConversion(v => v.Value, v => EmailValueObject.Create(v))
+                .HasConversion(v => v.Value, v => EmailVO.Create(v))
                 .HasMaxLength(255)
                 .IsRequired();
 
             builder.Property(u => u.Password)
-                .HasConversion(v => v.Value, v => PasswordValueObject.Create(v))
+                .HasConversion(v => v.Value, v => PasswordVO.Create(v))
                 .HasMaxLength(255)
                 .IsRequired();
 

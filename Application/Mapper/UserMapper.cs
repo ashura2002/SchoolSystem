@@ -10,30 +10,29 @@ namespace Application.Mapper
     {
         public static UserDTO ToDto(User user)
         {
-            return new UserDTO
-            {
-                Id = user.Id,
-                Username = user.Username.Value,
-                Email = user.Email.Value,
-                Role = user.Role,
-                CreatedAt = user.CreatedAt,
-                UpdatedAt = user.UpdatedAt,
-                DeletedAt = user.DeletedAt
-            };
+            return new UserDTO(
+                user.Id,
+                user.Username.Value,
+                user.Email.Value,
+                user.Role,
+                user.CreatedAt,
+                user.UpdatedAt,
+                user.DeletedAt
+            );
         }
 
         public static List<UserDTO> ToResponseList(List<User> users)
         {
             var result = users.Select(u => new UserDTO
-            {
-                Id = u.Id,
-                Username = u.Username.Value,
-                Email = u.Email.Value,
-                Role = u.Role,
-                CreatedAt = u.CreatedAt,
-                UpdatedAt = u.UpdatedAt,
-                DeletedAt = u.DeletedAt
-            }).ToList();
+            (
+                u.Id,
+                u.Username.Value,
+                u.Email.Value,
+                u.Role,
+                u.CreatedAt,
+                u.UpdatedAt,
+                u.DeletedAt
+            )).ToList();
             return result;
         }
 

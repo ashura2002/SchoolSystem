@@ -13,10 +13,10 @@ namespace Infrastructure.Services
 {
     public class JwtService : IJwtService
     {
-        private readonly JwtSetting _jwtSetting;
+        private readonly JwtSettings _jwtSetting;
 
 
-        public JwtService(IOptions<JwtSetting> jwtSetting)
+        public JwtService(IOptions<JwtSettings> jwtSetting)
         {
             _jwtSetting = jwtSetting.Value;
         }

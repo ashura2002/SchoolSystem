@@ -6,16 +6,16 @@ using System.Text.RegularExpressions;
 
 namespace Domain.ValueObjects
 {
-    public class EmailValueObject
+    public class EmailVO
     {
         public string Value { get; }
 
-        private EmailValueObject(string value)
+        private EmailVO(string value)
         {
             Value = value;
         }
 
-        public static EmailValueObject Create(string value)
+        public static EmailVO Create(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
                 throw new DomainBadRequestException("Email cannot be empty.");
@@ -24,7 +24,7 @@ namespace Domain.ValueObjects
 
             if (!IsValidEmail(value)) throw new DomainBadRequestException("Invalid email format.");
 
-            return new EmailValueObject(value);
+            return new EmailVO(value);
         }
 
 

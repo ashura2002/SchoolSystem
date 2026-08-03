@@ -11,14 +11,14 @@ namespace Application.Mapper
 
         public static TeacherClassDetailDTO ToDto(
             SchoolClass schoolClass,
-            List<User> users
+            List<UserDTO> users
             )
         {
             return new TeacherClassDetailDTO(schoolClass.Id, schoolClass.Name.Value,
                 schoolClass.StartTime, 
                 schoolClass.EndTime, 
                 schoolClass.Schedule,
-                users.Select(s => new Students(s.Id, s.Username.Value))
+                users.Select(s => new Students(s.Id, s.Username))
                 .ToList()
                 );
         }

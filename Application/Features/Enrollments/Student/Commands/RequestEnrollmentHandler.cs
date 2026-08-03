@@ -8,13 +8,18 @@ namespace Application.Features.Enrollments.Student.Commands
 {
     public class RequestEnrollmentHandler : IRequestHandler<RequestEnrollmentCommand, Guid>
     {
+        private readonly IEnrollmentReadRespository _enrollmentReadRepository;
         private readonly IEnrollmentRepository _enrollmentRepository;
         private readonly ICurrentUserService _currentUserService;
         private readonly IUnitOfWork _unitOfWork;
 
-        public RequestEnrollmentHandler(IEnrollmentRepository enrollmentRepository, ICurrentUserService currentUserService,
+        public RequestEnrollmentHandler(
+            IEnrollmentReadRespository enrollmentReadRepository, 
+            IEnrollmentRepository enrollmentRepository,
+            ICurrentUserService currentUserService,
             IUnitOfWork unitOfWork)
         {
+            _enrollmentReadRepository = enrollmentReadRepository;
             _enrollmentRepository = enrollmentRepository;
             _currentUserService = currentUserService;
             _unitOfWork = unitOfWork;
@@ -24,7 +29,7 @@ namespace Application.Features.Enrollments.Student.Commands
         {
             var studentId = _currentUserService.UserId;
 
-            if (await _enrollmentRepository.EnrollmentExistsAsync(
+            if (await _enrollmentReadRepository.EnrollmentExistsAsync(
                     studentId,
                     request.ClassId,
                     cancellationToken))

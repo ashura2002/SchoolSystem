@@ -25,9 +25,9 @@ namespace Application.Features.Auth.Commands
         public async Task<string> Handle(LoginCommand command, CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetByUsernameAsync(command.Username, cancellationToken) ??
-                throw new DomainUnauthorizedException("Invalid Credentials");
+                throw new DomainUnauthorizedException("User not found");
             var isPasswordMatch = _passwordHasher.Verify(command.Password, user.Password.Value);
-            if (!isPasswordMatch) throw new DomainUnauthorizedException("Wrong Password");
+            if (!isPasswordMatch) throw new DomainUnauthorizedException("Invalid credentials");
             return _jwtService.GenerateToken(user);
         }
 

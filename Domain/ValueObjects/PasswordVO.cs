@@ -5,21 +5,21 @@ using System.Text;
 
 namespace Domain.ValueObjects
 {
-    public class PasswordValueObject
+    public class PasswordVO
     {
         public string Value { get; }
 
-        private PasswordValueObject(string value)
+        private PasswordVO(string value)
         {
             Value = value;
         }
 
-        public static PasswordValueObject Create(string value)
+        public static PasswordVO Create(string value)
         {
             if (string.IsNullOrWhiteSpace(value)) throw new DomainBadRequestException("Password cannot be empty.");
             value = value.Trim();
             if (value.Length < 5) throw new DomainBadRequestException("Invalid. Password must above 5 character.");
-            return new PasswordValueObject(value);
+            return new PasswordVO(value);
 
         }
     }

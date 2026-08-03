@@ -6,14 +6,13 @@ using System.Text;
 
 namespace Application.DTOs
 {
-    public class UserDTO
-    {
-        public Guid Id { get; set; }
-        public required string Username { get; set; }
-        public required string Email { get; set; }
-        public Role Role { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
-        public DateTime? DeletedAt { get; set; }
-    }
+    public record UserDTO(
+        Guid Id,
+        string Username,
+        string Email,
+        Role Role,
+        DateTime CreatedAt,
+        DateTime UpdatedAt,
+        DateTime? DeletedAt
+   );
 }

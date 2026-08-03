@@ -1,5 +1,4 @@
-﻿using Domain.Enums;
-using Application.Interfaces;
+﻿using Application.Interfaces;
 using Domain.Entities;
 using Domain.ValueObjects;
 using Infrastructure.Data;
@@ -20,49 +19,6 @@ namespace Infrastructure.Repositories
             _context.Users.Add(user);
         }
 
-        public async Task<bool> EmailExistsAsync(string email, CancellationToken cancellationToken)
-        {
-            return await _context.Users
-                .Where(u => u.DeletedAt == null)
-                .AnyAsync(u => u.Email == EmailValueObject.Create(email), cancellationToken);
-        }
-
-        public async Task<List<User>> GetAllActiveUsersAsync(int Page, int PageSize, CancellationToken cancellationToken)
-        {
-            return await _context.Users
-                .Where(u => u.DeletedAt == null)
-                .OrderByDescending(u => u.CreatedAt)
-                .Skip((Page - 1) * PageSize)
-                .Take(PageSize)
-                .AsNoTracking().ToListAsync(cancellationToken);
-        }
-
-        public async Task<List<User>> GetAllAdminsAsync(CancellationToken cancellationToken)
-        {
-            return await _context.Users
-                .AsNoTracking()
-                .Where(u => u.Role == Role.Admin)
-                .ToListAsync(cancellationToken);
-        }
-
-        public async Task<List<User>> GetAllDeletedUsersAsync(int Page, int PageSize, CancellationToken cancellationToken)
-        {
-            return await _context.Users
-              .Where(u => u.DeletedAt != null)
-              .OrderByDescending(u => u.CreatedAt)
-              .Skip((Page - 1) * PageSize)
-              .Take(PageSize)
-              .AsNoTracking().ToListAsync(cancellationToken);
-        }
-
-        public async Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken)
-        {
-            return await _context.Users
-                .Where(u => u.DeletedAt == null)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(u => u.Email == EmailValueObject.Create(email), cancellationToken);
-        }
-
         public async Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
             return await _context.Users
@@ -70,27 +26,22 @@ namespace Infrastructure.Repositories
                 .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
         }
 
+        public async Task<User?> GetByIdWithProfileAsync(Guid id, CancellationToken cancellationToken)
+        {
+            return await _context.Users
+                .Include(u => u.Profile)
+                .FirstOrDefaultAsync(
+                u => u.Id == id && u.DeletedAt == null,
+                cancellationToken);
+        }
+
         public async Task<User?> GetByUsernameAsync(string username, CancellationToken cancellationToken)
         {
             return await _context.Users
                 .Where(u => u.DeletedAt == null)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(u => u.Username == UsernameValueObject.Create(username), cancellationToken);
+                .FirstOrDefaultAsync(u => u.Username == UsernameVO.Create(username), cancellationToken);
         }
 
-        public async Task<List<User>> GetUsersByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken)
-        {
-            return await _context.Users
-                    .Where(u => ids.Contains(u.Id) && u.DeletedAt == null)
-                    .AsNoTracking()
-                    .ToListAsync(cancellationToken);
-        }
-
-        public async Task<bool> UsernameExistsAsync(string username, CancellationToken cancellationToken)
-        {
-            return await _context.Users
-                .Where(u => u.DeletedAt == null)
-                .AnyAsync(u => u.Username == UsernameValueObject.Create(username), cancellationToken);
-        }
     }
 }
