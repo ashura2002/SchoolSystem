@@ -8,17 +8,20 @@ namespace Domain.Entities
 {
     public class SchoolClass : BaseEntity
     {
-        public ClassNameValueObject Name { get; private set; }
+        public ClassNameVO Name { get; private set; }
         public Guid? TeacherId { get; private set; }
         public TimeOnly StartTime { get; private set; }
         public TimeOnly EndTime { get; private set; }
         public DayOfWeek Schedule { get; private set; }
-
         public int StudentCapacity { get; private set; }
         public int CurrentStudents { get; private set; }
         public int RemainingSlots => StudentCapacity - CurrentStudents;
 
-        private SchoolClass(ClassNameValueObject name, TimeOnly startTime, TimeOnly endTime, DayOfWeek schedule,
+        private SchoolClass(
+            ClassNameVO name, 
+            TimeOnly startTime, 
+            TimeOnly endTime, 
+            DayOfWeek schedule,
             int studentCapacity)
         {
             Name = name;
@@ -32,7 +35,11 @@ namespace Domain.Entities
 
 
         // factory method 
-        public static SchoolClass Create(ClassNameValueObject name, TimeOnly startTime, TimeOnly endTime, DayOfWeek schedule,
+        public static SchoolClass Create(
+            ClassNameVO name, 
+            TimeOnly startTime, 
+            TimeOnly endTime, 
+            DayOfWeek schedule,
             int studentCapacity = 25)
         {
             if (endTime <= startTime)
@@ -45,7 +52,7 @@ namespace Domain.Entities
             return schoolClass;
         }
 
-        public void UpdateClassName(ClassNameValueObject newClassName)
+        public void UpdateClassName(ClassNameVO newClassName)
         {
             if (Name == newClassName) return;
 
@@ -53,7 +60,10 @@ namespace Domain.Entities
             Touch();
         }
 
-        public void UpdateSchedule(DayOfWeek schedule, TimeOnly startTime, TimeOnly endTime)
+        public void UpdateSchedule(
+            DayOfWeek schedule, 
+            TimeOnly startTime, 
+            TimeOnly endTime)
         {
             if (endTime <= startTime)
                 throw new DomainBadRequestException(

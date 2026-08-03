@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Infrastructure.Setting
 {
-    public class JwtSetting
+    public class JwtSettings
     {
         public required string Key { get; set; }
         public required string Issuer { get; set; }

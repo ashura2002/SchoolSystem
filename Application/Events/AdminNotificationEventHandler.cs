@@ -8,14 +8,16 @@ using System.Text;
 
 namespace Application.Events
 {
-    public class AdminNotificationEventHandler(INotificationRepository notificationRepository, IUnitOfWork unitOfWork,
-        IUserRepository userRepository, ISchoolClassRepository schoolClassRepository)
-        : IDomainEventHandler<EnrollmentRequestedDomainEvent>
+    public class AdminNotificationEventHandler(
+        INotificationRepository notificationRepository, 
+        IUnitOfWork unitOfWork,
+        IUserReadRepository userReadRepository, 
+        ISchoolClassRepository schoolClassRepository): IDomainEventHandler<EnrollmentRequestedDomainEvent>
     {
 
         private readonly INotificationRepository _notificationRepository = notificationRepository;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
-        private readonly IUserRepository _userRepository = userRepository;
+        private readonly IUserReadRepository _userRepository = userReadRepository;
         private readonly ISchoolClassRepository _schoolClassRepository = schoolClassRepository;
 
         public async Task Handle(EnrollmentRequestedDomainEvent domainEvent, CancellationToken cancellationToken)

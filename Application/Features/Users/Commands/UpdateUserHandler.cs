@@ -26,8 +26,8 @@ namespace Application.Features.Users.Commands
             var user = await _userRepository.GetByIdAsync(request.UserId, cancellationToken) ??
                         throw new DomainNotFoundException("User not found");
             var hashedPassword = _passwordHasher.Hash(request.Password);
-            user.UpdateUsername(UsernameValueObject.Create(request.Username));
-            user.UpdatePassword(PasswordValueObject.Create(hashedPassword));
+            user.UpdateUsername(UsernameVO.Create(request.Username));
+            user.UpdatePassword(PasswordVO.Create(hashedPassword));
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
         }

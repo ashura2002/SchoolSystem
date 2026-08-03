@@ -9,7 +9,7 @@ using System.Text;
 
 namespace Application.Features.Users.Commands
 {
-    public class CreateStudentHandler:IRequestHandler<CreateUserCommand, Guid>
+    public class CreateStudentHandler:IRequestHandler<CreateStudentCommand, Guid>
     {
         private readonly UserRegistrationService _createUserService;
 
@@ -18,10 +18,14 @@ namespace Application.Features.Users.Commands
             _createUserService = createStudentService;
         }
 
-        public async Task<Guid> Handle(CreateUserCommand request,CancellationToken cancellationToken)
+        public async Task<Guid> Handle(CreateStudentCommand request, CancellationToken cancellationToken)
         {
-            return await _createUserService.CreateUser(request, Role.Student,cancellationToken);
+            return await _createUserService.CreateUser(
+                request.Username,
+                request.Email,
+                request.Password,
+                Role.Student, 
+                cancellationToken);
         }
-
     }
 }

@@ -8,17 +8,19 @@ namespace Application.Features.Enrollments.Student.Queries
 {
     public class GetAllMyClassesHandler:IRequestHandler<GetAllMyClassesQuery, List<EnrollmentResponseDTO>>
     {
-        private readonly IEnrollmentRepository _enrollmentRepository;
+        private readonly IEnrollmentReadRespository _enrollmentReadRepository;
         private readonly ICurrentUserService _currentUserService;
-        private readonly ISchoolClassRepository _schoolClassRepository;
+        private readonly ISchoolClassReadRepository _schoolClassReadRepository;
 
-        public GetAllMyClassesHandler(IEnrollmentRepository enrollmentRepository, ICurrentUserService currentUserService,
-            ISchoolClassRepository schoolClassRepository
+        public GetAllMyClassesHandler(
+            IEnrollmentReadRespository enrollmentRepository, 
+            ICurrentUserService currentUserService,
+            ISchoolClassReadRepository schoolClassReadRepository
             )
         {
-            _enrollmentRepository = enrollmentRepository;
+            _enrollmentReadRepository = enrollmentRepository;
             _currentUserService = currentUserService;
-            _schoolClassRepository = schoolClassRepository;
+            _schoolClassReadRepository = schoolClassReadRepository;
         }
 
 
@@ -26,16 +28,27 @@ namespace Application.Features.Enrollments.Student.Queries
             CancellationToken cancellationToken)
         {
             var studentId = _currentUserService.UserId;
-            var enrollments = await _enrollmentRepository.GetApprovedEnrollmentByStudentIdAsync(request.Page, request.PageSize,
-                studentId, cancellationToken);
 
+            var enrollments = await _enrollmentReadRepository.GetApprovedEnrollmentByStudentIdAsync(
+                request.Page, 
+                request.PageSize,
+                studentId, 
+                cancellationToken);
+
+            //extract ids using select
             var classIds = enrollments.Select(sc => sc.ClassId).ToList();
 
+            var classes = await _schoolClassReadRepository.GetClassesByIdsAsync(
+                classIds, 
+                cancellationToken);
 
-            var classes = await _schoolClassRepository.GetClassesByIdsAsync(classIds, cancellationToken);
 
-            var classLookUp = classes.ToDictionary(c => c.Id, c => c.Name.Value);
-
+            // Convert the list of classes into a dictionary:
+            // Key   = ClassId
+            // Value = ClassName
+            var classLookUp = classes.ToDictionary(
+                c => c.Id, 
+                c => c.Name);
 
             var result = enrollments.Select(e => new EnrollmentResponseDTO(
                 e.Id,

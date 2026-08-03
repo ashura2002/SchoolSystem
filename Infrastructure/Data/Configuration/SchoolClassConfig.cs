@@ -14,7 +14,7 @@ namespace Infrastructure.Data.Configuration
         {
             builder.HasKey(sc => sc.Id);
 
-            builder.Property(sc => sc.Name).HasConversion(v => v.Value, v => ClassNameValueObject.Create(v))
+            builder.Property(sc => sc.Name).HasConversion(v => v.Value, v => ClassNameVO.Create(v))
                 .HasMaxLength(255)
                 .IsRequired();
         }

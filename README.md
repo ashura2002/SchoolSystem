@@ -1,43 +1,52 @@
 # School Management System API
 
-A RESTful School Management System built with **ASP.NET Core** following **Clean Architecture**, **Domain-Driven Design (DDD)**,
-and **CQRS** principles.
+> A production-oriented School Management System REST API built with **ASP.NET Core** using **Clean Architecture**, **Domain-Driven Design (DDD)**, **CQRS**, **MediatR**, and **Entity Framework Core**.
 
-The project demonstrates how to build scalable, maintainable, and testable backend applications by separating business rules from 
-infrastructure concerns while applying SOLID principles and modern architectural patterns.
+This project demonstrates how to build a scalable, maintainable, and testable backend application by separating business rules from infrastructure concerns while following modern backend engineering practices and SOLID principles.
 
 ---
 
-# Table of Contents
+# Tech Stack
 
-- Features
-- Technologies
-- Architecture
-- Project Structure
-- Design Patterns
-- Domain-Driven Design
+## Backend
+
+- ASP.NET Core Web API
+- C#
+- Entity Framework Core
+- PostgreSQL
+
+## Authentication & Security
+
+- JWT Authentication
+- Role-Based Authorization
+- Password Hashing
+- Rate Limiting
+
+## Architecture & Patterns
+
+- Clean Architecture
+- Domain-Driven Design (DDD)
 - CQRS
+- MediatR
+- Repository Pattern
+- Unit of Work
 - Dependency Injection
-- Logging
-- Error Handling
-- Security
-- Pagination
-- API Overview
-- Architectural Decisions
-- Future Improvements
-- Learning Objectives
-- Author
+- SOLID Principles
+
+## Logging
+
+- Serilog
 
 ---
 
-# Features
+# Key Features
 
 ## Authentication
 
 - JWT Authentication
-- Role-based Authorization
 - Login
-- Get Current Logged-in User
+- Current Logged-in User
+- Role-Based Authorization
 
 ## User Management
 
@@ -49,6 +58,8 @@ infrastructure concerns while applying SOLID principles and modern architectural
 - View Active Users
 - View Deleted Users
 - Get User by Id
+- User Profile Management
+- Profile Picture Upload (Cloudinary)
 
 ## Class Management
 
@@ -57,11 +68,10 @@ infrastructure concerns while applying SOLID principles and modern architectural
 - Delete Class
 - Assign Teacher
 - Remove Teacher
-- View All Classes
-- View Classes Without Teacher
-- View Teacher's Classes
+- Teacher Schedule Conflict Validation
+- Student Capacity Management
 
-## Enrollment
+## Enrollment Management
 
 ### Student
 
@@ -78,355 +88,180 @@ infrastructure concerns while applying SOLID principles and modern architectural
 
 ---
 
-# Technologies
-
-### Backend
-
-- ASP.NET Core Web API
-- C#
-- Entity Framework Core
-- PostgreSQL
-
-### Authentication & Security
-
-- JWT Authentication
-- Role-based Authorization
-- Password Hashing
-- Rate Limiting
-
-### Architecture
-
-- Clean Architecture
-- Domain-Driven Design (DDD)
-- CQRS
-- Repository Pattern
-- Dependency Injection
-
-### Logging
-
-- Serilog
-
----
-
 # Architecture
 
-The project follows **Clean Architecture**, ensuring that business rules remain independent of frameworks, databases, and 
-external libraries.
+> *(Insert your Clean Architecture diagram here)*
 
-```
-Presentation (WebAPI)
-        │
-        ▼
-Application
-        │
-        ▼
-Domain
-        ▲
-        │
-Infrastructure
-```
+## Clean Architecture
 
-## Layer Responsibilities
+Separates the application into independent layers to keep business rules isolated from frameworks, databases, and external services.
 
-### Presentation (WebAPI)
+### API (Presentation)
 
-Responsible for:
+**Responsibility**
 
+- RESTful API endpoints
 - Controllers
-- Authentication
-- Authorization
+- Authentication & Authorization
+- Request / Response handling
 - Middleware
-- API Requests & Responses
-- Dependency Injection
+- Structured Logging
+- Exception Handling
 
 ---
 
 ### Application
 
-Responsible for:
+**Responsibility**
 
-- Commands
-- Queries
-- Handlers
-- Services
+- Use Cases
+- MediatR Commands & Queries
 - DTOs
-- Interfaces
-- Mappers
-
-The Application layer contains application business logic and depends only on abstractions.
+- Business Workflow Coordination
+- Application Services
+- Interfaces (Abstractions)
 
 ---
 
 ### Domain
 
-Responsible for:
+**Responsibility**
 
+- Core Business Logic
 - Entities
+- Aggregate Roots
 - Value Objects
+- Domain Events
 - Domain Exceptions
-- Domain Enums
-
-The Domain layer contains the core business rules and has no dependency on Infrastructure or external libraries.
+- Business Rules
 
 ---
 
 ### Infrastructure
 
-Responsible for:
+**Responsibility**
 
 - Entity Framework Core
+- PostgreSQL Persistence
 - Repository Implementations
+- Unit of Work
 - JWT Generation
 - Password Hashing
-- Current User Service
-
-Infrastructure implements the interfaces defined by the Application layer.
-
----
-
-# Project Structure
-
-```
-SchoolManagementSystem
-│
-├── Domain
-│   ├── Entities
-│   ├── Enums
-│   ├── Exceptions
-│   └── ValueObjects
-│
-├── Application
-│   ├── Features
-│   │
-│   ├── Auth
-│   │   ├── Commands
-│   │   ├── Queries
-│   │   └── Services
-│   │
-│   ├── Users
-│   │   ├── Commands
-│   │   └── Queries
-│   │
-│   ├── Classes
-│   │   ├── Commands
-│   │   └── Queries
-│   │
-│   ├── Enrollments
-│   │   ├── Commands
-│   │   └── Queries
-│   │
-│   ├── Interfaces
-│   ├── Mappers
-│   └── DependencyInjection.cs
-│
-├── Infrastructure
-│   ├── Data
-│   ├── Authentication
-│   ├── Repositories
-│   ├── Services
-│   └── DependencyInjection.cs
-│
-└── WebAPI
-    ├── Controllers
-    ├── Middlewares
-    ├── Constants
-    ├── DependencyInjection
-    └── Program.cs
-```
+- Cloudinary Integration
+- External Service Integrations
 
 ---
 
-# Design Patterns
+# Architectural Patterns
 
-This project applies several software engineering principles and patterns.
+## Clean Architecture
 
-- Clean Architecture
-- Domain-Driven Design (DDD)
-- CQRS
-- Repository Pattern
-- Dependency Injection
-- SOLID Principles
+Separates the application into Presentation, Application, Domain, and Infrastructure layers, ensuring that business rules remain independent from frameworks and external services.
 
 ---
 
-# Domain-Driven Design (DDD)
+## Domain-Driven Design (DDD)
 
-The Domain layer models the core business rules of the system.
-
-## Entities
-
-- User
-- SchoolClass
-- Enrollment
-
-## Value Objects
-
-- Username
-- Email
-- Password
-- ClassName
-
-Value Objects encapsulate validation and ensure that invalid domain data cannot be created.
+Models the business domain using rich entities, aggregate roots, value objects, and domain events to enforce business rules and maintain consistency across the system.
 
 ---
 
-# CQRS
+## CQRS
 
-The project separates **write operations** from **read operations**.
-
-## Commands
-
-Commands modify the application's state.
-
-Examples:
-
-- Create User
-- Update User
-- Delete User
-- Login
-- Approve Enrollment
-- Reject Enrollment
-- Assign Teacher
-
-## Queries
-
-Queries retrieve data without modifying the system.
-
-Examples:
-
-- Get User By Id
-- Get Current User
-- Get All Users
-- Get My Classes
-- Get Pending Enrollments
-
-Each command and query has its own Handler.
+Separates write operations (Commands) from read operations (Queries), allowing each side to evolve independently while keeping responsibilities focused.
 
 ---
 
-# Dependency Injection
+## MediatR
 
-All dependencies are registered using Microsoft's built-in Dependency Injection container.
-
-Examples include:
-
-- Repository Implementations
-- Services
-- Handlers
-- JWT Service
-- Password Hasher
+Implements a decoupled request pipeline where controllers communicate with Commands and Queries instead of directly depending on business logic.
 
 ---
 
-# Logging
+## Repository Pattern
 
-The project uses **Serilog** for structured logging.
-
-Logs include:
-
-- Incoming Requests
-- Errors
-- Unhandled Exceptions
+Abstracts data persistence behind interfaces, allowing the Application layer to remain independent of Entity Framework Core.
 
 ---
 
-# Error Handling
+## Unit of Work
 
-A Global Exception Middleware provides centralized exception handling and consistent API responses.
+Coordinates multiple repository operations into a single transaction, ensuring data consistency during business operations.
 
-Example:
+---
 
-```json
-{
-    "statusCode":404,
-    "message":"User not found",
-    "traceId":"..."
-}
+## Dependency Injection
+
+Uses ASP.NET Core's built-in dependency injection container to manage repositories, services, handlers, logging, and infrastructure dependencies.
+
+---
+
+## Global Exception Handling
+
+Centralizes exception handling through middleware to provide consistent API error responses and simplify error management.
+
+---
+
+## Structured Logging
+
+Uses Serilog for structured application logging to improve monitoring, diagnostics, and troubleshooting.
+
+---
+
+# Swagger
+
+> *(Insert your Swagger UI screenshot here)*
+
+---
+
+# Getting Started
+
+## Clone the Repository
+
+```bash
+git clone https://github.com/ashura2002/SchoolSystem.git
+
+cd SchoolSystem
 ```
 
 ---
 
-# Security
+## Configure Application Settings
 
-Security features include:
+Configure the following:
 
-- JWT Authentication
-- Role-based Authorization
-- Password Hashing
-- Current User Service
-- Global Exception Handling
-- API Rate Limiting
+- PostgreSQL Connection String
+- JWT Settings
+- Cloudinary Settings
+
+For local development, sensitive values can be stored using **.NET User Secrets** instead of committing them to source control.
 
 ---
 
-# Pagination
+## Apply Database Migrations
 
-Collection endpoints support pagination.
-
-Example:
-
-```
-GET /api/users?page=1&pageSize=10
+```bash
+dotnet ef database update
 ```
 
 ---
 
-# API Overview
+## Run the Application
 
-## Authentication
+```bash
+dotnet run
+```
 
-- POST /api/auth/login
+Swagger will be available at:
 
-## Users
-
-- GET /api/users
-- GET /api/users/{id}
-- GET /api/users/me
-- PUT /api/users/{id}
-- DELETE /api/users/{id}
-
-## Classes
-
-- POST /api/classes
-- GET /api/classes
-- PUT /api/classes/{id}
-- DELETE /api/classes/{id}
-
-## Enrollment
-
-### Student
-
-- POST /api/enrollment
-- GET /api/enrollment/my-classes
-- DELETE /api/enrollment/request/{id}
-- DELETE /api/enrollment/my-classes/{id}
-
-### Administrator
-
-- GET /api/enrollment/pending
-- POST /api/enrollment/{id}/approve
-- POST /api/enrollment/{id}/reject
-
----
-
-# Architectural Decisions
-
-This project was intentionally designed with maintainability, scalability, and separation of concerns in mind.
-
-- **Clean Architecture** separates the application into Presentation, Application, Domain, and Infrastructure layers.
-- **Domain-Driven Design (DDD)** keeps business rules and validation inside the Domain layer through entities and value objects.
-- **Dependency Inversion Principle (DIP)** ensures the Application layer depends only on abstractions while Infrastructure provides the concrete implementations.
-- **CQRS** separates write operations (Commands) from read operations (Queries), improving maintainability and preparing the project for MediatR.
-- **Repository Pattern** abstracts data access from application logic, keeping business rules independent of Entity Framework Core.
-- **Global Exception Middleware** centralizes exception handling and provides consistent API error responses.
-- **Structured Logging (Serilog)** captures application events and exceptions for easier debugging.
-- **Cancellation Tokens** are propagated through asynchronous operations to support request cancellation and improve resource usage.
+```
+https://localhost:xxxx/swagger
+```
 
 ---
 
 # Future Improvements
 
-- MediatR
 - FluentValidation
 - Refresh Token Rotation
 - Unit Testing
@@ -442,17 +277,17 @@ This project was intentionally designed with maintainability, scalability, and s
 
 # Learning Objectives
 
-This project was built to strengthen understanding of:
+This project was built to strengthen practical experience with:
 
+- ASP.NET Core Web API
 - Clean Architecture
 - Domain-Driven Design (DDD)
 - CQRS
-- SOLID Principles
-- Repository Pattern
-- Dependency Injection
-- ASP.NET Core Web API
-- JWT Authentication
+- MediatR
 - Entity Framework Core
+- PostgreSQL
+- Repository Pattern
+- Unit of Work
+- JWT Authentication
+- SOLID Principles
 - RESTful API Design
-
-

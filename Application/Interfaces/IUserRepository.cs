@@ -8,14 +8,10 @@ namespace Application.Interfaces
     public interface IUserRepository
     {
         void Add(User user);
+        // for getting profile
+        Task<User?> GetByIdWithProfileAsync(Guid userId, CancellationToken cancellationToken);
         Task<User?> GetByIdAsync(Guid userId, CancellationToken cancellationToken);
-        Task<List<User>> GetAllActiveUsersAsync(int Page, int PageSize, CancellationToken cancellationToken);
-        Task<List<User>> GetAllDeletedUsersAsync(int Page, int PageSize, CancellationToken cancellationToken);
         Task<User?> GetByUsernameAsync(string username, CancellationToken cancellationToken);
-        Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken);
-        Task<List<User>> GetUsersByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken);
-        Task<List<User>> GetAllAdminsAsync(CancellationToken cancellationToken);
-        Task<bool> UsernameExistsAsync(string username ,CancellationToken cancellationToken);
-        Task<bool> EmailExistsAsync(string email, CancellationToken cancellationToken);
+
     }
 }

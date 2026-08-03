@@ -31,7 +31,7 @@ namespace WebAPI.Controllers
         public async Task<ActionResult<ApiResponse<Guid>>> CreateAdmin([FromBody] CreateUserRequest request,
         CancellationToken cancellationToken)
         {
-            var command = UserCommandMapper.ToCommand(request);
+            var command = new CreateAdminCommand(request.Username, request.Email, request.Password);
             var result = await _mediator.Send(command, cancellationToken);
             return CreatedAtAction(
                 nameof(GetUserById),
@@ -50,7 +50,7 @@ namespace WebAPI.Controllers
         public async Task<ActionResult<ApiResponse<Guid>>> CreateTeacher([FromBody] CreateUserRequest request,
             CancellationToken cancellationToken)
         {
-            var command = UserCommandMapper.ToCommand(request);
+            var command = new CreateTeacherCommand(request.Username, request.Email, request.Password);
             var result = await _mediator.Send(command, cancellationToken);
             return CreatedAtAction(
                 nameof(GetUserById),
@@ -69,7 +69,7 @@ namespace WebAPI.Controllers
         public async Task<ActionResult<ApiResponse<Guid>>> CreateStudent([FromBody] CreateUserRequest request,
          CancellationToken cancellationToken)
         {
-            var command = UserCommandMapper.ToCommand(request);
+            var command = new CreateStudentCommand(request.Username, request.Email, request.Password);
             var result = await _mediator.Send(command, cancellationToken);
             return CreatedAtAction(
                 nameof(GetUserById),

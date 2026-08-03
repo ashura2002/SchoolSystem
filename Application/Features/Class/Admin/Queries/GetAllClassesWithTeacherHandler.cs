@@ -1,6 +1,5 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
-using Application.Mapper;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -10,17 +9,21 @@ namespace Application.Features.Class.Admin.Queries
 {
     public class GetAllClassesWithTeacherHandler : IRequestHandler<GetAllClassesWithTeacherQuery, List<SchoolClassDTO>>
     {
-        private readonly ISchoolClassRepository _schoolClassRepository;
+        private readonly ISchoolClassReadRepository _schoolClassReadRepository;
 
-        public GetAllClassesWithTeacherHandler(ISchoolClassRepository schoolClassRepository)
+        public GetAllClassesWithTeacherHandler(ISchoolClassReadRepository schoolClassRepository)
         {
-            _schoolClassRepository = schoolClassRepository;
+            _schoolClassReadRepository = schoolClassRepository;
         }
 
         public async Task<List<SchoolClassDTO>> Handle(GetAllClassesWithTeacherQuery request, CancellationToken cancellationToken)
         {
-            var schoolClasses = await _schoolClassRepository.GetAllClassesWithTeacherAsync(request.Page, request.PageSize, cancellationToken);
-            return SchoolClassMapper.ToResponseList(schoolClasses);
+            var schoolClasses = await _schoolClassReadRepository.GetAllClassesWithTeacherAsync(
+                request.Page, 
+                request.PageSize, 
+                cancellationToken);
+
+            return schoolClasses;
         }
     }
 }

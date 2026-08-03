@@ -12,37 +12,48 @@ namespace Application.Features.Auth.Services
 {
     public class UserRegistrationService
     {
+        private readonly IUserReadRepository _userReadRepository;
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher _passwordHasher;
         private readonly IUnitOfWork _unitOfWork;
 
-        public UserRegistrationService(IUserRepository userRepository, IPasswordHasher passwordHasher, IUnitOfWork unitOfWork)
+        public UserRegistrationService(
+            IUserReadRepository userReadRepository,
+            IUserRepository userRepository,
+            IPasswordHasher passwordHasher, 
+            IUnitOfWork unitOfWork)
         {
+            _userReadRepository = userReadRepository;
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Guid> CreateUser(CreateUserCommand dto, Role role, CancellationToken cancellationToken)
+        public async Task<Guid> CreateUser(
+            string username,
+            string email,
+            string password,
+            Role role, 
+            CancellationToken cancellationToken)
         {
 
-            var username = UsernameValueObject.Create(dto.Username);
-            var email = EmailValueObject.Create(dto.Email);
-            var password = PasswordValueObject.Create(dto.Password);
+            var usernameVo = UsernameVO.Create(username);
+            var emailVo = EmailVO.Create(email);
+            var passwordVo = PasswordVO.Create(password);
 
-            if (await _userRepository.UsernameExistsAsync(username.Value, cancellationToken))
+            if (await _userReadRepository.IsUsernameExistsAsync(usernameVo.Value, cancellationToken))
                 throw new DomainBadRequestException("Username already exists.");
 
-            if (await _userRepository.EmailExistsAsync(email.Value, cancellationToken))
+            if (await _userReadRepository.IsEmailExistsAsync(emailVo.Value, cancellationToken))
                 throw new DomainBadRequestException("Email already exist");
 
-            var hashedPassword = _passwordHasher.Hash(password.Value);
+            var hashedPassword = _passwordHasher.Hash(passwordVo.Value);
 
             // create a domain entity
             var user = User.Register(
-                username,
-                email,
-                PasswordValueObject.Create(hashedPassword),
+                usernameVo,
+                emailVo,
+                PasswordVO.Create(hashedPassword),
                 role
                 );
 

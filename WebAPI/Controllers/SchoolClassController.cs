@@ -13,7 +13,7 @@ namespace WebAPI.Controllers
 {
 
     [ApiController]
-    [Route("api/class")]
+    [Route("api/classes")]
     [Authorize]
     public class SchoolClassController : ControllerBase
     {

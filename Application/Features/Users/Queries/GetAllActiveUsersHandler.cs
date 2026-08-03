@@ -10,17 +10,21 @@ namespace Application.Features.Users.Queries
 {
     public class GetAllActiveUsersHandler:IRequestHandler<GetAllActiveUserQuery, List<UserDTO>>
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IUserReadRepository _userReadRepository;
 
-        public GetAllActiveUsersHandler(IUserRepository userRepository)
+        public GetAllActiveUsersHandler(IUserReadRepository userRepository)
         {
-            _userRepository = userRepository;
+            _userReadRepository = userRepository;
         }
 
         public async Task<List<UserDTO>> Handle(GetAllActiveUserQuery request, CancellationToken cancellationToken)
         {
-            var users = await _userRepository.GetAllActiveUsersAsync(request.Page, request.PageSize, cancellationToken);
-            return UserMapper.ToResponseList(users);
+            var users = await _userReadRepository.GetAllActiveUsersAsync(
+                request.Page, 
+                request.PageSize, 
+                cancellationToken);
+
+            return users;
         }
     }
 }

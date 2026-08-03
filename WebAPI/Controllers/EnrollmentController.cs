@@ -14,7 +14,7 @@ namespace WebAPI.Controllers
 {
 
     [ApiController]
-    [Route("api/enrollment")]
+    [Route("api/enrollments")]
     [Authorize]
     public class EnrollmentController : ControllerBase
     {
@@ -37,7 +37,7 @@ namespace WebAPI.Controllers
             var result = await _mediator.Send(command, cancellationToken);
             return CreatedAtAction(
                 nameof(MyClassesById),
-                new { id = result },
+                new { enrollmentId = result },
                 new ApiResponse<Guid>
                 {
                     Message = "Enroll Successfully",

@@ -20,8 +20,11 @@ namespace Application.Features.Class.Admin.Queries
 
         public async Task<SchoolClassDTO> Handle(GetClassByIdQuery request, CancellationToken cancellationToken)
         {
-            var schoolClass = await _schoolClassRepository.GetClassByIdAsync(request.ClassId, cancellationToken) ??
+            var schoolClass = await _schoolClassRepository.GetClassByIdAsync(
+                request.ClassId, 
+                cancellationToken) ??
                 throw new DomainNotFoundException("Class not found");
+
             return SchoolClassMapper.ToDto(schoolClass);
         }
     }

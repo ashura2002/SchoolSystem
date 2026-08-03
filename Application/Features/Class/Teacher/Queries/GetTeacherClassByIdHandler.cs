@@ -13,17 +13,20 @@ namespace Application.Features.Class.Teacher.Queries
     {
         private readonly ISchoolClassRepository _schoolClassRepository;
         private readonly ICurrentUserService _currentUserService;
-        private readonly IEnrollmentRepository _enrollmentRepository;
-        private readonly IUserRepository _userRepository;
+        private readonly IEnrollmentReadRespository _enrollmentReadRepository;
+        private readonly IUserReadRepository _userReadRepository;
 
 
-        public GetTeacherClassByIdHandler(ISchoolClassRepository schoolClassRepository, ICurrentUserService currentUserService,
-            IEnrollmentRepository enrollmentRepository, IUserRepository userRepository)
+        public GetTeacherClassByIdHandler(
+            ISchoolClassRepository schoolClassRepository, 
+            ICurrentUserService currentUserService,
+            IEnrollmentReadRespository enrollmentRepository, 
+            IUserReadRepository userRepository)
         {
             _schoolClassRepository = schoolClassRepository;
             _currentUserService = currentUserService;
-            _enrollmentRepository = enrollmentRepository;
-            _userRepository = userRepository;
+            _enrollmentReadRepository = enrollmentRepository;
+            _userReadRepository = userRepository;
         }
 
         public async Task<TeacherClassDetailDTO> Handle(GetTeacherClassByIdQuery request, CancellationToken cancellationToken)
@@ -31,19 +34,18 @@ namespace Application.Features.Class.Teacher.Queries
             // find class
             var schoolClass = await _schoolClassRepository.GetClassByIdAsync(request.ClassId, cancellationToken) ??
                 throw new DomainNotFoundException("Class not found");
-
-            //    // check ownership
+             // check ownership
             if (schoolClass.TeacherId != _currentUserService.UserId)
                 throw new DomainUnauthorizedException("You are not assigned to this class");
 
-            //    // get all enrollment by class id and status is == to approved
-            var approvedStudentsEnrollment = await _enrollmentRepository.GetApprovedEnrollmentStudentByClassIdAsync(request.ClassId,
+            // get all enrollment by class id and status is == to approved
+            var approvedStudentsEnrollment = await _enrollmentReadRepository.GetApprovedEnrollmentStudentByClassIdAsync(request.ClassId,
                 cancellationToken);
 
-            //    //extract ids using select
+           //extract ids using select
             var studentIds = approvedStudentsEnrollment.Select(e => e.StudentId).ToList();
 
-            var students = await _userRepository.GetUsersByIdsAsync(studentIds, cancellationToken);
+            var students = await _userReadRepository.GetUsersByIdsAsync(studentIds, cancellationToken);
 
             return TeacherClassMapper.ToDto(schoolClass, students);
         }

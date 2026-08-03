@@ -5,19 +5,19 @@ using System.Text;
 
 namespace Domain.ValueObjects
 {
-    public class UsernameValueObject
+    public class UsernameVO
     {
         // field
         public string Value { get; }
 
         // constructor
-        private UsernameValueObject(string value)
+        private UsernameVO(string value)
         {
             Value = value;
         }
 
         // method
-        public static UsernameValueObject Create(string value)
+        public static UsernameVO Create(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
                 throw new DomainBadRequestException("Username cannot be empty.");
@@ -25,7 +25,7 @@ namespace Domain.ValueObjects
 
             if (value.Length < 3)
                 throw new DomainBadRequestException("Username must be at least 3 characters long.");
-            return new UsernameValueObject(value);
+            return new UsernameVO(value);
         }
     }
 }

@@ -13,6 +13,7 @@ namespace Infrastructure.Data
         public DbSet<SchoolClass> SchoolClasses => Set<SchoolClass>();
         public DbSet<Enrollment> Enrollments => Set<Enrollment>();
         public DbSet<Notification> Notifications => Set<Notification>();
+        public DbSet<Profile> Profile => Set<Profile>();
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);

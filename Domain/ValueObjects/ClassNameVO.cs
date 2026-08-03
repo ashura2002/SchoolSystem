@@ -5,16 +5,16 @@ using System.Text;
 
 namespace Domain.ValueObjects
 {
-    public class ClassNameValueObject
+    public class ClassNameVO
     {
         public string Value { get; }
 
-        private ClassNameValueObject(string value)
+        private ClassNameVO(string value)
         {
             Value = value;
         }
 
-        public static ClassNameValueObject Create(string value)
+        public static ClassNameVO Create(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
                 throw new DomainBadRequestException("Class name cannot be empty");
@@ -22,7 +22,7 @@ namespace Domain.ValueObjects
 
             if (value.Length < 3) throw new DomainBadRequestException("Class name must above 3 characters length.");
 
-            return new ClassNameValueObject(value);
+            return new ClassNameVO(value);
         }
     }
 }

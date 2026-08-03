@@ -51,7 +51,7 @@ namespace Domain.Entities
         {
             if (Status != EnrollmentStatus.Pending)
                 throw new DomainBadRequestException("Only pending enrollments can be cancelled");
-
+            
             DeletedAt = DateTime.UtcNow;
             Touch();
         }

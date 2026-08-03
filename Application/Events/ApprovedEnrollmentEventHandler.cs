@@ -8,9 +8,10 @@ using System.Text;
 
 namespace Application.Events
 {
-    public class ApprovedEnrollmentEventHandler(INotificationRepository notificationRepository,
-        ISchoolClassRepository schoolClassRepository, IUnitOfWork unitOfWork)
-        : IDomainEventHandler<EnrollmentApprovedDomainEvent>
+    public class ApprovedEnrollmentEventHandler(
+        INotificationRepository notificationRepository,
+        ISchoolClassRepository schoolClassRepository, 
+        IUnitOfWork unitOfWork): IDomainEventHandler<EnrollmentApprovedDomainEvent>
     {
         private readonly INotificationRepository _notificationRepository = notificationRepository;
         private readonly ISchoolClassRepository _schoolClassRepository = schoolClassRepository;

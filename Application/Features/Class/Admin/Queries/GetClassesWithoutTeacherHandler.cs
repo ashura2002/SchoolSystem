@@ -10,18 +10,21 @@ namespace Application.Features.Class.Admin.Queries
 {
     public class GetClassesWithoutTeacherHandler:IRequestHandler<GetClassesWithoutTeacherQuery, List<SchoolClassDTO>>
     {
-        private readonly ISchoolClassRepository _schoolClassRepository;
+        private readonly ISchoolClassReadRepository _schoolClassReadRepository;
 
-        public GetClassesWithoutTeacherHandler(ISchoolClassRepository schoolClassRepository)
+        public GetClassesWithoutTeacherHandler(ISchoolClassReadRepository schoolClassReadRepository)
         {
-            _schoolClassRepository = schoolClassRepository;
+            _schoolClassReadRepository = schoolClassReadRepository;
         }
 
         public async Task<List<SchoolClassDTO>> Handle(GetClassesWithoutTeacherQuery request, CancellationToken cancellationToken)
         {
-            var schoolClasses = await _schoolClassRepository.GetAllClassesWithoutTeacherAsync(request.Page, request.PageSize,
+            var schoolClasses = await _schoolClassReadRepository.GetAllClassesWithoutTeacherAsync(
+                request.Page, 
+                request.PageSize,
                 cancellationToken);
-            return SchoolClassMapper.ToResponseList(schoolClasses);
+
+            return schoolClasses;
         }
     }
 }

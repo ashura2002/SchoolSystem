@@ -11,17 +11,21 @@ namespace Application.Features.Users.Queries
 {
     public class GetAllDeactiveUsersHandler : IRequestHandler<GetAllDeactiveUserQuery, List<UserDTO>>
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IUserReadRepository _userReadRepository;
 
-        public GetAllDeactiveUsersHandler(IUserRepository userRepository)
+        public GetAllDeactiveUsersHandler(IUserReadRepository userReadRepository)
         {
-            _userRepository = userRepository;
+            _userReadRepository = userReadRepository;
         }
 
         public async Task<List<UserDTO>> Handle(GetAllDeactiveUserQuery request, CancellationToken cancellationToken)
         {
-            var users = await _userRepository.GetAllDeletedUsersAsync(request.Page, request.PageSize, cancellationToken);
-            return UserMapper.ToResponseList(users);
+            var users = await _userReadRepository.GetAllDeletedUsersAsync(
+                request.Page, 
+                request.PageSize, 
+                cancellationToken);
+
+            return users;
         }
     }
 }

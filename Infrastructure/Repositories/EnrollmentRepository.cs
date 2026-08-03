@@ -31,47 +31,12 @@ namespace Infrastructure.Repositories
             _context.Enrollments.Remove(enrollment);
         }
 
-        public async Task<List<Enrollment>> GetAllPendingEnrollmentsAsync(int Page, int PageSize, CancellationToken cancellationToken)
-        {
-            return await _context.Enrollments
-                .AsNoTracking()
-                .Where(e => e.Status == EnrollmentStatus.Pending)
-                .OrderByDescending(e => e.CreatedAt)
-                .Skip((Page - 1) * PageSize)
-                .Take(PageSize)
-                .ToListAsync(cancellationToken);
-        }
-
-        public async Task<List<Enrollment>> GetApprovedEnrollmentByStudentIdAsync(int Page, int PageSize, Guid studentId,
+        public async Task<Enrollment?> GetEnrollmentByIdAsync(
+            Guid enrollmentId, 
             CancellationToken cancellationToken)
         {
             return await _context.Enrollments
-             .AsNoTracking()
-             .Where(e => e.StudentId == studentId && e.Status == EnrollmentStatus.Approved)
-             .OrderByDescending(e => e.CreatedAt)
-             .Skip((Page - 1) * PageSize)
-             .Take(PageSize)
-             .ToListAsync(cancellationToken);
-        }
-
-        public async Task<List<Enrollment>> GetApprovedEnrollmentStudentByClassIdAsync(Guid classId, CancellationToken cancellationToken)
-        {
-            return await _context.Enrollments
-                .AsNoTracking()
-                .Where(e => e.ClassId == classId && e.Status == EnrollmentStatus.Approved)
-                .ToListAsync(cancellationToken);
-        }
-
-        public async Task<Enrollment?> GetEnrollmentByIdAsync(Guid enrollmentId, CancellationToken cancellationToken)
-        {
-            return await _context.Enrollments
                 .FirstOrDefaultAsync(e => e.Id == enrollmentId, cancellationToken);
-        }
-
-        public async Task<bool> EnrollmentExistsAsync(Guid studentId, Guid classId, CancellationToken cancellationToken)
-        {
-            return await _context.Enrollments
-                .AnyAsync(e => e.StudentId == studentId && e.ClassId == classId,cancellationToken);
         }
     }
 }

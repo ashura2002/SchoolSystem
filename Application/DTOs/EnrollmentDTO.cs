@@ -5,17 +5,12 @@ using System.Text;
 
 namespace Application.DTOs
 {
-    public class EnrollmentDTO
-    {
-        public Guid Id { get; set; }
-
-        public Guid StudentId { get; set; }
-        public Guid ClassId { get; set; }
-        public EnrollmentStatus Status { get; set; }
-
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
-        public DateTime? DeletedAt { get; set; }
-
-    }
+    public record EnrollmentDTO(
+        Guid Id,
+        Guid StudentId,
+        Guid ClassId,
+        EnrollmentStatus Status,
+        DateTime CreatedAt,
+        DateTime UpdatedAt,
+        DateTime? DeletedAt);
 }
