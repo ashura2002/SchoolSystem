@@ -90,7 +90,8 @@ This project demonstrates how to build a scalable, maintainable, and testable ba
 
 # Architecture
 
-> *(Insert your Clean Architecture diagram here)*
+> <img width="1536" height="1024" alt="Clean_Arch" src="https://github.com/user-attachments/assets/b12e3354-8607-47ac-b083-54901c110c8d" />
+
 
 ## Clean Architecture
 
@@ -218,7 +219,8 @@ Uses Serilog for structured application logging to improve monitoring, diagnosti
 
 # Swagger
 
-> *(Insert your Swagger UI screenshot here)*
+> <img width="1901" height="856" alt="Screenshot 2026-08-02 182000" src="https://github.com/user-attachments/assets/3f3549b1-5618-41f2-9b40-a829329a6039" />
+
 
 ---
 
