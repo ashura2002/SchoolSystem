@@ -5,7 +5,7 @@ using Serilog;
 using WebAPI;
 using WebAPI.Middlewares;
 
-
+// PHASE 1 construction phase
 var builder = WebApplication.CreateBuilder(args);
 
 //service registrations
@@ -20,7 +20,6 @@ builder.Host.UseSerilog();
 // Cors Policy
 builder.Services.AddCorsPolicy();
 
-
 // Add services to the container.
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -34,6 +33,8 @@ builder.Services.AddJwtAuthenticationDI(builder.Configuration);
 // for rate limiting 
 builder.Services.AddRateLimiting();
 
+
+// PHASE 2 build all the constructed services
 var app = builder.Build();
 
 
@@ -55,4 +56,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
+// PHASE 3 run the build application
 app.Run();

@@ -13,6 +13,12 @@ namespace WebAPI
                 opt.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "School System",
+                    Description = """
+                        A RESTful ASP.NET Core Web API built using Clean Architecture, Domain-Driven Design (DDD),
+                        and CQRS to demonstrate a scalable, maintainable, and production-oriented backend architecture.
+                        Features include JWT Authentication, Role-Based Authorization, Entity Framework Core with PostgreSQL, 
+                        Cloudinary image storage integration, Serilog structured logging, global exception handling, and pagination support.
+                        """,
                     Version = "v1"
                 });
 

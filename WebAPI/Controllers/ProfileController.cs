@@ -137,6 +137,12 @@ namespace WebAPI.Controllers
         }
 
 
-        // delete profile
+        [HttpDelete]
+        public async Task<ActionResult> DeleteProfile(CancellationToken cancellationToken)
+        {
+            var command = new DeleteProfileCommand();
+            await _mediator.Send(command, cancellationToken);
+            return NoContent();
+        }
     }
 }
