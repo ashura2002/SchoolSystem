@@ -1,4 +1,4 @@
-# School Management System API
+# School System API
 
 > A production-oriented School Management System REST API built with **ASP.NET Core** using **Clean Architecture**, **Domain-Driven Design (DDD)**, **CQRS**, **MediatR**, and **Entity Framework Core**.
 
@@ -108,9 +108,17 @@ Separates the application into independent layers to keep business rules isolate
 - Structured Logging
 - Exception Handling
 
----
+| Responsibility | Description |
+|----------------|-------------|
+| Commands | Write operations that modify state |
+| Queries | Read operations that retrieve data |
+| Handlers | Process commands and queries |
+| Services | Application-specific business logic |
+| DTOs | Data transfer objects |
+| Interfaces | Abstractions for infrastructure |
+| Mappers | Entity to DTO conversions |
 
-### Application
+#### Domain Layer
 
 **Responsibility**
 
@@ -122,6 +130,7 @@ Separates the application into independent layers to keep business rules isolate
 - Interfaces (Abstractions)
 
 ---
+## Design Patterns
 
 ### Domain
 
@@ -194,13 +203,12 @@ Coordinates multiple repository operations into a single transaction, ensuring d
 
 Uses ASP.NET Core's built-in dependency injection container to manage repositories, services, handlers, logging, and infrastructure dependencies.
 
----
+### Log Categories
 
 ## Global Exception Handling
 
 Centralizes exception handling through middleware to provide consistent API error responses and simplify error management.
 
----
 
 ## Structured Logging
 
@@ -258,9 +266,9 @@ Swagger will be available at:
 https://localhost:xxxx/swagger
 ```
 
----
+## Architectural Decisions
 
-# Future Improvements
+This project was intentionally designed with maintainability, scalability, and separation of concerns in mind.
 
 - FluentValidation
 - Refresh Token Rotation
@@ -275,7 +283,7 @@ https://localhost:xxxx/swagger
 
 ---
 
-# Learning Objectives
+## Learning Objectives
 
 This project was built to strengthen practical experience with:
 
