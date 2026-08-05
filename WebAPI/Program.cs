@@ -1,7 +1,8 @@
 using Application;
 using Infrastructure;
-using System.Text;
+using Infrastructure.Data;
 using Serilog;
+using System.Text;
 using WebAPI;
 using WebAPI.Middlewares;
 
@@ -38,13 +39,18 @@ builder.Services.AddRateLimiting();
 var app = builder.Build();
 
 
+// Seed the database with default data when the application starts.
+// If the seeded admin already exists, nothing will be added.
+using (var scope = app.Services.CreateScope()) {
+    var seeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
+    await seeder.SeedAsync();
+}
+
+
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.MapOpenApi();
-}
+
 
 
 // middleware pipeline

@@ -63,6 +63,9 @@ namespace Infrastructure
             });
 
 
+            // seeded data registration
+            services.AddScoped<DatabaseSeeder>();
+
             services.AddTransient<IPasswordHasher, PasswordHasher>();
             services.AddTransient<IJwtService, JwtService>();
             services.AddTransient<IImageStorage, ImageStorageService>();
