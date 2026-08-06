@@ -33,6 +33,8 @@ namespace Application
             services.AddScoped<IDomainEventHandler<EnrollmentRequestedDomainEvent>, AdminNotificationEventHandler>();
             services.AddScoped<IDomainEventHandler<EnrollmentApprovedDomainEvent>, ApprovedEnrollmentEventHandler>();
             services.AddScoped<IDomainEventHandler<EnrollmentRejectedDomainEvent>, RejectEnrollmentEventHandler>();
+            services.AddScoped<IDomainEventHandler<TeacherAssignedToClassDomainEvent>, TeacherAssignedToClassDomainEventHandler>();
+            services.AddScoped<IDomainEventHandler<TeacherRemovedFromClassDomainEvent>, TeacherRemovedFromClassDomainEventHandler>();
             return services;
         }
 
