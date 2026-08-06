@@ -1,4 +1,5 @@
-﻿using Domain.Exceptions;
+﻿using Domain.Events;
+using Domain.Exceptions;
 using Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Text;
 
 namespace Domain.Entities
 {
-    public class SchoolClass : BaseEntity
+    public class SchoolClass : AggregateRoot
     {
         public ClassNameVO Name { get; private set; }
         public Guid? TeacherId { get; private set; }
@@ -84,13 +85,18 @@ namespace Domain.Entities
                 throw new DomainBadRequestException("Teacher Id cannot be empty.");
 
             TeacherId = teacherId;
+            RaiseEvent(new TeacherAssignedToClassDomainEvent(teacherId, Name.Value));
             Touch();
         }
 
         public void RemoveTeacher()
         {
             if (!HasTeacher) throw new DomainBadRequestException("No teacher is assigned to this class.");
+
+            var teacher = TeacherId!.Value;
             TeacherId = null;
+
+            RaiseEvent(new TeacherRemovedFromClassDomainEvent(teacher, Name.Value));
             Touch();
         }
 

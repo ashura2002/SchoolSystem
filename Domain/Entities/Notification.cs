@@ -12,8 +12,10 @@ namespace Domain.Entities
         public string Content { get; private set; }
         public bool IsRead { get; private set; }
 
-        private Notification(Guid userId, string content,
-        bool isRead = false)
+        private Notification(
+            Guid userId, 
+            string content,
+            bool isRead = false)
         {
             UserId = userId;
             Content = content;
